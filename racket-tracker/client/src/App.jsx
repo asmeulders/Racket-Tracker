@@ -2,18 +2,22 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css'
 
+import { RacketList, RacketForm } from './components/racket/racket.jsx'
+import { OrderList } from './components/order/order.jsx'
+import { StringList } from './components/string/string.jsx'
+import { UserList } from './components/user/user.jsx'
+
 function App() {
   const [users, setUsers] = useState([])
   const [rackets, setRackets] = useState([])
   const [orders, setOrders] = useState([])
   const [strings, setStrings] = useState([])
 
-  // Helper to initialize DBs (just for this demo)
   const initDatabases = async () => {
     try {
       await axios.post('http://127.0.0.1:5000/init_db');
       alert("Databases Created & Seeded!");
-      fetchData(); // Refresh data
+      fetchData();
     } catch (error) {
       console.error("Error initializing DB:", error);
     }
@@ -37,6 +41,15 @@ function App() {
     }
   };
 
+  const fetchRackets = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/rackets');
+      setRackets(response.data);
+    } catch (error) {
+      console.error("Error fetching rackets:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -50,60 +63,18 @@ function App() {
 
       <div style={{ display: "flex", gap: "50px" }}>
         
-        <div>
-          <h2>Users</h2>
-          <ul>
-            {users.map(u => (
-              <li key={u.id}>
-                <strong>{u.username}</strong>
-                <ul>
-                  {u.rackets.map(r => (
-                    <li key={r.id}>Owns: {r.name}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <UserList users={users} />
 
-        <div>
-          <h2>Rackets</h2>
-          <ul>
-            {rackets.map(r => (
-              <li key={r.id}>{r.name} - ${r.price}</li>
-            ))}
-          </ul>
-        </div>
+        <RacketList rackets={rackets}/>
 
-        <div>
-          <h2>Orders</h2>
-          <ul>
-            {orders.map(o => (
-              <li key={o.id} style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
-                <strong>{o.ordered_on}</strong> - {o.racket_name}
-                <ul style={{fontSize: "0.9em", color: "#555"}}>
-                  {o.job_details && o.job_details.map((job, index) => (
-                    <li key={index}>
-                      {job.string_name} @ {job.tension}lbs 
-                      {job.direction ? ` (${job.direction})` : ''}
-                    </li>
-                  ))}
-                </ul>
-                
-              </li>
-            ))}
-          </ul>
-        </div>
+        <OrderList orders={orders} />
 
-        <div>
-          <h2>Strings</h2>
-          <ul>
-            {strings.map(s => (
-              <li key={s.id}>{s.name} - ${s.price_per_racket}</li>
-            ))}
-          </ul>
-        </div>
+        <StringList strings={strings} />
 
+      </div>
+
+      <div>
+        <RacketForm onRacketCreated={fetchRackets}/>
       </div>
     </div>
   )

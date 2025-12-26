@@ -1,4 +1,5 @@
-// import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 export function RacketList({rackets}) {
     return(
@@ -32,4 +33,54 @@ export function Racket({racket}) {
     return (
             <li>{racket.name} - ${racket.price}</li>
     )
+}
+
+export function RacketForm({ onRacketCreated }){
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError(null);
+    setStatus(null);
+    try {
+      await axios.post("http://localhost:5000/create-racket", {
+        "name": name,
+        "price": price
+      })
+      
+      setName('');
+      setPrice('');
+
+      onRacketCreated();
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.error);
+      } else{
+        setError("Could not connect to server.");
+      }
+    }
+  }
+
+  return(
+    <div>
+      {error && <div>{error}</div>}
+      {status && <div>{status}</div>}
+      <form onSubmit={handleSubmit}>
+
+        <label htmlFor="name">Racket Name:</label>
+        <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
+
+        <label htmlFor="price">Price:</label>
+        <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} /><br />
+
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+    
+  )
 }

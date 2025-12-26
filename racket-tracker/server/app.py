@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, IntegrityError
 
 from db import db
 from models import User, Racket, Order, String, StrungWith, Owns
@@ -88,6 +88,51 @@ def get_rackets():
         return jsonify([r.to_json() for r in rackets])
     except OperationalError:
         return jsonify([])
+    
+@app.route('/get-racket-by-id/<int:racket_id>', methods=['GET'])
+def get_racket_by_id(racket_id: int):
+    """    
+    :param racket_id: id of the racket
+    :type racket_id: int
+    :returns racket: json object
+    """
+    racket = db.session.execute(db.select(Racket).filter_by(id=racket_id)).scalar_one_or_none()
+    if racket: 
+        return jsonify(racket.to_json())
+    return jsonify({"error": "Racket not found"}), 404
+
+@app.route('/create-racket', methods=['POST'])
+def create_racket():
+    """    
+    Create a racket from a user form input
+    """
+    data = request.get_json()
+
+    if not data or "name" not in data or "price" not in data:
+        return jsonify({"error": "Missing required fields 'name' or 'data'"}), 400
+    
+    name = data.get('name')
+    price = data.get('price')
+
+    existing_racket = db.session.execute(db.select(Racket).filter_by(name=name, price=price)).first()
+    if existing_racket:
+        return jsonify({"error": "This racket already exists"}), 409
+
+    try:
+        racket = Racket()
+        racket.name = name
+        racket.price = price
+
+        db.session.add(racket)
+        db.session.commit()
+
+        return jsonify({"message": "Racket successfully created", "id": racket.id}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
     
 @app.route('/strings', methods=['GET'])
 def get_strings():
