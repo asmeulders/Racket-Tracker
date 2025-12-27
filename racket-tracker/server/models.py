@@ -46,10 +46,12 @@ class StrungWith(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
     string_id = db.Column(db.Integer, db.ForeignKey('strings.id'))
+    
     tension = db.Column(db.Integer, nullable=False)
     direction = db.Column(db.String(7), nullable=True)
 
-    string = db.relationship("String")
+    strings = db.relationship("String", back_populates="order_records")
+    order = db.relationship("Order", back_populates="strung_with_records")
 
     def to_json(self):
         return {
@@ -83,8 +85,8 @@ class Order(db.Model):
     """
     __tablename__="orders"
     id = db.Column(db.Integer, primary_key=True)
-    ordered_on = db.Column(db.Date, nullable=False)
-    due_on = db.Column(db.Date, nullable=False)
+    orderDate = db.Column(db.Date, nullable=False)
+    due = db.Column(db.Date, nullable=False)
     price = db.Column(db.Float, nullable=False)
     # Foreign Key
     racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id'), nullable=False)
@@ -92,22 +94,21 @@ class Order(db.Model):
     # Relation ship: many to one
     user = db.relationship('User', back_populates='orders')
     racket = db.relationship('Racket', back_populates='orders')
-    strings = db.relationship('String', secondary=StrungWith.__table__, back_populates='orders')
-    # Stop at middle man
-    strung_with_records = db.relationship('StrungWith', backref='order')
+
+    strung_with_records = db.relationship('StrungWith', back_populates='order')
 
     def to_json(self):
         return {
             "id": self.id, 
-            "ordered_on": self.ordered_on.isoformat() if self.ordered_on else None, 
-            "due_on": self.due_on if self.due_on else None,
+            "orderDate": self.orderDate.isoformat() if self.orderDate else None, 
+            "due": self.due if self.due else None,
             "price": self.price,
             "racket_name": self.racket.name if self.racket else None,
             "job_details": [
                 {
-                    "string_name": record.string.name, # Jump from middle -> string to get name
-                    "tension": record.tension,         # Get data from middle
-                    "direction": record.direction      # Get data from middle
+                    "string_name": record.strings.name, 
+                    "tension": record.tension,         
+                    "direction": record.direction      
                 } 
                 for record in self.strung_with_records
             ]
@@ -123,7 +124,8 @@ class String(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
     price_per_racket = db.Column(db.Float, nullable=False)
-    orders = db.relationship('Order', secondary=StrungWith.__table__, back_populates='strings')
+
+    order_records = db.relationship('StrungWith', back_populates='strings')
 
     def to_json(self):
         return {"id": self.id, "name": self.name, "price_per_racket": self.price_per_racket}

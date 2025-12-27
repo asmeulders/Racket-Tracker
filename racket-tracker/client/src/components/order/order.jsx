@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import axios from 'axios'
+
 export function OrderList({orders}) {
     return(
         <div>
@@ -14,8 +17,8 @@ export function OrderList({orders}) {
 export function Order({order}) {
     return (
         <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
-          <strong>{order.ordered_on}</strong> - {order.racket_name}
-          <ul style={{fontSize: "0.9em", color: "#555"}}>
+          <strong>{order.orderDate}</strong> - {order.racket_name} ${order.price}
+          <ul style={{fontSize: "0.9em", color: "#ffffffff"}}>
             {order.job_details && order.job_details.map((job, index) => (
               <li key={index}>
                 {job.string_name} @ {job.tension}lbs 
@@ -26,3 +29,91 @@ export function Order({order}) {
         </li>
     )
 }
+
+export function OrderForm({ onOrderCreated }){
+  // const [date, setdate] = useState('');
+  // const [due, setdue] = useState('');
+  // const [price, setPrice] = useState('');
+  const [racket_id, setRacket_id] = useState('');
+  const [user_id, setUser_id] = useState('');
+  const [string_id, setString_id] = useState('');
+  const [tension, setTension] = useState('');
+  const [sameForCrosses, setSameForCrosses] = useState(true);
+  const [crosses_id, setCrosses_id] = useState('');
+  const [crossesTension, setCrossesTension] = useState('');
+
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError(null);
+    setStatus(null);
+    try {
+      await axios.post("http://localhost:5000/create-order", {
+        "racket_id": racket_id,
+        "user_id": user_id,
+        "string_id": string_id,
+        "tension": tension,
+        "crosses_id": !sameForCrosses ? crosses_id : null,
+        "crossesTension": !sameForCrosses ? crossesTension : null
+      })
+
+      setRacket_id('');
+      setUser_id('');
+      setString_id('');
+      setTension('');
+      setCrosses_id('');
+      setCrossesTension('');
+
+      onOrderCreated();
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.error);
+      } else{
+        setError("Could not connect to server.");
+      }
+    }
+  }
+
+  return(
+    <div>
+      {error && <div>{error}</div>}
+      {status && <div>{status}</div>}
+      <form onSubmit={handleSubmit}>
+
+        <label htmlFor="user_id">User_id:</label>
+        <input type="number" id="user_id" value={user_id} onChange={(e) => setUser_id(e.target.value)} /><br />
+
+        <label htmlFor="racket_id">Racket_id:</label>
+        <input type="number" id="racket_id" value={racket_id} onChange={(e) => setRacket_id(e.target.value)} /><br />
+
+        <label htmlFor="string_id">String_id:</label>
+        <input type="number" id="string_id" value={string_id} onChange={(e) => setString_id(e.target.value)} /><br />
+
+        <label htmlFor="tension">Tension:</label>
+        <input type="number" id="tension" value={tension} onChange={(e) => setTension(e.target.value)} /><br />
+
+        <label htmlFor="sameForCrosses">{sameForCrosses ? 'Same for crosses' : 'Different for crosses'}</label>
+        <input type="checkbox" id="sameForCrosses" onChange={() => setSameForCrosses(!sameForCrosses)} checked={sameForCrosses}/><br />
+        
+        {!sameForCrosses && 
+          <div>
+            <label htmlFor="crosses_id">Crosses_id:</label>
+            <input type="number" id="crosses_id" value={crosses_id} onChange={(e) => setCrosses_id(e.target.value)} /><br />
+
+            <label htmlFor="crossesTension">crossesTension:</label>
+            <input type="number" id="crossesTension" value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} /><br />
+          </div>
+        }
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+    
+  )
+}
+
+// function StringInput() {
+
+// }

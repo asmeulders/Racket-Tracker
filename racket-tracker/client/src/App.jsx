@@ -3,7 +3,7 @@ import axios from 'axios'
 import './App.css'
 
 import { RacketList, RacketForm } from './components/racket/racket.jsx'
-import { OrderList } from './components/order/order.jsx'
+import { OrderList, OrderForm } from './components/order/order.jsx'
 import { StringList } from './components/string/string.jsx'
 import { UserList } from './components/user/user.jsx'
 
@@ -50,13 +50,22 @@ function App() {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/orders');
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error fetching rackets:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1>Racket Tracker</h1>
+      <h1>Racket 🎾 Tracker</h1>
       <button onClick={initDatabases} style={{ marginBottom: "20px" }}>
         Initialize & Seed Databases
       </button>
@@ -75,6 +84,8 @@ function App() {
 
       <div>
         <RacketForm onRacketCreated={fetchRackets}/>
+
+        <OrderForm onOrderCreated={fetchOrders}/>
       </div>
     </div>
   )
