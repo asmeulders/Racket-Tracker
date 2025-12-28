@@ -88,6 +88,7 @@ class Order(db.Model):
     orderDate = db.Column(db.Date, nullable=False)
     due = db.Column(db.Date, nullable=False)
     price = db.Column(db.Float, nullable=False)
+    complete = db.Column(db.Boolean, nullable=False)
     # Foreign Key
     racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -103,6 +104,7 @@ class Order(db.Model):
             "orderDate": self.orderDate.isoformat() if self.orderDate else None, 
             "due": self.due if self.due else None,
             "price": self.price,
+            "complete": self.complete,
             "racket_name": self.racket.name if self.racket else None,
             "job_details": [
                 {

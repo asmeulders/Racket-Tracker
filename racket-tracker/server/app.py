@@ -43,6 +43,7 @@ def init_db():
                 orderDate=date(2025, 12, 25), 
                 due=date(2025, 12, 27), 
                 price=100, 
+                complete=False,
                 racket_id=1,
                 user_id=1
             ))
@@ -50,6 +51,7 @@ def init_db():
                 orderDate=date(2025, 11, 25), 
                 due=date(2025, 11, 27), 
                 price=120, 
+                complete=False,
                 racket_id=2,
                 user_id=2
             ))
@@ -179,7 +181,7 @@ def create_order():
         if not crosses_id and not crossesTension:
             price = 25 + mains.price_per_racket
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, racket_id=racket_id, user_id=user_id)
+            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, racket_id=racket_id, user_id=user_id)
             
             racketStrungWith = StrungWith(tension=tension, direction=None, strings=mains)
             order.strung_with_records.append(racketStrungWith)
@@ -191,7 +193,7 @@ def create_order():
 
             price = 25 + (mains.price_per_racket + crosses.price_per_racket)/2
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, racket_id=racket_id, user_id=user_id)
+            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, racket_id=racket_id, user_id=user_id)
 
             mainsStrungWith = StrungWith(tension=tension, direction="mains", strings=mains)
             crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", strings=crosses)
@@ -207,5 +209,44 @@ def create_order():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+
+@app.route('/complete-order', methods=['PATCH'])
+def complete_order():
+    """
+    Completes an order
+    """
+    data = request.get_json()
+
+    if not data or not "order_id" in data:
+        return jsonify({"error": "Missing required field 'order_id'"}), 400
+    
+    order_id = data.get('order_id')
+
+    try:
+        order = db.session.execute(db.select(Order).filter_by(id=order_id)).scalar_one()
+        
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+        
+        if order.complete:
+            return jsonify({
+                "message": "Order was already completed", 
+                "order": order.to_json() 
+            }), 200
+        
+        order.complete = True
+
+        db.session.add(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order successfully completed", "order": order.to_json()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

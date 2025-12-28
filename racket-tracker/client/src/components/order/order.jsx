@@ -15,19 +15,36 @@ export function OrderList({orders}) {
 }
 
 export function Order({order}) {
-    return (
-        <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
-          <strong>{order.orderDate}</strong> - {order.racket_name} ${order.price}
-          <ul style={{fontSize: "0.9em", color: "#ffffffff"}}>
-            {order.job_details && order.job_details.map((job, index) => (
-              <li key={index}>
-                {job.string_name} @ {job.tension}lbs 
-                {job.direction ? ` (${job.direction})` : ''}
-              </li>
-            ))}
-          </ul>
-        </li>
-    )
+  const [complete, setComplete] = useState(order.complete);
+
+  const completeOrder = async (order) => {
+    try{
+      const response = await axios.patch('http://localhost:5000/complete-order',
+        { "order_id": order.id }
+      )
+      setComplete(response.data.order.complete)
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data.error);
+      } else{
+        console.log("Could not connect to server.");
+      }
+    }
+  }
+  return (
+    <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
+      <strong>{!complete ? `Due on ${order.due}` : "Order complete"}</strong> - {order.racket_name} ${order.price}
+      <ul style={{fontSize: "0.9em", color: "#ffffffff"}}>
+        {order.job_details && order.job_details.map((job, index) => (
+          <li key={index}>
+            {job.string_name} @ {job.tension}lbs 
+            {job.direction ? ` (${job.direction})` : ''}
+          </li>
+        ))}
+      </ul>
+      {!complete && <button onClick={() => completeOrder(order)}>Complete Order</button>}
+    </li>
+  )
 }
 
 export function OrderForm({ onOrderCreated }){
