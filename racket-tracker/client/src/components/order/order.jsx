@@ -97,6 +97,7 @@ export function OrderForm({ onOrderCreated }){
 
   return(
     <div>
+      <h2>Create an order</h2>
       {error && <div>{error}</div>}
       {status && <div>{status}</div>}
       <form onSubmit={handleSubmit}>

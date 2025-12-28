@@ -112,7 +112,7 @@ def create_racket():
     data = request.get_json()
 
     if not data or "name" not in data or "price" not in data:
-        return jsonify({"error": "Missing required fields 'name' or 'data'"}), 400
+        return jsonify({"error": "Missing required fields 'name', 'price' or 'data'"}), 400
     
     name = data.get('name')
     price = data.get('price')
@@ -126,7 +126,7 @@ def create_racket():
         db.session.add(racket)
         db.session.commit()
 
-        return jsonify({"message": "Racket successfully created", "id": racket.id}), 201
+        return jsonify({"message": "Racket successfully created", "racket": racket}), 201
     
     except Exception as e:
         db.session.rollback()
@@ -141,6 +141,35 @@ def get_strings():
         return jsonify([s.to_json() for s in strings])
     except OperationalError:
         return jsonify([])
+    
+@app.route('/create-string', methods=['POST'])
+def create_string():
+    """    
+    Create a string from a user form input
+    """
+    data = request.get_json()
+
+    if not data or "name" not in data or "price_per_racket" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', or 'data'"}), 400
+    
+    name = data.get('name')
+    price_per_racket = data.get('price_per_racket')
+
+    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket)).first()
+    if existing_string:
+        return jsonify({"error": "This string already exists"}), 409
+
+    try:
+        string = String(name=name, price_per_racket=price_per_racket)
+        db.session.add(string)
+        db.session.commit()
+
+        return jsonify({"message": "String successfully created", "string": string.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 @app.route('/orders', methods=['GET'])
 def get_orders():
