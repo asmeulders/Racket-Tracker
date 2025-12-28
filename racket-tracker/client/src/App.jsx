@@ -5,7 +5,7 @@ import './App.css'
 import { RacketList, RacketForm } from './components/racket/racket.jsx'
 import { OrderList, OrderForm } from './components/order/order.jsx'
 import { StringList, StringForm } from './components/string/string.jsx'
-import { UserList } from './components/user/user.jsx'
+import { UserList, UserForm } from './components/user/user.jsx'
 
 function App() {
   const [users, setUsers] = useState([])
@@ -68,6 +68,15 @@ function App() {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -92,6 +101,8 @@ function App() {
       </div>
 
       <div>
+        <UserForm onUserCreated={fetchUsers}/>
+
         <RacketForm onRacketCreated={fetchRackets}/>
 
         <OrderForm onOrderCreated={fetchOrders}/>

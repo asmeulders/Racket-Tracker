@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
 export function UserList({users}) {
     return(
         <div>
@@ -29,4 +32,49 @@ export function User({user}) {
         </li>
       </div>      
     )
+}
+
+export function UserForm({ onUserCreated }){
+  const [username, setUsername] = useState('');
+
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError(null);
+    setStatus(null);
+    try {
+      await axios.post("http://localhost:5000/create-user", {
+        "username": username
+      })
+      
+      setUsername('');
+
+      onUserCreated();
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.error);
+      } else{
+        setError("Could not connect to server.");
+      }
+    }
+  }
+
+  return(
+    <div>
+      <h2>Create a user</h2>
+      {error && <div>{error}</div>}
+      {status && <div>{status}</div>}
+      <form onSubmit={handleSubmit}>
+
+        <label htmlFor="username">User Name:</label>
+        <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} /><br />
+
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+    
+  )
 }

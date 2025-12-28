@@ -83,6 +83,35 @@ def get_users():
         return jsonify([user.to_json() for user in users])
     except OperationalError:
         return jsonify([])
+    
+@app.route('/create-user', methods=['POST'])
+def create_user():
+    """    
+    Create a user from a user form input
+    """
+    data = request.get_json()
+
+    if not data or "username" not in data:
+        return jsonify({"error": "Missing required fields 'username' or 'data'"}), 400
+    
+    username = data.get('username')
+
+    existing_user = db.session.execute(db.select(User).filter_by(username=username)).first()
+    if existing_user:
+        return jsonify({"error": "This user already exists"}), 409
+
+    try:
+        user = User(username=username)
+        db.session.add(user)
+        db.session.commit()
+
+        return jsonify({"message": "User successfully created", "user": user.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
 
 @app.route('/rackets', methods=['GET'])
 def get_rackets():
