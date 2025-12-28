@@ -83,6 +83,7 @@ export function OrderForm({ onOrderCreated }){
       setTension('');
       setCrosses_id('');
       setCrossesTension('');
+      setSameForCrosses(true)
 
       onOrderCreated();
     } catch (error) {

@@ -178,7 +178,7 @@ def create_order():
     try:
         # price of strings
         mains = db.session.execute(db.select(String).filter_by(id=string_id)).scalar_one()
-        if not crosses_id and not crossesTension:
+        if not crosses_id and not crossesTension or crosses_id == string_id and crossesTension == tension:
             price = 25 + mains.price_per_racket
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, racket_id=racket_id, user_id=user_id)
@@ -202,7 +202,7 @@ def create_order():
             db.session.add(order)
             db.session.commit()
 
-        return jsonify({"message": "Order successfully created", "id": order.id, "orderDate": order.orderDate, "due": order.due}), 201
+        return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
     
     except Exception as e:
         db.session.rollback()
