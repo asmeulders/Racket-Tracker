@@ -70,8 +70,8 @@ def init_db():
             db.session.commit()
 
         if not Owns.query.first():
-            db.session.add(Owns(user_id=1, racket_id=1))
-            db.session.add(Owns(user_id=2, racket_id=2))
+            db.session.add(Owns(user_id=1, racket_id=1, quantity=1))
+            db.session.add(Owns(user_id=2, racket_id=2, quantity=1))
             db.session.commit()
         
     return jsonify({"message": "Database initialized!"})
@@ -275,7 +275,11 @@ def complete_order():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
 
-
+# ================================================================
+# TODO: Assign a racket to a user by querying for the racket and 
+#       the user then creating a new Owns object and adding the 
+#       Owns object to the db
+# ================================================================
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

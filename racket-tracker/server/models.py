@@ -2,20 +2,22 @@ from db import db
 
 class Owns(db.Model):
     """
-        TODO: 
-        - properties
-        - to_json
+        TODO: relationships
     """
     __tablename__ = "owns"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id'), primary_key=True)
+
+    quantity = db.Column(db.Integer, nullable=False)
+
+    user = db.relationship("User", back_populates="rackets")
+    racket = db.relationship("Racket", back_populates="users")
 
     def to_json(self):
         return {
-            "id": self.id, 
-            "user_id": self.user_id, 
-            "racket_id": self.racket_id
+            "racket_id": self.racket.id, 
+            "racket_name": self.racket.name,
+            "quantity": self.quantity
         }
 
 class User(db.Model):
@@ -28,19 +30,20 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     
-    rackets = db.relationship('Racket', secondary=Owns.__table__, back_populates='users')
+    rackets = db.relationship('Owns', back_populates='user')
     orders = db.relationship('Order', back_populates='user')
 
     def to_json(self):
         return {
             "id": self.id, 
             "username": self.username,
-            "rackets": [r.to_json() for r in self.rackets] # backend does the work because we already defined the relationship
+            "rackets": [r.to_json() for r in self.rackets], # backend does the work because we already defined the relationship
+            "orders": [o.to_json() for o in self.orders]
         }
 
 class StrungWith(db.Model):
     """
-        TODO: how to get the tension and direction with one 
+ 
     """
     __tablename__ = "strung_with"
     id = db.Column(db.Integer, primary_key=True)
@@ -73,10 +76,22 @@ class Racket(db.Model):
     price = db.Column(db.Float, nullable=False)
     # Relationship: one to many
     orders = db.relationship('Order', back_populates='racket')
-    users = db.relationship('User', secondary=Owns.__table__, back_populates='rackets')
+    users = db.relationship('Owns', back_populates='racket')
 
     def to_json(self):
-        return {"id": self.id, "name": self.name, "price": self.price}
+        return {
+            "id": self.id, 
+            "name": self.name, 
+            "price": self.price,
+            "orders": [o.to_json() for o in self.orders],
+            "owners": [
+                {
+                    "user_id": u.user.id,
+                    "username": u.user.username,
+                    "quantity": u.quantity
+                } for u in self.users
+            ],
+        }
     
     
 class Order(db.Model):
@@ -120,7 +135,6 @@ class String(db.Model):
     """
         TODO: 
         - specs
-        - to_json
     """
     __tablename__ = 'strings'
     id = db.Column(db.Integer, primary_key=True)
