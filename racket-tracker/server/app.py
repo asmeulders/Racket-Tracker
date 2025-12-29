@@ -76,10 +76,17 @@ def init_db():
         
     return jsonify({"message": "Database initialized!"})
 
-@app.route('/users', methods=['GET'])
-def get_users():
+
+@app.route('/users/', defaults={'limit': None})
+@app.route('/users/<int:limit>', methods=['GET'])
+def get_users(limit: int):
+    query = db.select(User).order_by(User.username.asc())
+
+    if limit is not None:
+        query = query.limit(limit)
+
     try:
-        users = User.query.all()
+        users = db.session.execute(query).scalars().all()
         return jsonify([user.to_json() for user in users])
     except OperationalError:
         return jsonify([])
@@ -112,11 +119,16 @@ def create_user():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+@app.route('/rackets/', defaults={'limit': None})
+@app.route('/rackets/<int:limit>', methods=['GET'])
+def get_rackets(limit: int):
+    query = db.select(Racket).order_by(Racket.name.asc())
 
-@app.route('/rackets', methods=['GET'])
-def get_rackets():
+    if limit is not None:
+        query = query.limit(limit)
+        
     try:
-        rackets = Racket.query.all()
+        rackets = db.session.execute(query).scalars().all()
         return jsonify([r.to_json() for r in rackets])
     except OperationalError:
         return jsonify([])
@@ -162,11 +174,17 @@ def create_racket():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
-    
-@app.route('/strings', methods=['GET'])
-def get_strings():
+
+@app.route('/strings/', defaults={'limit': None})
+@app.route('/strings/<int:limit>', methods=['GET'])
+def get_strings(limit: int):
+    query = db.select(String).order_by(String.name.asc())
+
+    if limit is not None:
+        query = query.limit(limit)
+        
     try:
-        strings = String.query.all()
+        strings = db.session.execute(query).scalars().all()
         return jsonify([s.to_json() for s in strings])
     except OperationalError:
         return jsonify([])
@@ -200,10 +218,17 @@ def create_string():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
 
-@app.route('/orders', methods=['GET'])
-def get_orders():
+
+@app.route('/orders/', defaults={'limit': None})
+@app.route('/orders/<int:limit>', methods=['GET'])
+def get_orders(limit: int):
+    query = db.select(Order).order_by(Order.due.desc())
+
+    if limit is not None:
+        query = query.limit(limit)
+        
     try:
-        orders = Order.query.all()
+        orders = db.session.execute(query).scalars().all()
         return jsonify([order.to_json() for order in orders])
     except OperationalError:
         return jsonify([])
