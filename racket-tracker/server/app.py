@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError, IntegrityError
 from datetime import datetime, timedelta
 
 from db import db
-from models import User, Racket, Order, String, StrungWith, Owns
+from models import User, Racket, Order, String, StrungWith, Owns, Brand
 
 from datetime import date
 
@@ -31,6 +31,11 @@ def init_db():
         if not User.query.first():
             db.session.add(User(username="Alice"))
             db.session.add(User(username="Bob"))
+            db.session.commit()
+
+        if not Brand.query.first():
+            db.session.add(Brand(name='Solinco'))
+            db.session.add(Brand(name='Luxilon'))
             db.session.commit()
             
         if not Racket.query.first():
@@ -59,8 +64,8 @@ def init_db():
             
 
         if not String.query.first():
-            db.session.add(String(name="ALU Power", price_per_racket=22))
-            db.session.add(String(name="Solinco Hyper G", price_per_racket=20))
+            db.session.add(String(name="ALU Power", price_per_racket=22, brand_id=2))
+            db.session.add(String(name="Hyper G", price_per_racket=20, brand_id=1))
             db.session.commit()
 
         if not StrungWith.query.first():
@@ -72,7 +77,7 @@ def init_db():
         if not Owns.query.first():
             db.session.add(Owns(user_id=1, racket_id=1, quantity=1))
             db.session.add(Owns(user_id=2, racket_id=2, quantity=1))
-            db.session.commit()
+            db.session.commit()        
         
     return jsonify({"message": "Database initialized!"})
 
@@ -196,18 +201,23 @@ def create_string():
     """
     data = request.get_json()
 
-    if not data or "name" not in data or "price_per_racket" not in data:
-        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', or 'data'"}), 400
+    if not data or "name" not in data or "price_per_racket" not in data or "brand_name" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', 'brand_name', or 'data'"}), 400
     
     name = data.get('name')
     price_per_racket = data.get('price_per_racket')
+    brand_name = data.get('brand_name')
 
-    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket)).first()
+    brand = get_brand_by_name(brand_name=brand_name)
+    if not brand:
+        return jsonify({"error": "Brand does not exist"}), 404
+
+    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket, brand=brand)).first()
     if existing_string:
         return jsonify({"error": "This string already exists"}), 409
 
     try:
-        string = String(name=name, price_per_racket=price_per_racket)
+        string = String(name=name, price_per_racket=price_per_racket, brand=brand)
         db.session.add(string)
         db.session.commit()
 
@@ -328,6 +338,38 @@ def complete_order():
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+@app.route('/brands/', defaults={'limit': None})
+@app.route('/brands/<int:limit>', methods=['GET'])
+def get_brands(limit: int):
+    query = db.select(Brand).order_by(Brand.name.asc())
+
+    if limit is not None:
+        query = query.limit(limit)
+        
+    try:
+        brands = db.session.execute(query).scalars().all()
+        return jsonify([b.to_json() for b in brands])
+    except OperationalError:
+        return jsonify([])
+
+# ================================================================
+# TODO: Move this to a utils file?
+# ================================================================
+
+def get_brand_by_name(brand_name: str):
+    try:
+        brand = db.session.execute(db.select(Brand).filter_by(name=brand_name)).scalar_one_or_none()
+
+        return brand
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+
+
 
 # ================================================================
 # TODO: Assign a racket to a user by querying for the racket and 

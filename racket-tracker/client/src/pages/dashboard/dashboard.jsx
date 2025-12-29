@@ -6,7 +6,7 @@ import './dashboard.css'
 import { RacketList } from '../../components/racket/racket.jsx'
 import { OrderList } from '../../components/order/order.jsx'
 import { StringList } from '../../components/string/string.jsx'
-import { User, UserList } from '../../components/user/user.jsx'
+import { UserList } from '../../components/user/user.jsx'
 
 function Dashboard() {
     const [users, setUsers] = useState([])

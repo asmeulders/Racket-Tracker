@@ -38,7 +38,7 @@ class User(db.Model):
             "id": self.id, 
             "username": self.username,
             "rackets": [r.to_json() for r in self.rackets], # backend does the work because we already defined the relationship
-            "orders": [o.to_json() for o in self.orders]
+            "orders": [o.to_json() for o in self.orders] 
         }
 
 class StrungWith(db.Model):
@@ -141,9 +141,39 @@ class String(db.Model):
     name = db.Column(db.String(60), nullable=False)
     price_per_racket = db.Column(db.Float, nullable=False)
 
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
+
     order_records = db.relationship('StrungWith', back_populates='strings')
+    brand = db.relationship('Brand', back_populates='strings')
 
     def to_json(self):
-        return {"id": self.id, "name": self.name, "price_per_racket": self.price_per_racket}
+        return {
+            "id": self.id, 
+            "name": self.name, 
+            "price_per_racket": self.price_per_racket,
+            "brand_name": self.brand.name
+        }
 
 
+class Brand(db.Model):
+    """
+    Brand names for products
+    """
+    __tablename__ = "brands"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    # Relationships
+    strings = db.relationship('String', back_populates='brand')
+    # rackets = db.relationship('Racket', back_populates='brand')
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "string_names": [
+                {
+                    "string_name": string.name,
+                    "price_per_racket": string.price_per_racket
+                } for string in self.strings 
+            ]
+        }
