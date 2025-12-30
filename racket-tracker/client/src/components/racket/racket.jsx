@@ -24,7 +24,7 @@ export function Racket({racket}) {
 export function RacketForm({ onRacketCreated, brands }){
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [brand_id, setBrand_id] = useState('');
+  const [brandId, setBrandId] = useState('');
 
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
@@ -38,12 +38,12 @@ export function RacketForm({ onRacketCreated, brands }){
       await axios.post("http://localhost:5000/create-racket", {
         "name": name,
         "price": price,
-        "brand_id": brand_id
+        "brand_id": brandId
       })
       
       setName('');
       setPrice('');
-      setBrand_id('');
+      setBrandId('');
 
       onRacketCreated();
     } catch (error) {
@@ -61,7 +61,7 @@ export function RacketForm({ onRacketCreated, brands }){
       {error && <div>{error}</div>}
       {status && <div>{status}</div>}
       <form onSubmit={handleSubmit}>
-        <BrandSelect value={brand_id} brands={brands} onBrandChange={setBrand_id} />
+        <BrandSelect value={brandId} brands={brands} onBrandChange={setBrandId} />
 
         <label htmlFor="name">Racket Name:</label>
         <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
@@ -78,9 +78,9 @@ export function RacketForm({ onRacketCreated, brands }){
 
 export function RacketSelect({ onRacketChange, value, rackets }) {
   const handleSelect = (event) => {
-    const racket_id = event.target.value;
+    const racketId = event.target.value;
 
-    onRacketChange(racket_id);
+    onRacketChange(racketId);
   }
   
   return (

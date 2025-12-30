@@ -8,6 +8,7 @@ import {
 import Navbar from './components/navbar/navbar';
 import Home from "./pages";
 import Dashboard from './pages/dashboard/dashboard';
+import { BrandPage } from './pages/brand/BrandPage';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          
+          <Route path="/brands" element={<BrandPage />} />
         </Routes>
       </Router>
   )

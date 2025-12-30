@@ -1,27 +1,58 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+export function Brand({brand, onBrandDeleted}) {
+  const deleteBrand = async (brand) => {
+    try {
+      await axios.delete(`http://localhost:5000/delete-brand/${brand.id}`)
 
-export function BrandList({brands}) {
-    return(
-        <div>
-          <h2>Brands</h2>
-          <ul>
-            {brands.map(b => (
-              <Brand key={b.id} brand={b}/>
-            ))}
-          </ul>
-        </div>
-    )
-}
-
-export function Brand({brand}) {
+      onBrandDeleted()
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.error);
+      } else{
+        setError("Could not connect to server.");
+      }
+    }
+  }
     return (
-      <li >{brand.name}</li>
+      <div>
+        <li >{brand.name}</li>
+        <button onClick={() => {deleteBrand(brand)}}>X</button>
+      </div>
     )
 }
 
-export function BrandForm({ onBrandCreated }){
+export const BrandList = ({brands}) => {
+  const [newBrands, setNewBrands] = useState(brands);
+
+  const fetchBrands = async () => {
+    try {
+    const response = await axios.get('http://127.0.0.1:5000/brands');
+    setNewBrands(response.data);
+    } catch (error) {
+    console.error("Error fetching brands:", error);
+    }
+  };
+
+  useEffect(() => {
+    setNewBrands(brands)
+  }, [brands])
+
+  return(
+    <div>
+      <h2>Brands</h2>
+      <ul>
+        {newBrands.map(b => (
+          <Brand key={b.id} brand={b} onBrandDeleted={fetchBrands}/>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+
+export const BrandForm = ({ onBrandCreated }) => {
   const [name, setName] = useState('');
 
   const [error, setError] = useState('');
@@ -66,11 +97,10 @@ export function BrandForm({ onBrandCreated }){
   )
 }
 
-export function BrandSelect({ onBrandChange, value, brands }) {
+export const BrandSelect = ({ onBrandChange, value, brands }) => {
   const handleSelect = (event) => {
-    const brand_id = event.target.value;
-
-    onBrandChange(brand_id);
+    const brandId = event.target.value;
+    onBrandChange(brandId);
   }
   
   return (

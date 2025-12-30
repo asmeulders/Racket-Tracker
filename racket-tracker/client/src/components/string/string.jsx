@@ -23,7 +23,7 @@ export function String({string}) {
 
 export function StringForm({ onStringCreated, brands }){
   const [name, setName] = useState('');
-  const [brand_id, setBrand_id] = useState('');
+  const [brandId, setBrandId] = useState('');
   const [pricePerRacket, setPricePerRacket] = useState('');
 
   const [error, setError] = useState('');
@@ -38,12 +38,12 @@ export function StringForm({ onStringCreated, brands }){
       await axios.post("http://localhost:5000/create-string", {
         "name": name,
         "price_per_racket": pricePerRacket,
-        "brand_id": brand_id
+        "brand_id": brandId
       })
       
       setName('');
       setPricePerRacket('');
-      setBrand_id('');
+      setBrandId("");
 
       onStringCreated();
     } catch (error) {
@@ -61,7 +61,7 @@ export function StringForm({ onStringCreated, brands }){
       {error && <div>{error}</div>}
       {status && <div>{status}</div>}
       <form onSubmit={handleSubmit}>
-        <BrandSelect value={brand_id} brands={brands} onBrandChange={setBrand_id} />
+        <BrandSelect value={brandId} brands={brands} onBrandChange={setBrandId} />
 
         <label htmlFor="name">String Name:</label>
         <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
@@ -78,8 +78,8 @@ export function StringForm({ onStringCreated, brands }){
 
 export function StringSelect({ onStringChange, value, strings }) {
   const handleSelect = (event) => {
-    const string_id = event.target.value;
-    onStringChange(string_id);
+    const stringId = event.target.value;
+    onStringChange(stringId);
   }
   
   return (

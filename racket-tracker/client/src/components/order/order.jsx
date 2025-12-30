@@ -50,15 +50,12 @@ export function Order({order}) {
 }
 
 export function OrderForm({ onOrderCreated, rackets, strings }){
-  // const [date, setdate] = useState('');
-  // const [due, setdue] = useState('');
-  // const [price, setPrice] = useState('');
-  const [racket_id, setRacket_id] = useState('');
+  const [racketId, setRacketId] = useState("");
   const [user_id, setUser_id] = useState('');
-  const [string_id, setString_id] = useState('');
+  const [stringId, setStringId] = useState("");
   const [tension, setTension] = useState('');
   const [sameForCrosses, setSameForCrosses] = useState(true);
-  const [crosses_id, setCrosses_id] = useState('');
+  const [crossesId, setCrossesId] = useState("");
   const [crossesTension, setCrossesTension] = useState('');
 
   const [error, setError] = useState('');
@@ -71,19 +68,20 @@ export function OrderForm({ onOrderCreated, rackets, strings }){
     setStatus(null);
     try {
       await axios.post("http://localhost:5000/create-order", {
-        "racket_id": racket_id,
+        "racket_id": racketId,
         "user_id": user_id,
-        "string_id": string_id,
+        "string_id": stringId,
         "tension": tension,
-        "crosses_id": !sameForCrosses ? crosses_id : null,
-        "crossesTension": !sameForCrosses ? crossesTension : null
+        "crosses_id": !sameForCrosses ? crossesId : null,
+        "crosses_tension": !sameForCrosses ? crossesTension : null,
+        "same_for_crosses": sameForCrosses
       })
 
-      setRacket_id('');
+      setRacketId("");
       setUser_id('');
-      setString_id('');
+      setStringId("");
       setTension('');
-      setCrosses_id('');
+      setCrossesId("");
       setCrossesTension('');
       setSameForCrosses(true)
 
@@ -108,14 +106,10 @@ export function OrderForm({ onOrderCreated, rackets, strings }){
         <label htmlFor="user_id">User_id:</label>
         <input type="number" id="user_id" value={user_id} onChange={(e) => setUser_id(e.target.value)} /><br />
 
-        <RacketSelect onRacketChange={setRacket_id} value={racket_id} rackets={rackets}/>
-        {/* <label htmlFor="racket_id">Racket_id:</label>
-        <input type="number" id="racket_id" value={racket_id} onChange={(e) => setRacket_id(e.target.value)} /><br /> */}
-
-        <StringSelect onStringChange={setString_id} value={string_id} strings={strings} />
-        {/* <label htmlFor="string_id">String_id:</label>
-        <input type="number" id="string_id" value={string_id} onChange={(e) => setString_id(e.target.value)} /><br /> */}
-
+        <RacketSelect onRacketChange={setRacketId} value={racketId} rackets={rackets}/>
+        
+        <StringSelect onStringChange={setStringId} value={stringId} strings={strings} />
+        
         <label htmlFor="tension">Tension:</label>
         <input type="number" id="tension" value={tension} onChange={(e) => setTension(e.target.value)} /><br />
 
@@ -124,10 +118,8 @@ export function OrderForm({ onOrderCreated, rackets, strings }){
         
         {!sameForCrosses && 
           <div>
-            <StringSelect onStringChange={setCrosses_id} value={crosses_id} strings={strings} />
-            {/* <label htmlFor="crosses_id">Crosses_id:</label>
-            <input type="number" id="crosses_id" value={crosses_id} onChange={(e) => setCrosses_id(e.target.value)} /><br /> */}
-
+            <StringSelect onStringChange={setCrossesId} value={crossesId} strings={strings} />
+            
             <label htmlFor="crossesTension">crossesTension:</label>
             <input type="number" id="crossesTension" value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} /><br />
           </div>

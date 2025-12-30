@@ -1,8 +1,9 @@
 from db import db
+from sqlalchemy import event
 
 class Owns(db.Model):
     """
-        TODO: relationships
+
     """
     __tablename__ = "owns"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -31,39 +32,44 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     
-    rackets = db.relationship('Owns', back_populates='user')
+    rackets = db.relationship('Owns', back_populates='user', cascade="all, delete-orphan")
     orders = db.relationship('Order', back_populates='user')
 
     def to_json(self):
         return {
             "id": self.id, 
             "username": self.username,
-            "rackets": [r.to_json() for r in self.rackets], # backend does the work because we already defined the relationship
+            "rackets": [r.to_json() for r in self.rackets],
             "orders": [o.to_json() for o in self.orders] 
         }
 
 class StrungWith(db.Model):
     """
- 
+    TODO: Want this to stay with snapshotting when the string is deleted=============== 
     """
     __tablename__ = "strung_with"
+    # Surrogate key
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
-    string_id = db.Column(db.Integer, db.ForeignKey('strings.id'))
-    
+    # Foreign Keys
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
+    string_id = db.Column(db.Integer, db.ForeignKey('strings.id' , ondelete='SET NULL'), nullable=True)
+    # Extra data
     tension = db.Column(db.Integer, nullable=False)
     direction = db.Column(db.String(7), nullable=True)
+    # Snapshot data
+    snapshot_string_name = db.Column(db.String(100))
 
-    strings = db.relationship("String", back_populates="order_records")
+    string = db.relationship("String", back_populates="order_records")
     order = db.relationship("Order", back_populates="strung_with_records")
 
     def to_json(self):
         return {
             "id": self.id, 
-            "order_id": self.order_id, 
-            "string_id": self.string_id,
+            "order": self.order.to_json, 
+            "string": self.string.to_json(),
             "tension": self.tension,
-            "direction": self.direction
+            "direction": self.direction,
+            "snapshot_string_name": self.snapshot_string_name
         }
     
 class Racket(db.Model):
@@ -76,10 +82,10 @@ class Racket(db.Model):
     name = db.Column(db.String(120), nullable=False)
     price = db.Column(db.Float, nullable=False)
     # FKs
-    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id', ondelete='SET NULL'), nullable=True)
     # Relationships
     orders = db.relationship('Order', back_populates='racket')
-    users = db.relationship('Owns', back_populates='racket')
+    users = db.relationship('Owns', back_populates='racket', cascade="all, delete-orphan")
     brand = db.relationship('Brand', back_populates='rackets')
 
     def to_json(self):
@@ -109,14 +115,17 @@ class Order(db.Model):
     due = db.Column(db.Date, nullable=False)
     price = db.Column(db.Float, nullable=False)
     complete = db.Column(db.Boolean, nullable=False)
-    # Foreign Key
-    racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    # Relation ship: many to one
+    # Snapshot data
+    snapshot_name = db.Column(db.String(50))
+    snapshot_racket_name = db.Column(db.String(50))
+    # Foreign Keys
+    racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id', ondelete='SET NULL'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    # Relationship
     user = db.relationship('User', back_populates='orders')
     racket = db.relationship('Racket', back_populates='orders')
 
-    strung_with_records = db.relationship('StrungWith', back_populates='order')
+    strung_with_records = db.relationship('StrungWith', back_populates='order', cascade="all, delete-orphan")
 
     def to_json(self):
         return {
@@ -129,12 +138,18 @@ class Order(db.Model):
             "racket_name": self.racket.name if self.racket else None,
             "job_details": [
                 {
-                    "string_name": record.strings.name, 
-                    "string_brand": record.strings.brand.name,
+                    "string_name": record.string.name, 
+                    "string_brand": record.string.brand.name,
                     "tension": record.tension,         
                     "direction": record.direction      
                 } 
                 for record in self.strung_with_records
+            ],
+            "snapshot_data": [
+                {
+                    "snapshot_name": self.snapshot_name,
+                    "snapshot_racket_name": self.snapshot_racket_name,
+                }
             ]
         }
 
@@ -148,9 +163,9 @@ class String(db.Model):
     name = db.Column(db.String(60), nullable=False)
     price_per_racket = db.Column(db.Float, nullable=False)
     # FKs
-    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id', ondelete='SET NULL'), nullable=True)
     # Relationships
-    order_records = db.relationship('StrungWith', back_populates='strings')
+    order_records = db.relationship('StrungWith', back_populates='string')
     brand = db.relationship('Brand', back_populates='strings')
 
     def to_json(self):
@@ -190,3 +205,24 @@ class Brand(db.Model):
                 } for racket in self.rackets 
             ]
         }
+    
+
+@event.listens_for(Order, 'before_insert')
+def snapshot_user_data(mapper, connection, target):
+    """
+    mapper: The class mapper (rarely used here)
+    connection: The DB connection (rarely used here)
+    target: The actual instance being saved (The Order object)
+    """
+    
+    if target.user:
+        target.snapshot_name = target.user.username
+        target.snapshot_racket_name = target.racket.name
+        
+        print(f"DEBUG: Snapshotted data for {target.snapshot_name}")
+
+@event.listens_for(StrungWith, 'before_insert')
+def snapshot_enrollment_data(mapper, connection, target):
+    if target.string:
+        target.snapshot_string_name = target.string.name
+        print(f"DEBUG: Saved snapshot for {target.string.name}")

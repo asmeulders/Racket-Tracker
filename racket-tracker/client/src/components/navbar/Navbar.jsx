@@ -32,6 +32,16 @@ function Navbar() {
               Dashboard
             </NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink
+              to="/brands"
+              className={({ isActive }) =>
+                "nav-links" + (isActive ? " activated" : "")
+              }
+            >
+              Brands
+            </NavLink>
+          </li>
         </ul>
       </div>
     </nav>
