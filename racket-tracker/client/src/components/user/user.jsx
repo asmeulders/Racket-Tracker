@@ -21,12 +21,12 @@ export function User({user}) {
           <strong>{user.username}</strong>
           <ul>
             {user.rackets.map(owns => (
-              <li key={owns.racket_id}>Owns: {owns.racket_name} ({owns.quantity})</li>
+              <li key={owns.racket_id}>Owns: {owns.racket_brand} {owns.racket_name} ({owns.quantity})</li>
             ))}
           </ul>
           <ul>
             {user.orders.map(o => (
-              <li key={o.id}>Ordered {o.racket_name} to be strung by {o.due}</li>
+              <li key={o.id}>Ordered {o.racket_brand} {o.racket_name} to be strung by {o.due}</li>
             ))}
           </ul>
         </li>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { BrandSelect } from '../brand/Brand'
 
 export function RacketList({rackets}) {
     return(
@@ -16,13 +17,14 @@ export function RacketList({rackets}) {
 
 export function Racket({racket}) {
     return (
-            <li>{racket.name} - ${racket.price}</li>
+            <li>{racket.brand_name} {racket.name} - ${racket.price}</li>
     )
 }
 
-export function RacketForm({ onRacketCreated }){
+export function RacketForm({ onRacketCreated, brands }){
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [brand_id, setBrand_id] = useState('');
 
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
@@ -35,11 +37,13 @@ export function RacketForm({ onRacketCreated }){
     try {
       await axios.post("http://localhost:5000/create-racket", {
         "name": name,
-        "price": price
+        "price": price,
+        "brand_id": brand_id
       })
       
       setName('');
       setPrice('');
+      setBrand_id('');
 
       onRacketCreated();
     } catch (error) {
@@ -57,6 +61,7 @@ export function RacketForm({ onRacketCreated }){
       {error && <div>{error}</div>}
       {status && <div>{status}</div>}
       <form onSubmit={handleSubmit}>
+        <BrandSelect value={brand_id} brands={brands} onBrandChange={setBrand_id} />
 
         <label htmlFor="name">Racket Name:</label>
         <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
@@ -66,6 +71,27 @@ export function RacketForm({ onRacketCreated }){
 
         <input type="submit" value="Submit" />
       </form>
+    </div>
+    
+  )
+}
+
+export function RacketSelect({ onRacketChange, value, rackets }) {
+  const handleSelect = (event) => {
+    const racket_id = event.target.value;
+
+    onRacketChange(racket_id);
+  }
+  
+  return (
+    <div>
+      <label htmlFor='racket'>Racket:</label>
+      <select name="rackets" id="racket" value={value} required onChange={handleSelect}>
+        <option value="">--Please choose a racket--</option>
+        {rackets.map(racket => (
+          <option key={racket.id} value={racket.id}>{racket.brand_name} {racket.name}</option>
+        ))}
+      </select>
     </div>
     
   )

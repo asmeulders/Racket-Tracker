@@ -36,11 +36,13 @@ def init_db():
         if not Brand.query.first():
             db.session.add(Brand(name='Solinco'))
             db.session.add(Brand(name='Luxilon'))
+            db.session.add(Brand(name='Wilson'))
+            db.session.add(Brand(name='Head'))
             db.session.commit()
             
         if not Racket.query.first():
-            db.session.add(Racket(name="Pro Staff", price=300))
-            db.session.add(Racket(name="Head Speed", price=315))
+            db.session.add(Racket(name="Pro Staff", price=300, brand_id=3))
+            db.session.add(Racket(name="Speed", price=315, brand_id=4))
             db.session.commit()
 
         if not Order.query.first():
@@ -157,22 +159,27 @@ def create_racket():
     """
     data = request.get_json()
 
-    if not data or "name" not in data or "price" not in data:
-        return jsonify({"error": "Missing required fields 'name', 'price' or 'data'"}), 400
+    if not data or "name" not in data or "price" not in data or "brand_id" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'price', 'brand_id' or 'data'"}), 400
     
     name = data.get('name')
     price = data.get('price')
+    brand_id = data.get('brand_id')
 
-    existing_racket = db.session.execute(db.select(Racket).filter_by(name=name, price=price)).first()
+    brand = db.session.execute(db.select(Brand).filter_by(id=brand_id)).scalar_one_or_none()
+    if not brand:
+        return jsonify({"error": "Brand does not exist"}), 404
+
+    existing_racket = db.session.execute(db.select(Racket).filter_by(name=name, price=price, brand=brand)).first()
     if existing_racket:
         return jsonify({"error": "This racket already exists"}), 409
 
     try:
-        racket = Racket(name=name, price=price)
+        racket = Racket(name=name, price=price, brand=brand)
         db.session.add(racket)
         db.session.commit()
 
-        return jsonify({"message": "Racket successfully created", "racket": racket}), 201
+        return jsonify({"message": "Racket successfully created", "racket": racket.to_json()}), 201
     
     except Exception as e:
         db.session.rollback()
@@ -201,14 +208,14 @@ def create_string():
     """
     data = request.get_json()
 
-    if not data or "name" not in data or "price_per_racket" not in data or "brand_name" not in data:
-        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', 'brand_name', or 'data'"}), 400
+    if not data or "name" not in data or "price_per_racket" not in data or "brand_id" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', 'brand_id', or 'data'"}), 400
     
     name = data.get('name')
     price_per_racket = data.get('price_per_racket')
-    brand_name = data.get('brand_name')
+    brand_id = data.get('brand_id')
 
-    brand = get_brand_by_name(brand_name=brand_name)
+    brand = db.session.execute(db.select(Brand).filter_by(id=brand_id)).scalar_one_or_none()
     if not brand:
         return jsonify({"error": "Brand does not exist"}), 404
 
@@ -354,22 +361,34 @@ def get_brands(limit: int):
     except OperationalError:
         return jsonify([])
 
-# ================================================================
-# TODO: Move this to a utils file?
-# ================================================================
 
-def get_brand_by_name(brand_name: str):
+@app.route('/create-brand', methods=['POST'])
+def create_brand():
+    """    
+    Create a brand from a user form input
+    """
+    data = request.get_json()
+
+    if not data or "name" not in data:
+        return jsonify({"error": "Missing required fields 'name' or 'data'"}), 400
+    
+    name = data.get('name')
+
+    existing_brand = db.session.execute(db.select(Brand).filter_by(name=name)).first()
+    if existing_brand:
+        return jsonify({"error": "This user already exists"}), 409
+
     try:
-        brand = db.session.execute(db.select(Brand).filter_by(name=brand_name)).scalar_one_or_none()
+        brand = Brand(name=name)
+        db.session.add(brand)
+        db.session.commit()
 
-        return brand
+        return jsonify({"message": "Brand successfully created", "brand": brand.to_json()}), 201
     
     except Exception as e:
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
-
-
 
 # ================================================================
 # TODO: Assign a racket to a user by querying for the racket and 

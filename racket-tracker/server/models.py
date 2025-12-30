@@ -16,6 +16,7 @@ class Owns(db.Model):
     def to_json(self):
         return {
             "racket_id": self.racket.id, 
+            "racket_brand": self.racket.brand.name,
             "racket_name": self.racket.name,
             "quantity": self.quantity
         }
@@ -74,13 +75,17 @@ class Racket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    # Relationship: one to many
+    # FKs
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
+    # Relationships
     orders = db.relationship('Order', back_populates='racket')
     users = db.relationship('Owns', back_populates='racket')
+    brand = db.relationship('Brand', back_populates='rackets')
 
     def to_json(self):
         return {
             "id": self.id, 
+            "brand_name": self.brand.name,
             "name": self.name, 
             "price": self.price,
             "orders": [o.to_json() for o in self.orders],
@@ -120,10 +125,12 @@ class Order(db.Model):
             "due": self.due if self.due else None,
             "price": self.price,
             "complete": self.complete,
+            "racket_brand": self.racket.brand.name,
             "racket_name": self.racket.name if self.racket else None,
             "job_details": [
                 {
                     "string_name": record.strings.name, 
+                    "string_brand": record.strings.brand.name,
                     "tension": record.tension,         
                     "direction": record.direction      
                 } 
@@ -140,9 +147,9 @@ class String(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
     price_per_racket = db.Column(db.Float, nullable=False)
-
+    # FKs
     brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
-
+    # Relationships
     order_records = db.relationship('StrungWith', back_populates='strings')
     brand = db.relationship('Brand', back_populates='strings')
 
@@ -164,7 +171,7 @@ class Brand(db.Model):
     name = db.Column(db.String(30), nullable=False)
     # Relationships
     strings = db.relationship('String', back_populates='brand')
-    # rackets = db.relationship('Racket', back_populates='brand')
+    rackets = db.relationship('Racket', back_populates='brand')
 
     def to_json(self):
         return {
@@ -175,5 +182,11 @@ class Brand(db.Model):
                     "string_name": string.name,
                     "price_per_racket": string.price_per_racket
                 } for string in self.strings 
+            ],
+            "racket_names": [
+                {
+                    "racket_name": racket.name,
+                    "price": racket.price
+                } for racket in self.rackets 
             ]
         }

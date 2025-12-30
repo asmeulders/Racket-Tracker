@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios'
+import { RacketSelect } from '../racket/racket'
+import { StringSelect } from '../string/string'
 
 export function OrderList({orders}) {
     return(
@@ -37,7 +39,7 @@ export function Order({order}) {
       <ul style={{fontSize: "0.9em", color: "#ffffffff"}}>
         {order.job_details && order.job_details.map((job, index) => (
           <li key={index}>
-            {job.string_name} @ {job.tension}lbs 
+            {job.string_brand} {job.string_name} @ {job.tension}lbs 
             {job.direction ? ` (${job.direction})` : ''}
           </li>
         ))}
@@ -47,7 +49,7 @@ export function Order({order}) {
   )
 }
 
-export function OrderForm({ onOrderCreated }){
+export function OrderForm({ onOrderCreated, rackets, strings }){
   // const [date, setdate] = useState('');
   // const [due, setdue] = useState('');
   // const [price, setPrice] = useState('');
@@ -102,14 +104,17 @@ export function OrderForm({ onOrderCreated }){
       {status && <div>{status}</div>}
       <form onSubmit={handleSubmit}>
 
+        
         <label htmlFor="user_id">User_id:</label>
         <input type="number" id="user_id" value={user_id} onChange={(e) => setUser_id(e.target.value)} /><br />
 
-        <label htmlFor="racket_id">Racket_id:</label>
-        <input type="number" id="racket_id" value={racket_id} onChange={(e) => setRacket_id(e.target.value)} /><br />
+        <RacketSelect onRacketChange={setRacket_id} value={racket_id} rackets={rackets}/>
+        {/* <label htmlFor="racket_id">Racket_id:</label>
+        <input type="number" id="racket_id" value={racket_id} onChange={(e) => setRacket_id(e.target.value)} /><br /> */}
 
-        <label htmlFor="string_id">String_id:</label>
-        <input type="number" id="string_id" value={string_id} onChange={(e) => setString_id(e.target.value)} /><br />
+        <StringSelect onStringChange={setString_id} value={string_id} strings={strings} />
+        {/* <label htmlFor="string_id">String_id:</label>
+        <input type="number" id="string_id" value={string_id} onChange={(e) => setString_id(e.target.value)} /><br /> */}
 
         <label htmlFor="tension">Tension:</label>
         <input type="number" id="tension" value={tension} onChange={(e) => setTension(e.target.value)} /><br />
@@ -119,8 +124,9 @@ export function OrderForm({ onOrderCreated }){
         
         {!sameForCrosses && 
           <div>
-            <label htmlFor="crosses_id">Crosses_id:</label>
-            <input type="number" id="crosses_id" value={crosses_id} onChange={(e) => setCrosses_id(e.target.value)} /><br />
+            <StringSelect onStringChange={setCrosses_id} value={crosses_id} strings={strings} />
+            {/* <label htmlFor="crosses_id">Crosses_id:</label>
+            <input type="number" id="crosses_id" value={crosses_id} onChange={(e) => setCrosses_id(e.target.value)} /><br /> */}
 
             <label htmlFor="crossesTension">crossesTension:</label>
             <input type="number" id="crossesTension" value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} /><br />
