@@ -1,20 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios'
 import { RacketSelect } from '../racket/racket'
 import { StringSelect } from '../string/string'
-
-export function OrderList({orders}) {
-    return(
-        <div>
-          <h2>Orders</h2>
-          <ul>
-            {orders.map(o => (
-              <Order key={o.id} order={o}/>
-            ))}
-          </ul>
-        </div>
-    )
-}
 
 export function Order({order}) {
   const [complete, setComplete] = useState(order.complete);
@@ -33,6 +20,7 @@ export function Order({order}) {
       }
     }
   }
+
   return (
     <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
       <strong>{!complete ? `Due on ${order.due}` : "Order complete"}</strong> - {order.racket_name} ${order.price}
@@ -49,7 +37,40 @@ export function Order({order}) {
   )
 }
 
-export function OrderForm({ onOrderCreated, rackets, strings }){
+export const OrderList = ({orders, onOrderDeleted}) => {
+  const [newOrders, setNewOrders] = useState(orders);
+
+  const deleteOrder = async (order) => {
+    try {
+      await axios.delete(`http://localhost:5000/delete-order/${order.id}`)
+
+      onOrderDeleted()
+    } catch (error) {
+      console.log("Error:", error)
+    }
+  }
+
+  useEffect(() => {
+    setNewOrders(orders)
+  }, [orders])
+
+    return(
+        <div>
+          <h2>Orders</h2>
+          <ul>
+            {newOrders.map(o => (
+              <div key={o.id} >
+                <Order order={o} onOrderDeleted={() => onOrderDeleted()}/>
+                <button onClick={() => {deleteOrder(o)}}>X</button>
+              </div>
+              
+            ))}
+          </ul>
+        </div>
+    )
+}
+
+export const OrderForm = ({ onOrderCreated, rackets, strings }) => {
   const [racketId, setRacketId] = useState("");
   const [user_id, setUser_id] = useState('');
   const [stringId, setStringId] = useState("");
@@ -130,7 +151,3 @@ export function OrderForm({ onOrderCreated, rackets, strings }){
     
   )
 }
-
-// function StringInput() {
-
-// }

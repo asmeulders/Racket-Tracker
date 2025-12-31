@@ -99,13 +99,13 @@ const Home = () => {
 
         <div style={{ display: "flex", gap: "50px" }}>
             <div>
-                <UserList users={users} />
-                <OrderList orders={orders} />
+                <UserList users={users} onUserDeleted={fetchUsers} />
+                <OrderList orders={orders} onOrderDeleted={fetchOrders} />
             </div> 
             <div>
-                <RacketList rackets={rackets}/>
-                <StringList strings={strings} />
-                <BrandList brands={brands} />
+                <RacketList rackets={rackets} onRacketDeleted={fetchRackets} />
+                <StringList strings={strings} onStringDeleted={fetchStrings} />
+                <BrandList brands={brands} onBrandDeleted={fetchBrands} />
             </div>
         </div>
 

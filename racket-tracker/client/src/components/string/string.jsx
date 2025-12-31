@@ -2,26 +2,49 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { BrandSelect } from '../brand/Brand'
 
-export function StringList({strings}) {
-    return(
-        <div>
-          <h2>Strings</h2>
-          <ul>
-            {strings.map(s => (
-              <String key={s.id} string={s}/>
-            ))}
-          </ul>
-        </div>
-    )
-}
-
 export function String({string}) {
-    return (
-      <li >{string.brand_name} {string.name} - ${string.price_per_racket}</li>
-    )
+  return (
+    <li >
+      {string.brand_name} {string.name} - ${string.price_per_racket} 
+    </li>
+  )
 }
 
-export function StringForm({ onStringCreated, brands }){
+export const StringList = ({strings, onStringDeleted}) => {
+  const [newStrings, setNewStrings] = useState(strings);
+
+  const deleteString = async (string) => {
+    try {
+      await axios.delete(`http://localhost:5000/delete-string/${string.id}`)
+      onStringDeleted();
+      
+    } catch (error) {
+      console.log("Error:", error)
+    }
+  }
+
+  useEffect(() => {
+    setNewStrings(strings)
+  }, [strings])
+
+  return(
+    <div>
+      <h2>Strings</h2>
+      <ul>
+        {newStrings.map(s => (
+          <div key={s.id} >
+            <String string={s} onStringDeleted={() => onStringDeleted()}/>
+            <button onClick={() => {deleteString(s)}}>X</button>  
+          </div>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+
+
+export const StringForm = ({ onStringCreated, brands }) => {
   const [name, setName] = useState('');
   const [brandId, setBrandId] = useState('');
   const [pricePerRacket, setPricePerRacket] = useState('');
@@ -76,7 +99,7 @@ export function StringForm({ onStringCreated, brands }){
   )
 }
 
-export function StringSelect({ onStringChange, value, strings }) {
+export const StringSelect = ({ onStringChange, value, strings }) => {
   const handleSelect = (event) => {
     const stringId = event.target.value;
     onStringChange(stringId);

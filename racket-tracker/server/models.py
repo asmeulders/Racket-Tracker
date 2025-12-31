@@ -17,7 +17,7 @@ class Owns(db.Model):
     def to_json(self):
         return {
             "racket_id": self.racket.id, 
-            "racket_brand": self.racket.brand.name,
+            "racket_brand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racket_name": self.racket.name,
             "quantity": self.quantity
         }
@@ -65,8 +65,8 @@ class StrungWith(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
-            "order": self.order.to_json, 
-            "string": self.string.to_json(),
+            "order": self.order.to_json(), 
+            "string": self.string.to_json() if self.string else None,
             "tension": self.tension,
             "direction": self.direction,
             "snapshot_string_name": self.snapshot_string_name
@@ -91,7 +91,7 @@ class Racket(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
-            "brand_name": self.brand.name,
+            "brand_name": self.brand.name if self.brand else None,
             "name": self.name, 
             "price": self.price,
             "orders": [o.to_json() for o in self.orders],
@@ -116,8 +116,12 @@ class Order(db.Model):
     price = db.Column(db.Float, nullable=False)
     complete = db.Column(db.Boolean, nullable=False)
     # Snapshot data
-    snapshot_name = db.Column(db.String(50))
-    snapshot_racket_name = db.Column(db.String(50))
+    snapshot_name = db.Column(db.String(50), nullable=False)
+    snapshot_racket_name = db.Column(db.String(50), nullable=False)
+    # snapshot_mains_name = db.Column(db.String(50), nullable=False)
+    # snapshot_mains_tension = db.Column(db.Integer, nullable=False)
+    # snapshot_crosses_name = db.Column(db.String(50), nullable=True)
+    # snapshot_crosses_tension = db.Column(db.Integer, nullable=True)
     # Foreign Keys
     racket_id = db.Column(db.Integer, db.ForeignKey('rackets.id', ondelete='SET NULL'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
@@ -134,12 +138,15 @@ class Order(db.Model):
             "due": self.due if self.due else None,
             "price": self.price,
             "complete": self.complete,
-            "racket_brand": self.racket.brand.name,
+            "racket_brand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racket_name": self.racket.name if self.racket else None,
+            # =========================================
+            # Make string_name a snapshop
+            # =========================================
             "job_details": [
                 {
-                    "string_name": record.string.name, 
-                    "string_brand": record.string.brand.name,
+                    "string_name": record.string.name if record.string else None, 
+                    "string_brand": record.string.brand.name if record.string and record.string.brand else None,
                     "tension": record.tension,         
                     "direction": record.direction      
                 } 
@@ -149,6 +156,14 @@ class Order(db.Model):
                 {
                     "snapshot_name": self.snapshot_name,
                     "snapshot_racket_name": self.snapshot_racket_name,
+                    # "snapshot_job_details": [
+                    #     {
+                    #         "mains_name": self.snapshot_mains_name,
+                    #         "mains_tension": None, 
+                    #         "crosses_name": self.snapshot_crosses_name if self.snapshot_crosses_name else None,
+                    #         "crosses_tension": None,
+                    #     }
+                    # ]
                 }
             ]
         }
@@ -173,7 +188,7 @@ class String(db.Model):
             "id": self.id, 
             "name": self.name, 
             "price_per_racket": self.price_per_racket,
-            "brand_name": self.brand.name
+            "brand_name": self.brand.name if self.brand else None
         }
 
 
@@ -206,6 +221,9 @@ class Brand(db.Model):
             ]
         }
     
+# ===================================================================
+# --------Create Snapshot Data---------------------------------------
+# ===================================================================
 
 @event.listens_for(Order, 'before_insert')
 def snapshot_user_data(mapper, connection, target):
@@ -218,7 +236,14 @@ def snapshot_user_data(mapper, connection, target):
     if target.user:
         target.snapshot_name = target.user.username
         target.snapshot_racket_name = target.racket.name
-        
+        # for record in target.strung_with_records:
+        #     if record.direction == "crosses":
+        #         target.snapshot_crosses_name = record.string.name
+        #         target.snapshot_crosses_tension = record.tension
+        #     else:
+        #         target.snapshot_mains_name = record.string.name
+        #         target.snapshot_mains_tension = record.tension
+            
         print(f"DEBUG: Snapshotted data for {target.snapshot_name}")
 
 @event.listens_for(StrungWith, 'before_insert')

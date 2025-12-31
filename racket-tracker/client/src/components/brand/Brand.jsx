@@ -1,39 +1,29 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-export function Brand({brand, onBrandDeleted}) {
+export function Brand({brand}) {
+  
+  return (
+    <div>
+      <li >
+        {brand.name} 
+      </li>
+    </div>
+  )
+}
+
+export const BrandList = ({brands, onBrandDeleted}) => {
+  const [newBrands, setNewBrands] = useState(brands);
+
   const deleteBrand = async (brand) => {
     try {
       await axios.delete(`http://localhost:5000/delete-brand/${brand.id}`)
 
       onBrandDeleted()
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.error);
-      } else{
-        setError("Could not connect to server.");
-      }
+      console.log("Error:", error)
     }
   }
-    return (
-      <div>
-        <li >{brand.name}</li>
-        <button onClick={() => {deleteBrand(brand)}}>X</button>
-      </div>
-    )
-}
-
-export const BrandList = ({brands}) => {
-  const [newBrands, setNewBrands] = useState(brands);
-
-  const fetchBrands = async () => {
-    try {
-    const response = await axios.get('http://127.0.0.1:5000/brands');
-    setNewBrands(response.data);
-    } catch (error) {
-    console.error("Error fetching brands:", error);
-    }
-  };
 
   useEffect(() => {
     setNewBrands(brands)
@@ -44,7 +34,10 @@ export const BrandList = ({brands}) => {
       <h2>Brands</h2>
       <ul>
         {newBrands.map(b => (
-          <Brand key={b.id} brand={b} onBrandDeleted={fetchBrands}/>
+          <div key={b.id}>
+            <Brand brand={b} onBrandDeleted={() => onBrandDeleted()} />
+            <button onClick={() => {deleteBrand(b)}}>X</button>
+          </div>
         ))}
       </ul>
     </div>

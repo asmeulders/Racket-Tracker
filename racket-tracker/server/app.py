@@ -100,6 +100,10 @@ def init_db():
     return jsonify({"message": "Database initialized!"})
 
 
+# =======================================================================================================================
+# ----------------------------User Routes--------------------------------------------------------------------------------
+# =======================================================================================================================
+
 @app.route('/users/', defaults={'limit': None})
 @app.route('/users/<int:limit>', methods=['GET'])
 def get_users(limit: int):
@@ -142,6 +146,31 @@ def create_user():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+@app.route('/delete-user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id: int):
+    """    
+    Delete a user
+    """
+    
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    try:
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({"message": "User successfully deleted"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+
+# =======================================================================================================================
+# ----------------------------Racket Routes-----------------------------------------------------------------------------
+# =======================================================================================================================
+
 @app.route('/rackets/', defaults={'limit': None})
 @app.route('/rackets/<int:limit>', methods=['GET'])
 def get_rackets(limit: int):
@@ -163,7 +192,7 @@ def get_racket_by_id(racket_id: int):
     :type racket_id: int
     :returns racket: json object
     """
-    racket = db.session.execute(db.select(Racket).filter_by(id=racket_id)).scalar_one_or_none()
+    racket = db.session.get(Racket, racket_id)
     if racket: 
         return jsonify(racket.to_json())
     return jsonify({"error": "Racket not found"}), 404
@@ -182,7 +211,7 @@ def create_racket():
     price = data.get('price')
     brand_id = data.get('brand_id')
 
-    brand = db.session.execute(db.select(Brand).filter_by(id=brand_id)).scalar_one_or_none()
+    brand = db.session.get(Brand, brand_id)
     if not brand:
         return jsonify({"error": "Brand does not exist"}), 404
 
@@ -202,6 +231,30 @@ def create_racket():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+@app.route('/delete-racket/<int:racket_id>', methods=['DELETE'])
+def delete_racket(racket_id: int):
+    """    
+    Delete a racket
+    """
+    
+    racket = db.session.get(Racket, racket_id)
+    if not racket:
+        return jsonify({"error": "Racket not found"}), 404
+
+    try:
+        db.session.delete(racket)
+        db.session.commit()
+
+        return jsonify({"message": "Racket successfully deleted"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
+# =======================================================================================================================
+# ----------------------------String Routes-----------------------------------------------------------------------------
+# =======================================================================================================================
 
 @app.route('/strings/', defaults={'limit': None})
 @app.route('/strings/<int:limit>', methods=['GET'])
@@ -231,16 +284,16 @@ def create_string():
     price_per_racket = data.get('price_per_racket')
     brand_id = data.get('brand_id')
 
-    brand = db.session.execute(db.select(Brand).filter_by(id=brand_id)).scalar_one_or_none()
-    if not brand:
+    string_brand = db.session.get(Brand, brand_id)
+    if not string_brand:
         return jsonify({"error": "Brand does not exist"}), 404
 
-    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket, brand=brand)).first()
+    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket, brand=string_brand)).first()
     if existing_string:
         return jsonify({"error": "This string already exists"}), 409
 
     try:
-        string = String(name=name, price_per_racket=price_per_racket, brand=brand)
+        string = String(name=name, price_per_racket=price_per_racket, brand=string_brand)
         db.session.add(string)
         db.session.commit()
 
@@ -251,6 +304,32 @@ def create_string():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
 
+
+@app.route('/delete-string/<int:string_id>', methods=['DELETE'])
+def delete_string(string_id: int):
+    """    
+    Delete a string
+    """
+    
+    string = db.session.get(String, string_id)
+    if not string:
+        return jsonify({"error": "String not found"}), 404
+
+    try:
+        db.session.delete(string)
+        db.session.commit()
+
+        return jsonify({"message": "String successfully deleted"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+
+
+# =======================================================================================================================
+# ----------------------------Order Routes-------------------------------------------------------------------------------
+# =======================================================================================================================
 
 @app.route('/orders/', defaults={'limit': None})
 @app.route('/orders/<int:limit>', methods=['GET'])
@@ -291,22 +370,22 @@ def create_order():
     orderDate = date.today()
     four_days_later = date.today() + timedelta(days=4)
 
-    user = db.session.execute(db.select(User).filter_by(id=user_id)).scalar_one_or_none()
+    user = db.session.get(User, user_id)
     if not user:
         return jsonify({"error": "User does not exist"}), 404
     
-    racket = db.session.execute(db.select(Racket).filter_by(id=racket_id)).scalar_one_or_none()
+    racket = db.session.get(Racket, racket_id)
     if not racket:
         return jsonify({"error": "Racket does not exist"}), 404
     
-    mains = db.session.execute(db.select(String).filter_by(id=string_id)).scalar_one_or_none()
+    mains = db.session.get(String, string_id)
     if not mains:
         return jsonify({"error": "String does not exist"}), 404
     
     if not same_for_crosses:
         crosses_id = data.get('crosses_id')
         crosses_tension = data.get('crosses_tension')
-        crosses = db.session.execute(db.select(String).filter_by(id=crosses_id)).scalar_one_or_none()
+        crosses = db.session.get(String, crosses_id)
         if not crosses:
             return jsonify({"error": "String does not exist"}), 404
         
@@ -356,7 +435,7 @@ def complete_order():
     order_id = data.get('order_id')
 
     try:
-        order = db.session.execute(db.select(Order).filter_by(id=order_id)).scalar_one()
+        order = db.session.get(Order, order_id)
         
         if not order:
             return jsonify({"error": "Order not found"}), 404
@@ -379,6 +458,31 @@ def complete_order():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+@app.route('/delete-order/<int:order_id>', methods=['DELETE'])
+def delete_order(order_id: int):
+    """    
+    Delete an order
+    """
+    
+    order = db.session.get(Order, order_id)
+    if not order:
+        return jsonify({"error": "Order not found"}), 404
+
+    try:
+        db.session.delete(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order successfully deleted"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+
+
+# =======================================================================================================================
+# ----------------------------Brand Routes-----------------------------------------------------------------------------=-
+# =======================================================================================================================
 
 @app.route('/brands/', defaults={'limit': None})
 @app.route('/brands/<int:limit>', methods=['GET'])
@@ -429,7 +533,7 @@ def delete_brand(brand_id: int):
     Delete a brand
     """
     
-    brand = db.session.execute(db.select(Brand).where(id=brand_id)).scalar_one_or_none()
+    brand = db.session.get(Brand, brand_id)
     if not brand:
         return jsonify({"error": "Brand not found"}), 404
 

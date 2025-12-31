@@ -2,26 +2,47 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { BrandSelect } from '../brand/Brand'
 
-export function RacketList({rackets}) {
+export function Racket({racket}) {
+  return (
+    <li>
+      {racket.brand_name} {racket.name} - ${racket.price} 
+    </li>
+  )
+}
+
+export const RacketList = ({rackets, onRacketDeleted}) => {
+  const [newRackets, setNewRackets] = useState(rackets);
+
+  const deleteRacket = async (racket) => {
+    try {
+      await axios.delete(`http://localhost:5000/delete-racket/${racket.id}`)
+
+      onRacketDeleted()
+    } catch (error) {
+      console.log("Error:", error)
+    }
+  }
+
+  useEffect(() => {
+    setNewRackets(rackets)
+  }, [rackets])
+
     return(
         <div>
           <h2>Rackets</h2>
           <ul>
-            {rackets.map(r => (
-              <Racket key={r.id} racket={r}/>
+            {newRackets.map(r => (
+              <div key={r.id} >
+                <Racket racket={r} onRacketDeleted={() => onRacketDeleted()} />
+                <button onClick={() => {deleteRacket(r)}}>X</button>   
+              </div>
             ))}
           </ul>
         </div>
     )
 }
 
-export function Racket({racket}) {
-    return (
-            <li>{racket.brand_name} {racket.name} - ${racket.price}</li>
-    )
-}
-
-export function RacketForm({ onRacketCreated, brands }){
+export const RacketForm = ({ onRacketCreated, brands }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [brandId, setBrandId] = useState('');
@@ -72,14 +93,12 @@ export function RacketForm({ onRacketCreated, brands }){
         <input type="submit" value="Submit" />
       </form>
     </div>
-    
   )
 }
 
-export function RacketSelect({ onRacketChange, value, rackets }) {
+export const RacketSelect = ({ onRacketChange, value, rackets }) => {
   const handleSelect = (event) => {
     const racketId = event.target.value;
-
     onRacketChange(racketId);
   }
   
