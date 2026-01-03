@@ -2,26 +2,19 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 import { Brand, BrandList, BrandForm } from '../../components/brand/Brand'
+import { fetchBrands } from '../../common/db_utils';
 
 export function BrandPage() {
     const [brands, setBrands] = useState([]);
 
-    const fetchBrands = async () => {
-        try {
-        const response = await axios.get('http://127.0.0.1:5000/brands');
-        setBrands(response.data);
-        } catch (error) {
-        console.error("Error fetching brands:", error);
-        }
-    };
-
     useEffect(() => {
-        fetchBrands();
+        fetchBrands({onComplete: setBrands});
     }, []);
+
     return(
         <div>
-            <BrandList brands={brands} />
-            <BrandForm onBrandCreated={fetchBrands} />
+            <BrandList brands={brands} onBrandDeleted={() => fetchBrands({onComplete: setBrands})}/>
+            <BrandForm onBrandCreated={() => fetchBrands({onComplete: setBrands})} />
         </div> 
     )
 }

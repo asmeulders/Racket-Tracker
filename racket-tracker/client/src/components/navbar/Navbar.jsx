@@ -42,6 +42,46 @@ function Navbar() {
               Brands
             </NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink
+              to="/users"
+              className={({ isActive }) =>
+                "nav-links" + (isActive ? " activated" : "")
+              }
+            >
+              Users
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to="/strings"
+              className={({ isActive }) =>
+                "nav-links" + (isActive ? " activated" : "")
+              }
+            >
+              Strings
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to="/rackets"
+              className={({ isActive }) =>
+                "nav-links" + (isActive ? " activated" : "")
+              }
+            >
+              Rackets
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to="/orders"
+              className={({ isActive }) =>
+                "nav-links" + (isActive ? " activated" : "")
+              }
+            >
+              Orders
+            </NavLink>
+          </li>
         </ul>
       </div>
     </nav>

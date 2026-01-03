@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios'
 import { RacketSelect } from '../racket/racket'
 import { StringSelect } from '../string/string'
+import { UserSelect } from '../user/user';
 
 export function Order({order}) {
   const [complete, setComplete] = useState(order.complete);
@@ -70,9 +71,9 @@ export const OrderList = ({orders, onOrderDeleted}) => {
     )
 }
 
-export const OrderForm = ({ onOrderCreated, rackets, strings }) => {
+export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
   const [racketId, setRacketId] = useState("");
-  const [user_id, setUser_id] = useState('');
+  const [userId, setUserId] = useState('');
   const [stringId, setStringId] = useState("");
   const [tension, setTension] = useState('');
   const [sameForCrosses, setSameForCrosses] = useState(true);
@@ -90,7 +91,7 @@ export const OrderForm = ({ onOrderCreated, rackets, strings }) => {
     try {
       await axios.post("http://localhost:5000/create-order", {
         "racket_id": racketId,
-        "user_id": user_id,
+        "user_id": userId,
         "string_id": stringId,
         "tension": tension,
         "crosses_id": !sameForCrosses ? crossesId : null,
@@ -99,7 +100,7 @@ export const OrderForm = ({ onOrderCreated, rackets, strings }) => {
       })
 
       setRacketId("");
-      setUser_id('');
+      setUserId('');
       setStringId("");
       setTension('');
       setCrossesId("");
@@ -122,10 +123,7 @@ export const OrderForm = ({ onOrderCreated, rackets, strings }) => {
       {error && <div>{error}</div>}
       {status && <div>{status}</div>}
       <form onSubmit={handleSubmit}>
-
-        
-        <label htmlFor="user_id">User_id:</label>
-        <input type="number" id="user_id" value={user_id} onChange={(e) => setUser_id(e.target.value)} /><br />
+        <UserSelect onUserChange={setUserId} value={userId} users={users} />
 
         <RacketSelect onRacketChange={setRacketId} value={racketId} rackets={rackets}/>
         

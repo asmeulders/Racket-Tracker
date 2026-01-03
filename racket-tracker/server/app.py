@@ -350,6 +350,9 @@ def create_order():
     """    
     Create an order from a user form input.
     Need to get date and set the due date then set price
+    ================================================================================
+    TODO: include logic to add the racket to their list of rackets if it does not exist?
+    ================================================================================
     """
     data = request.get_json()
 

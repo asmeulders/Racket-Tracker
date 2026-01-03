@@ -17,6 +17,7 @@ export const BrandList = ({brands, onBrandDeleted}) => {
 
   const deleteBrand = async (brand) => {
     try {
+      console.log('Deleting brand', brand.name);
       await axios.delete(`http://localhost:5000/delete-brand/${brand.id}`)
 
       onBrandDeleted()
