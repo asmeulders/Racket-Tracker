@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-
-import { Brand, BrandList, BrandForm } from '../../components/brand/Brand'
+import { useState, useEffect } from 'react';
+import { BrandList, BrandForm } from '../../components/brand/Brand';
 import { fetchBrands } from '../../common/db_utils';
 
 export function BrandPage() {

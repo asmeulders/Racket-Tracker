@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-
-import { UserList, UserForm } from '../../components/user/user'
-import { fetchUsers } from '../../common/db_utils'
+import { useState, useEffect } from 'react';
+import { UserList, UserForm } from '../../components/user/user';
+import { fetchUsers } from '../../common/db_utils';
 
 export function UserPage() {
     const [users, setUsers] = useState([])

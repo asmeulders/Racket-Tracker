@@ -1,14 +1,12 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import './dashboard.css'
+import React from 'react';
+import { useState, useEffect } from 'react';
+import './dashboard.css';
 
 import { RacketList } from '../../components/racket/racket.jsx'
 import { OrderList } from '../../components/order/order.jsx'
 import { StringList } from '../../components/string/string.jsx'
 import { UserList } from '../../components/user/user.jsx'
 import { BrandList } from '../../components/brand/Brand.jsx'
-
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers } from '../../common/db_utils.js';
 
 function Dashboard() {

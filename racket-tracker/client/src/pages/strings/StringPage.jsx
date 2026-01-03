@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
 import { StringList, StringForm } from '../../components/string/string';
 import { fetchBrands, fetchStrings } from '../../common/db_utils';
 

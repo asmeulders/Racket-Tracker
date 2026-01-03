@@ -1,6 +1,4 @@
-import { useState, useEffect, use } from 'react';
-import axios from 'axios';
-
+import { useState, useEffect } from 'react';
 import { OrderList, OrderForm } from '../../components/order/order';
 import { fetchOrders, fetchRackets, fetchStrings, fetchUsers } from '../../common/db_utils';
 

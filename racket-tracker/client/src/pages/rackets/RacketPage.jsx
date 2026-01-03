@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
 import { RacketList, RacketForm } from '../../components/racket/racket';
 import { fetchBrands, fetchRackets } from '../../common/db_utils';
 
