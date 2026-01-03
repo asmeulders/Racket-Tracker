@@ -40,7 +40,6 @@ export const UserList = ({users, onUserDeleted}) => {
 
   return(
     <div>
-      <h2>Users</h2>
       <ul>
         {newUsers.map(u => (
           <div key={u.id} >

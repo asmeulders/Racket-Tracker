@@ -7,7 +7,7 @@ import {
 
 import Navbar from './components/navbar/navbar';
 import Home from "./pages";
-import Dashboard from './pages/dashboard/dashboard';
+import { StoreDashboardPage } from './pages/store-dashboard/StoreDashboardPage';
 import { BrandPage } from './pages/brand/BrandPage';
 import { UserPage } from './pages/users/UserPage';
 import { StringPage } from './pages/strings/StringPage';
@@ -20,12 +20,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/brands" element={<BrandPage />} />
-          <Route path="/users" element={<UserPage />} />
-          <Route path="/strings" element={<StringPage />} />
-          <Route path="/rackets" element={<RacketPage />} />
-          <Route path="/orders" element={<OrderPage />} />
+          <Route path="/store-dashboard" element={<StoreDashboardPage />} />
         </Routes>
       </Router>
   )

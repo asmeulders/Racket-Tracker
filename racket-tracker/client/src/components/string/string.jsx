@@ -29,7 +29,6 @@ export const StringList = ({strings, onStringDeleted}) => {
 
   return(
     <div>
-      <h2>Strings</h2>
       <ul>
         {newStrings.map(s => (
           <div key={s.id} >

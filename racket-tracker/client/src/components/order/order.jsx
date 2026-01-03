@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios'
-import { RacketSelect } from '../racket/racket'
-import { StringSelect } from '../string/string'
-import { UserSelect } from '../user/user';
+import { RacketSelect } from '../racket/Racket'
+import { StringSelect } from '../string/String'
+import { UserSelect } from '../user/User';
 
 export function Order({order}) {
   const [complete, setComplete] = useState(order.complete);
@@ -57,7 +57,6 @@ export const OrderList = ({orders, onOrderDeleted}) => {
 
     return(
         <div>
-          <h2>Orders</h2>
           <ul>
             {newOrders.map(o => (
               <div key={o.id} >

@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import './Brand.css';
 
 export function Brand({brand}) {
   
   return (
-    <div>
-      <li >
-        {brand.name} 
-      </li>
-    </div>
+      <li>{brand.name}</li>
   )
 }
 
@@ -32,10 +29,9 @@ export const BrandList = ({brands, onBrandDeleted}) => {
 
   return(
     <div>
-      <h2>Brands</h2>
       <ul>
         {newBrands.map(b => (
-          <div key={b.id}>
+          <div key={b.id} className='list-item'>
             <Brand brand={b} onBrandDeleted={() => onBrandDeleted()} />
             <button onClick={() => {deleteBrand(b)}}>X</button>
           </div>

@@ -29,7 +29,6 @@ export const RacketList = ({rackets, onRacketDeleted}) => {
 
     return(
         <div>
-          <h2>Rackets</h2>
           <ul>
             {newRackets.map(r => (
               <div key={r.id} >

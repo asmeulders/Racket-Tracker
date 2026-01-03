@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { OrderList, OrderForm } from '../../components/order/order';
+import { OrderList, OrderForm } from '../../components/order/Order';
 import { fetchOrders, fetchRackets, fetchStrings, fetchUsers } from '../../common/db_utils';
 
 export function OrderPage() {

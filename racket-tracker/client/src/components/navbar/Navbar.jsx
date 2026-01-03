@@ -24,62 +24,12 @@ function Navbar() {
           </li>
           <li className="nav-item">
             <NavLink
-              to="/dashboard"
+              to="/store-dashboard"
               className={({ isActive }) =>
                 "nav-links" + (isActive ? " activated" : "")
               }
             >
-              Dashboard
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to="/brands"
-              className={({ isActive }) =>
-                "nav-links" + (isActive ? " activated" : "")
-              }
-            >
-              Brands
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to="/users"
-              className={({ isActive }) =>
-                "nav-links" + (isActive ? " activated" : "")
-              }
-            >
-              Users
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to="/strings"
-              className={({ isActive }) =>
-                "nav-links" + (isActive ? " activated" : "")
-              }
-            >
-              Strings
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to="/rackets"
-              className={({ isActive }) =>
-                "nav-links" + (isActive ? " activated" : "")
-              }
-            >
-              Rackets
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to="/orders"
-              className={({ isActive }) =>
-                "nav-links" + (isActive ? " activated" : "")
-              }
-            >
-              Orders
+              Store Dashboard
             </NavLink>
           </li>
         </ul>
