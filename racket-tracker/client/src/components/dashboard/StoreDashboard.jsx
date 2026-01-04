@@ -88,7 +88,7 @@ export function StoreDashboard() {
     }, [orders]);
 
     return (
-        <div>
+        <div className='store-dashboard-page'>
             <div className='dashboard-container'>
                 <div className='tab-header'>
                     <button 

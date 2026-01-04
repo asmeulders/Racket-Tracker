@@ -1,6 +1,13 @@
+.store-dashboard-page {
+  display: flex;             
+  justify-content: center;   
+  min-height: 100vh;         
+  width: 100%;              
+}
+
 .dashboard-container {
     display: flex;
-    flex-direction: column;;
+    flex-direction: column;
     justify-content: flex-start;
     gap: 50px;
     height: 400px; 
@@ -12,7 +19,6 @@
     list-style: none;
     align-items: center;
     border: 5px solid #000000;
-    border-radius: 16px;
 }
 
 .tab-button {
@@ -21,6 +27,8 @@
   background-color: #ffffff;
   border: 2px solid black;
   cursor: pointer;
+  font-size: 1em;
+  border-radius: 0px;
 }
 
 .tab-button.active {
@@ -41,7 +49,7 @@
   position: sticky;
   bottom: 0;
   z-index: 10;
-  background-color: black;
+  background-color: rgb(25, 59, 87);
   width: 800px;
   height: 60px;
 }

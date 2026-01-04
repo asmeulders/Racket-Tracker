@@ -25,7 +25,7 @@ export function Order({order}) {
   return (
     <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
       <strong>{!complete ? `Due on ${order.due}` : "Order complete"}</strong> - {order.racket_name} ${order.price}
-      <ul style={{fontSize: "0.9em", color: "#ffffffff"}}>
+      <ul style={{fontSize: "0.9em", color: "#000000ff"}}>
         {order.job_details && order.job_details.map((job, index) => (
           <li key={index}>
             {job.string_brand} {job.string_name} @ {job.tension}lbs 
