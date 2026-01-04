@@ -3,54 +3,52 @@ import axios from 'axios'
 
 export function User({user}) {
   return (
-    <div>
-      <li key={user.id}>
-        <strong>{user.username}</strong>
-        <ul>
-          {user.rackets.map(owns => (
-            <li key={owns.racket_id}>Owns: {owns.racket_brand} {owns.racket_name} ({owns.quantity})</li>
-          ))}
-        </ul>
-        <ul>
-          {user.orders.map(o => (
-            <li key={o.id}>Ordered {o.racket_brand} {o.racket_name} to be strung by {o.due}</li>
-          ))}
-        </ul>
-      </li>
-    </div>      
-  )
-}
-
-export const UserList = ({users, onUserDeleted}) => {
-  const [newUsers, setNewUsers] = useState(users);
-
-  const deleteUser = async (user) => {
-    try {
-      await axios.delete(`http://localhost:5000/delete-user/${user.id}`)
-
-      onUserDeleted()
-    } catch (error) {
-      console.log("Error:", error)
-    }
-  }
-
-  useEffect(() => {
-    setNewUsers(users)
-  }, [users])
-
-  return(
-    <div>
+    <li key={user.id}>
+      <strong>{user.username}</strong>
       <ul>
-        {newUsers.map(u => (
-          <div key={u.id} >
-            <User user={u} onUserDeleted={() => onUserDeleted()}/>
-            <button onClick={() => {deleteUser(u)}}>X</button>  
-          </div>
+        {user.rackets?.map(owns => (
+          <li key={owns.racket_id}>Owns: {owns.racket_brand} {owns.racket_name} ({owns.quantity})</li>
         ))}
       </ul>
-    </div>
+      <ul>
+        {user.orders?.map(o => (
+          <li key={o.id}>Ordered {o.racket_brand} {o.racket_name} to be strung by {o.due}</li>
+        ))}
+      </ul>
+    </li>   
   )
 }
+
+// export const UserList = ({users, onUserDeleted}) => {
+//   const [newUsers, setNewUsers] = useState(users);
+
+//   const deleteUser = async (user) => {
+//     try {
+//       await axios.delete(`http://localhost:5000/delete-user/${user.id}`)
+
+//       onUserDeleted()
+//     } catch (error) {
+//       console.log("Error:", error)
+//     }
+//   }
+
+//   useEffect(() => {
+//     setNewUsers(users)
+//   }, [users])
+
+//   return(
+//     <div>
+//       <ul>
+//         {newUsers.map(u => (
+//           <div key={u.id} >
+//             <User user={u} onUserDeleted={() => onUserDeleted()}/>
+//             <button onClick={() => {deleteUser(u)}}>X</button>  
+//           </div>
+//         ))}
+//       </ul>
+//     </div>
+//   )
+// }
 
 export const UserForm = ({ onUserCreated }) => {
   const [username, setUsername] = useState('');

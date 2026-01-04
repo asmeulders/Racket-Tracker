@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RacketList, RacketForm } from '../../components/racket/Racket';
+import { RacketForm } from '../../components/racket/Racket';
 import { fetchBrands, fetchRackets } from '../../common/db_utils';
 
 export function RacketPage() {
@@ -21,7 +21,7 @@ export function RacketPage() {
 
     return (
         <div>
-            <RacketList rackets={rackets} onRacketDeleted={() => fetchRackets({onComplete: setRackets})} />
+            {/* <RacketList rackets={rackets} onRacketDeleted={() => fetchRackets({onComplete: setRackets})} /> */}
             <RacketForm onRacketCreated={() => fetchRackets({onComplete: setRackets})} brands={brands}/>
         </div>
     );

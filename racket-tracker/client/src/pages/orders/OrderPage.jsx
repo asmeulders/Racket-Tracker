@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { OrderList, OrderForm } from '../../components/order/Order';
+import { OrderForm } from '../../components/order/Order';
 import { fetchOrders, fetchRackets, fetchStrings, fetchUsers } from '../../common/db_utils';
 
 export function OrderPage() {
@@ -34,7 +34,7 @@ export function OrderPage() {
 
     return (
         <div>
-            <OrderList orders={orders} onOrderDeleted={() => fetchOrders({onComplete: setOrders})} />
+            {/* <OrderList orders={orders} onOrderDeleted={() => fetchOrders({onComplete: setOrders})} /> */}
             <OrderForm onOrderCreated={handleSubmit} rackets={rackets} strings={strings} users={users}/>
         </div>
     );

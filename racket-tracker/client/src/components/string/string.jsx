@@ -10,36 +10,34 @@ export function String({string}) {
   )
 }
 
-export const StringList = ({strings, onStringDeleted}) => {
-  const [newStrings, setNewStrings] = useState(strings);
+// export const StringList = ({strings, onStringDeleted}) => {
+//   const [newStrings, setNewStrings] = useState(strings);
 
-  const deleteString = async (string) => {
-    try {
-      await axios.delete(`http://localhost:5000/delete-string/${string.id}`)
-      onStringDeleted();
+//   const deleteString = async (string) => {
+//     try {
+//       await axios.delete(`http://localhost:5000/delete-string/${string.id}`)
+//       onStringDeleted();
       
-    } catch (error) {
-      console.log("Error:", error)
-    }
-  }
+//     } catch (error) {
+//       console.log("Error:", error)
+//     }
+//   }
 
-  useEffect(() => {
-    setNewStrings(strings)
-  }, [strings])
+//   useEffect(() => {
+//     setNewStrings(strings)
+//   }, [strings])
 
-  return(
-    <div>
-      <ul>
-        {newStrings.map(s => (
-          <div key={s.id} >
-            <String string={s} onStringDeleted={() => onStringDeleted()}/>
-            <button onClick={() => {deleteString(s)}}>X</button>  
-          </div>
-        ))}
-      </ul>
-    </div>
-  )
-}
+//   return(
+//     <ul>
+//       {newStrings.map(s => (
+//         <div key={s.id} >
+//           <String string={s} onStringDeleted={() => onStringDeleted()}/>
+//           <button onClick={() => {deleteString(s)}}>X</button>  
+//         </div>
+//       ))}
+//     </ul>
+//   )
+// }
 
 
 

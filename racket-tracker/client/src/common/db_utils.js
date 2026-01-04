@@ -2,8 +2,8 @@ import axios from 'axios';
 
 export const fetchData = async ({onComplete, table, limit = null}) => {
     try {
-        const response = await axios.get(`http://127.0.0.1:5000/${table}/${limit ? limit : ""}`);
         console.log(`Fetching data for ${table} - Limit of ${limit ? limit : "(none)"}`);
+        const response = await axios.get(`http://127.0.0.1:5000/${table}/${limit ? limit : ""}`);
         onComplete(response.data);
     } catch (error) {
         console.error(`Error fetching ${table}:`, error);

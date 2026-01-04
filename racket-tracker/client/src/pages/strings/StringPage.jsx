@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { StringList, StringForm } from '../../components/string/String';
+import { StringForm } from '../../components/string/String';
 import { fetchBrands, fetchStrings } from '../../common/db_utils';
 
 export function StringPage() {
@@ -21,7 +21,7 @@ export function StringPage() {
 
     return (
         <div>
-            <StringList strings={strings} onStringDeleted={() => fetchStrings({onComplete: setStrings})} />
+            {/* <StringList strings={strings} onStringDeleted={() => fetchStrings({onComplete: setStrings})} /> */}
             <StringForm onStringCreated={() => fetchStrings({onComplete: setStrings})} brands={brands}/>
         </div>
     );

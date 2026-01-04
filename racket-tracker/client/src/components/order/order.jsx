@@ -26,7 +26,7 @@ export function Order({order}) {
     <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
       <strong>{!complete ? `Due on ${order.due}` : "Order complete"}</strong> - {order.racket_name} ${order.price}
       <ul style={{fontSize: "0.9em", color: "#000000ff"}}>
-        {order.job_details && order.job_details.map((job, index) => (
+        {order.job_details?.map((job, index) => (
           <li key={index}>
             {job.string_brand} {job.string_name} @ {job.tension}lbs 
             {job.direction ? ` (${job.direction})` : ''}
@@ -38,36 +38,36 @@ export function Order({order}) {
   )
 }
 
-export const OrderList = ({orders, onOrderDeleted}) => {
-  const [newOrders, setNewOrders] = useState(orders);
+// export const OrderList = ({orders, onOrderDeleted}) => {
+//   const [newOrders, setNewOrders] = useState(orders);
 
-  const deleteOrder = async (order) => {
-    try {
-      await axios.delete(`http://localhost:5000/delete-order/${order.id}`)
+//   const deleteOrder = async (order) => {
+//     try {
+//       await axios.delete(`http://localhost:5000/delete-order/${order.id}`)
 
-      onOrderDeleted()
-    } catch (error) {
-      console.log("Error:", error)
-    }
-  }
+//       onOrderDeleted()
+//     } catch (error) {
+//       console.log("Error:", error)
+//     }
+//   }
 
-  useEffect(() => {
-    setNewOrders(orders)
-  }, [orders])
+//   useEffect(() => {
+//     setNewOrders(orders)
+//   }, [orders])
 
-    return(
-        <div>
-          <ul>
-            {newOrders.map(o => (
-              <div key={o.id} >
-                <Order order={o} onOrderDeleted={() => onOrderDeleted()}/>
-                <button onClick={() => {deleteOrder(o)}}>X</button>
-              </div>
-            ))}
-          </ul>
-        </div>
-    )
-}
+//     return(
+//         <div>
+//           <ul>
+//             {newOrders.map(o => (
+//               <div key={o.id} >
+//                 <Order order={o} onOrderDeleted={() => onOrderDeleted()}/>
+//                 <button onClick={() => {deleteOrder(o)}}>X</button>
+//               </div>
+//             ))}
+//           </ul>
+//         </div>
+//     )
+// }
 
 export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
   const [racketId, setRacketId] = useState("");
@@ -147,17 +147,3 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
     
   )
 }
-
-export const OrderTabContent = ({ orders, onOrderDeleted, currentPage, limit}) => {
-  const [tabData, setTabData] = useState([]);
-
-  useEffect(() => {
-    setTabData(orders.slice(currentPage * limit, Math.min(orders.length, currentPage * limit + limit)));
-    console.log(currentPage * limit, '-', orders.length - 1, '-', currentPage * limit + limit - 1)
-    console.log('tabData', tabData);
-  }, [orders, currentPage]);
-
-  return (
-    <OrderList orders={tabData} onOrderDeleted={() => onOrderDeleted()} />
-  );
-};

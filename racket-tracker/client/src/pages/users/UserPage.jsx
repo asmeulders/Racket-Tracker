@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { UserList, UserForm } from '../../components/user/User';
+import { UserForm } from '../../components/user/User';
 import { fetchUsers } from '../../common/db_utils';
 
 export function UserPage() {
@@ -11,7 +11,7 @@ export function UserPage() {
 
     return(
         <div>
-            <UserList users={users} onUserDeleted={() => fetchUsers({onComplete: setUsers})} />
+            {/* <UserList users={users} onUserDeleted={() => fetchUsers({onComplete: setUsers})} /> */}
             <UserForm onUserCreated={() => fetchUsers({onComplete: setUsers})}/>
         </div>
     )

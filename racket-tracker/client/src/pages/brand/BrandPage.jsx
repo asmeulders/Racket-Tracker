@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrandList, BrandForm } from '../../components/brand/Brand';
+import { BrandForm } from '../../components/brand/Brand';
 import { fetchBrands } from '../../common/db_utils';
 
 export function BrandPage() {
@@ -11,7 +11,7 @@ export function BrandPage() {
 
     return(
         <div>
-            <BrandList brands={brands} onBrandDeleted={() => fetchBrands({onComplete: setBrands})}/>
+            {/* <BrandList brands={brands} onBrandDeleted={() => fetchBrands({onComplete: setBrands})}/> */}
             <BrandForm onBrandCreated={() => fetchBrands({onComplete: setBrands})} />
         </div> 
     )

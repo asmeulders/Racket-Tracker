@@ -9,37 +9,37 @@ export function Brand({brand}) {
   )
 }
 
-export const BrandList = ({brands, onBrandDeleted}) => {
-  const [newBrands, setNewBrands] = useState(brands);
+// export const BrandList = ({brands, onBrandDeleted}) => {
+//   const [newBrands, setNewBrands] = useState(brands);
 
-  const deleteBrand = async (brand) => {
-    try {
-      console.log('Deleting brand', brand.name);
-      await axios.delete(`http://localhost:5000/delete-brand/${brand.id}`)
+//   const deleteBrand = async (brand) => {
+//     try {
+//       console.log('Deleting brand', brand.name);
+//       await axios.delete(`http://localhost:5000/delete-brand/${brand.id}`)
 
-      onBrandDeleted()
-    } catch (error) {
-      console.log("Error:", error)
-    }
-  }
+//       onBrandDeleted()
+//     } catch (error) {
+//       console.log("Error:", error)
+//     }
+//   }
 
-  useEffect(() => {
-    setNewBrands(brands)
-  }, [brands])
+//   useEffect(() => {
+//     setNewBrands(brands)
+//   }, [brands])
 
-  return(
-    <div>
-      <ul>
-        {newBrands.map(b => (
-          <div key={b.id} className='list-item'>
-            <Brand brand={b} onBrandDeleted={() => onBrandDeleted()} />
-            <button onClick={() => {deleteBrand(b)}}>X</button>
-          </div>
-        ))}
-      </ul>
-    </div>
-  )
-}
+//   return(
+//     <div>
+//       <ul>
+//         {newBrands.map(b => (
+//           <div key={b.id} className='list-item'>
+//             <Brand brand={b} onBrandDeleted={() => onBrandDeleted()} />
+//             <button onClick={() => {deleteBrand(b)}}>X</button>
+//           </div>
+//         ))}
+//       </ul>
+//     </div>
+//   )
+// }
 
 
 export const BrandForm = ({ onBrandCreated }) => {

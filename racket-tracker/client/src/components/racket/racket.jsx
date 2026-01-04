@@ -10,36 +10,36 @@ export function Racket({racket}) {
   )
 }
 
-export const RacketList = ({rackets, onRacketDeleted}) => {
-  const [newRackets, setNewRackets] = useState(rackets);
+// export const RacketList = ({rackets, onRacketDeleted}) => {
+//   const [newRackets, setNewRackets] = useState(rackets);
 
-  const deleteRacket = async (racket) => {
-    try {
-      await axios.delete(`http://localhost:5000/delete-racket/${racket.id}`)
+//   const deleteRacket = async (racket) => {
+//     try {
+//       await axios.delete(`http://localhost:5000/delete-racket/${racket.id}`)
 
-      onRacketDeleted()
-    } catch (error) {
-      console.log("Error:", error)
-    }
-  }
+//       onRacketDeleted()
+//     } catch (error) {
+//       console.log("Error:", error)
+//     }
+//   }
 
-  useEffect(() => {
-    setNewRackets(rackets)
-  }, [rackets])
+//   useEffect(() => {
+//     setNewRackets(rackets)
+//   }, [rackets])
 
-    return(
-        <div>
-          <ul>
-            {newRackets.map(r => (
-              <div key={r.id} >
-                <Racket racket={r} onRacketDeleted={() => onRacketDeleted()} />
-                <button onClick={() => {deleteRacket(r)}}>X</button>   
-              </div>
-            ))}
-          </ul>
-        </div>
-    )
-}
+//     return(
+//         <div>
+//           <ul>
+//             {newRackets.map(r => (
+//               <div key={r.id} >
+//                 <Racket racket={r} onRacketDeleted={() => onRacketDeleted()} />
+//                 <button onClick={() => {deleteRacket(r)}}>X</button>   
+//               </div>
+//             ))}
+//           </ul>
+//         </div>
+//     )
+// }
 
 export const RacketForm = ({ onRacketCreated, brands }) => {
   const [name, setName] = useState('');

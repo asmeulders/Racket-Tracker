@@ -2,11 +2,11 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import './StoreDashboard.css';
 
-import { RacketList } from '../racket/Racket.jsx'
-import { OrderList, OrderTabContent } from '../order/Order.jsx'
-import { StringList } from '../string/String.jsx'
-import { UserList } from '../user/User.jsx'
-import { BrandList } from '../brand/Brand.jsx'
+import { Racket } from '../racket/Racket.jsx'
+import { Order, OrderForm } from '../order/Order.jsx'
+import { String } from '../string/String.jsx'
+import { User } from '../user/User.jsx'
+import { Brand } from '../brand/Brand.jsx'
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers } from '../../common/db_utils.js';
 
 export function StoreDashboard() {
@@ -15,20 +15,18 @@ export function StoreDashboard() {
     const [orders, setOrders] = useState([]);
     const [strings, setStrings] = useState([]);
     const [brands, setBrands] = useState([]);
-    const [data, setData] = useState([]);
-    const [activeTab, setActiveTab] = useState('orders');
-    const [limit, setLimit] = useState(1);
-    const [pageData, setPageData] = useState([]);
+    const [activeTab, setActiveTab] = useState('order');
+    const [limit, setLimit] = useState(5);
     const [currentPage, setCurrentPage] = useState(0);
     const [maxPage, setMaxPage] = useState(0);
 
     const fetchAllData = async () => {
         try {
             fetchOrders({onComplete: setOrders});
-            fetchRackets({onComplete: setRackets, limit: limit});
-            fetchStrings({onComplete: setStrings, limit: limit});
-            fetchBrands({onComplete: setBrands, limit: limit});
-            fetchUsers({onComplete: setUsers, limit: limit});
+            fetchRackets({onComplete: setRackets});
+            fetchStrings({onComplete: setStrings});
+            fetchBrands({onComplete: setBrands});
+            fetchUsers({onComplete: setUsers});
         } catch (error) {
             console.error("Error connecting to server:", error);
         }
@@ -36,19 +34,60 @@ export function StoreDashboard() {
 
     const renderContent = () => {
         switch(activeTab) {
-            case 'orders':
-                console.log('orders', orders);
-                return <OrderTabContent orders={orders} onOrderDeleted={() => fetchOrders({onComplete: setOrders, limit: limit})} currentPage={currentPage} limit={limit}/>;
-            case 'rackets':
-                return <RacketList rackets={rackets} onRacketDeleted={() => fetchRackets({onComplete: setRackets, limit: limit})} />;
-            case 'strings':
-                return <StringList strings={strings} onStringDeleted={() => fetchStrings({onComplete: setStrings, limit: limit})} />;
-            case 'users':
-                return <UserList users={users} onUserDeleted={() => fetchUsers({onComplete: setUsers, limit: limit})} />;
-            case 'brands':
-                return <BrandList brands={brands} onBrandDeleted={() => fetchBrands({onComplete: setBrands, limit: limit})} />;
+            case 'order':
+                return <TabContent 
+                    data={orders} 
+                    renderItem={(order) => (<Order order={order} />)}
+                    onDataDeleted={() => fetchOrders({onComplete: setOrders})} 
+                    currentPage={currentPage} 
+                    limit={limit} 
+                    activeTab={activeTab}
+                />;
+            case 'racket':
+                return <TabContent 
+                    data={rackets} 
+                    renderItem={(racket) => (<Racket racket={racket} />)}
+                    onDataDeleted={() => fetchRackets({onComplete: setRackets})} 
+                    currentPage={currentPage} 
+                    limit={limit} 
+                    activeTab={activeTab}
+                />;
+            case 'string':
+                return <TabContent 
+                    data={strings} 
+                    renderItem={(string) => (<String string={string} />)}
+                    onDataDeleted={() => fetchStrings({onComplete: setStrings})} 
+                    currentPage={currentPage} 
+                    limit={limit} 
+                    activeTab={activeTab}
+                />;
+            case 'user':
+                return <TabContent 
+                    data={users} 
+                    renderItem={(user) => (<User user={user} />)}
+                    onDataDeleted={() => fetchUsers({onComplete: setUsers})} 
+                    currentPage={currentPage} 
+                    limit={limit} 
+                    activeTab={activeTab}
+                />;
+            case 'brand':
+                return <TabContent 
+                    data={brands} 
+                    renderItem={(brand) => (<Brand brand={brand} />)}
+                    onDataDeleted={() => fetchBrands({onComplete: setBrands})} 
+                    currentPage={currentPage} 
+                    limit={limit} 
+                    activeTab={activeTab} 
+                />;
             default:
-                return <OrderList orders={orders} onOrderDeleted={() => fetchOrders({onComplete: setOrders, limit: limit})} />;
+                return <TabContent 
+                    data={orders} 
+                    renderItem={(order) => (<Order order={order} />)}
+                    onDataDeleted={() => fetchOrders({onComplete: setOrders})} 
+                    currentPage={currentPage} 
+                    limit={limit} 
+                    activeTab={activeTab}
+                />;
         }
     }
 
@@ -66,7 +105,6 @@ export function StoreDashboard() {
             return;
         } else {
             setCurrentPage(currentPage-1);
-            renderContent();
         }
     };
 
@@ -82,9 +120,11 @@ export function StoreDashboard() {
         fetchAllData();
     }, []);
 
+    // ============================================================================
+    // TODO fix this
+    // ============================================================================
     useEffect(() => {
         setMaxPage(Math.ceil(orders.length / limit));
-        console.log(maxPage);
     }, [orders]);
 
     return (
@@ -92,32 +132,32 @@ export function StoreDashboard() {
             <div className='dashboard-container'>
                 <div className='tab-header'>
                     <button 
-                        className={getTabClass('orders')} 
-                        onClick={() => setActiveTab('orders')}
+                        className={getTabClass('order')} 
+                        onClick={() => setActiveTab('order')}
                     >
                         Orders
                     </button>
                     <button 
-                        className={getTabClass('rackets')} 
-                        onClick={() => setActiveTab('rackets')}
+                        className={getTabClass('racket')} 
+                        onClick={() => setActiveTab('racket')}
                     >
                         Rackets
                     </button>
                     <button 
-                        className={getTabClass('strings')} 
-                        onClick={() => setActiveTab('strings')}
+                        className={getTabClass('string')} 
+                        onClick={() => setActiveTab('string')}
                     >
                         Strings
                     </button>
                     <button 
-                        className={getTabClass('users')} 
-                        onClick={() => setActiveTab('users')}
+                        className={getTabClass('user')} 
+                        onClick={() => setActiveTab('user')}
                     >
                         Users
                     </button>
                     <button 
-                        className={getTabClass('brands')} 
-                        onClick={() => setActiveTab('brands')}
+                        className={getTabClass('brand')} 
+                        onClick={() => setActiveTab('brand')}
                     >
                         Brands
                     </button>
@@ -143,7 +183,42 @@ export function StoreDashboard() {
                     </p>
                 </div>
             </div>
+            <OrderForm onOrderCreated={() => fetchOrders({onComplete: setOrders})} rackets={rackets} strings={strings} users={users} />
         </div>
-        
     )
 }
+
+
+export const TabContent = ({ data, renderItem, onDataDeleted, currentPage, limit, activeTab}) => {
+  const [tabData, setTabData] = useState([]);
+
+  const deleteData = async (data) => {
+    try {
+      await axios.delete(`http://localhost:5000/delete-${activeTab}/${data.id}`)
+      onDataDeleted()
+    } catch (error) {
+      console.log("Error:", error)
+    }
+  }
+
+  const renderList = (tabData) => {
+    return tabData.map(d => (
+      <div key={d.id} >
+        {renderItem(d)}
+        <button onClick={() => {deleteData(d)}}>X</button>
+      </div>
+    ))
+  }
+
+  useEffect(() => {
+    setTabData(data.slice(currentPage * limit, Math.min(data.length, currentPage * limit + limit)));
+  }, [data, currentPage]);
+
+  return (
+    <div>
+      <ul>
+        {renderList(tabData)}
+      </ul>
+    </div>
+  );
+};
