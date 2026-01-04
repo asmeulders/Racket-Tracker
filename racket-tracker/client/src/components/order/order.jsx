@@ -63,7 +63,6 @@ export const OrderList = ({orders, onOrderDeleted}) => {
                 <Order order={o} onOrderDeleted={() => onOrderDeleted()}/>
                 <button onClick={() => {deleteOrder(o)}}>X</button>
               </div>
-              
             ))}
           </ul>
         </div>
@@ -148,3 +147,17 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
     
   )
 }
+
+export const OrderTabContent = ({ orders, onOrderDeleted, currentPage, limit}) => {
+  const [tabData, setTabData] = useState([]);
+
+  useEffect(() => {
+    setTabData(orders.slice(currentPage * limit, Math.min(orders.length, currentPage * limit + limit)));
+    console.log(currentPage * limit, '-', orders.length - 1, '-', currentPage * limit + limit - 1)
+    console.log('tabData', tabData);
+  }, [orders, currentPage]);
+
+  return (
+    <OrderList orders={tabData} onOrderDeleted={() => onOrderDeleted()} />
+  );
+};

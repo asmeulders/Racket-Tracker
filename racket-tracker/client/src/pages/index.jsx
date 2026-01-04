@@ -14,10 +14,10 @@ const Home = () => {
     
     return (
         <div style={{ padding: "20px", fontFamily: "Arial" }}>
-        <button onClick={initDatabases} style={{ marginBottom: "20px" }}>
-            Initialize & Seed Databases
-        </button>
-    </div>
+            <button onClick={initDatabases} style={{ marginBottom: "20px" }}>
+                Initialize & Seed Databases
+            </button>
+        </div>
     )
 }
 

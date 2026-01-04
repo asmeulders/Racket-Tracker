@@ -4,6 +4,7 @@
     justify-content: flex-start;
     gap: 50px;
     height: 400px; 
+    width: 800px;
     overflow-y: auto; 
     padding-right: 10px;
     padding: 0;
@@ -34,4 +35,17 @@
     top: 0;
     background-color: #1a1a1a; 
     z-index: 10;
+}
+
+#query-info-container {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background-color: black;
+  width: 800px;
+  height: 60px;
+}
+
+#query-info {
+  padding: 0;
 }
