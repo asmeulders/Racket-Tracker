@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './Brand.css';
 
-export function Brand({brand}) {
+export function Brand({brand, onDelete}) {
   
   return (
       <div className='brand-container'>

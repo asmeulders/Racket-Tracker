@@ -4,7 +4,7 @@ import "./String.css"
 
 import { BrandSelect } from '../brand/Brand'
 
-export function String({string}) {
+export function String({string, onDelete}) {
   return (
     <div className='string-container'>
       {string.brand_name} {string.name} - ${string.price_per_racket} 

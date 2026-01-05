@@ -4,10 +4,10 @@ import './Racket.css'
 
 import { BrandSelect } from '../brand/Brand'
 
-export function Racket({racket}) {
+export function Racket({racket, onDelete}) {
   return (
     <div className='racket-container'>
-      {racket.brand_name} {racket.name} - ${racket.price} 
+      {racket.brand_name} {racket.name} - ${racket.price}
       <button 
           className="delete-btn"
           onClick={(order) => onDelete(order)}

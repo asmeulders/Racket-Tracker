@@ -3,7 +3,7 @@ import axios from 'axios'
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './User.css'
 
-export function User({user}) {
+export function User({user, onDelete}) {
   return (
     <div key={user.id} className='user-container'>
       <strong>{user.username}</strong>

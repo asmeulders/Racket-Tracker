@@ -24,6 +24,7 @@ export function StoreDashboard() {
         try {
             await axios.post('http://127.0.0.1:5000/init_db');
             alert("Databases Created & Seeded!");
+            fetchAllData()
         } catch (error) {
             console.error("Error initializing DB:", error);
         }
@@ -61,19 +62,19 @@ export function StoreDashboard() {
             refetch: () => fetchOrders({ onComplete: setOrders })
         },
         racket: {
-            renderItem: (item) => <Racket racket={item} />,
+            renderItem: (item, handleDelete) => <Racket racket={item} onDelete={(item) => handleDelete(item)} />,
             refetch: () => fetchRackets({ onComplete: setRackets })
         },
         string: {
-            renderItem: (item) => <String string={item} />,
+            renderItem: (item, handleDelete) => <String string={item} onDelete={(item) => handleDelete(item)} />,
             refetch: () => fetchStrings({ onComplete: setStrings })
         },
         user: {
-            renderItem: (item) => <User user={item} />,
+            renderItem: (item, handleDelete) => <User user={item} onDelete={(item) => handleDelete(item)} />,
             refetch: () => fetchUsers({ onComplete: setUsers })
         },
         brand: {
-            renderItem: (item) => <Brand brand={item} />,
+            renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
             refetch: () => fetchBrands({ onComplete: setBrands })
         }
     };
