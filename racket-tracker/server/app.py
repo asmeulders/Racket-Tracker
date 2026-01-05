@@ -62,6 +62,7 @@ def init_db():
                 due=date(2025, 12, 27), 
                 price=100, 
                 complete=False,
+                paid=False,
                 racket=prostaff,
                 user=alice
             ))
@@ -70,6 +71,7 @@ def init_db():
                 due=date(2025, 11, 27), 
                 price=120, 
                 complete=False,
+                paid=True,
                 racket=speed,
                 user=bob
             ))
@@ -356,8 +358,8 @@ def create_order():
     """
     data = request.get_json()
 
-    if not data or "racket_id" not in data or "user_id" not in data or "string_id" not in data or "tension" not in data or "same_for_crosses" not in data:
-        return jsonify({"error": "Missing required fields 'racket', 'user_id', 'string', 'same_for_crosses', or 'tension'"}), 400
+    if not data or "racket_id" not in data or "user_id" not in data or "string_id" not in data or "tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
+        return jsonify({"error": "Missing required fields 'racket', 'user_id', 'string', 'same_for_crosses', 'paid', or 'tension'"}), 400
     
     same_for_crosses = data.get('same_for_crosses')
 
@@ -368,6 +370,7 @@ def create_order():
     user_id = data.get('user_id')
     string_id = data.get('string_id')
     tension = data.get('tension')
+    paid = data.get('paid')
 
     # dates
     orderDate = date.today()
@@ -398,7 +401,7 @@ def create_order():
         if same_for_crosses:
             price = 25 + mains.price_per_racket
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
             
             racketStrungWith = StrungWith(tension=tension, direction=None, string=mains)
             order.strung_with_records.append(racketStrungWith)
@@ -408,7 +411,7 @@ def create_order():
         else:
             price = 25 + (mains.price_per_racket + crosses.price_per_racket)/2
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
 
             mainsStrungWith = StrungWith(tension=tension, direction="mains", string=mains)
             crossesStrungWith = StrungWith(tension=crosses_tension, direction="crosses", string=crosses)
@@ -460,6 +463,39 @@ def complete_order():
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+@app.route('/pay-for-order', methods=['PATCH'])
+def pay_for_order():
+    """
+    Toggles paying for an order
+    """
+    data = request.get_json()
+
+    if not data or not "order_id" in data or 'paid' not in data:
+        return jsonify({"error": "Missing required field 'order_id' or 'paid'"}), 400
+    
+    order_id = data.get('order_id')
+    paid = data.get('paid')
+
+    try:
+        order = db.session.get(Order, order_id)
+        
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+        
+        order.paid = not paid
+
+        db.session.add(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order toggled paying for an order", "order": order.to_json()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
     
 @app.route('/delete-order/<int:order_id>', methods=['DELETE'])
 def delete_order(order_id: int):

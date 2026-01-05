@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import "./String.css"
+
 import { BrandSelect } from '../brand/Brand'
 
 export function String({string}) {
   return (
-    <li >
+    <div className='string-container'>
       {string.brand_name} {string.name} - ${string.price_per_racket} 
-    </li>
+      <button 
+          className="delete-btn"
+          onClick={(order) => onDelete(order)}
+          aria-label="Delete item"
+        >
+          X
+      </button>
+    </div>
   )
 }
 

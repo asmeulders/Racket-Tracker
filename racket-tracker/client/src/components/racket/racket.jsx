@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import './Racket.css'
+
 import { BrandSelect } from '../brand/Brand'
 
 export function Racket({racket}) {
   return (
-    <li>
+    <div className='racket-container'>
       {racket.brand_name} {racket.name} - ${racket.price} 
-    </li>
+      <button 
+          className="delete-btn"
+          onClick={(order) => onDelete(order)}
+          aria-label="Delete item"
+        >
+          X
+      </button>
+    </div>
   )
 }
 

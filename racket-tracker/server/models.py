@@ -115,6 +115,7 @@ class Order(db.Model):
     due = db.Column(db.Date, nullable=False)
     price = db.Column(db.Float, nullable=False)
     complete = db.Column(db.Boolean, nullable=False)
+    paid = db.Column(db.Boolean, nullable=False)
     # Snapshot data
     snapshot_name = db.Column(db.String(50), nullable=False)
     snapshot_racket_name = db.Column(db.String(50), nullable=False)
@@ -134,10 +135,12 @@ class Order(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
-            "orderDate": self.orderDate.isoformat() if self.orderDate else None, 
+            "order_date": self.orderDate.isoformat() if self.orderDate else None, 
             "due": self.due if self.due else None,
             "price": self.price,
             "complete": self.complete,
+            "paid": self.paid,
+            "user_name": self.user.username if self.user else None,
             "racket_brand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racket_name": self.racket.name if self.racket else None,
             # =========================================

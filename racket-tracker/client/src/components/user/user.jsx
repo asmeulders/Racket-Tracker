@@ -1,21 +1,36 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { format, parseISO, formatDistanceToNow } from 'date-fns';
+import './User.css'
 
 export function User({user}) {
   return (
-    <li key={user.id}>
+    <div key={user.id} className='user-container'>
       <strong>{user.username}</strong>
-      <ul>
-        {user.rackets?.map(owns => (
-          <li key={owns.racket_id}>Owns: {owns.racket_brand} {owns.racket_name} ({owns.quantity})</li>
-        ))}
-      </ul>
-      <ul>
-        {user.orders?.map(o => (
-          <li key={o.id}>Ordered {o.racket_brand} {o.racket_name} to be strung by {o.due}</li>
-        ))}
-      </ul>
-    </li>   
+      <div className='owns-container'>
+        Owns:
+        <ul className='owns-racket'>
+          {user.rackets?.map(owns => (
+            <li key={owns.racket_id}> {owns.racket_brand} {owns.racket_name} ({owns.quantity})</li>
+          ))}
+        </ul>
+      </div>
+      <div className='user-orders-container'>
+        Orders:
+        <ul className='user-order'>
+          {user.orders?.map(o => (
+            <li key={o.id}>{format(new Date(o.order_date), 'MM/dd/yyyy')}: {o.racket_brand} {o.racket_name}</li>
+          ))}
+        </ul>
+      </div>
+      <button 
+          className="delete-btn"
+          onClick={(order) => onDelete(order)}
+          aria-label="Delete item"
+        >
+          X
+      </button>
+    </div>   
   )
 }
 

@@ -5,7 +5,16 @@ import './Brand.css';
 export function Brand({brand}) {
   
   return (
-      <li>{brand.name}</li>
+      <div className='brand-container'>
+        {brand.name}
+        <button 
+          className="delete-btn"
+          onClick={(order) => onDelete(order)}
+          aria-label="Delete item"
+        >
+          X
+      </button>
+      </div>
   )
 }
 

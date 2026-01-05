@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios'
+import { format, parseISO, formatDistanceToNow } from 'date-fns';
+
 import { RacketSelect } from '../racket/Racket'
 import { StringSelect } from '../string/String'
 import { UserSelect } from '../user/User';
 
-export function Order({order}) {
+import './Order.css';
+
+export function Order({order, onDelete}) {
   const [complete, setComplete] = useState(order.complete);
+  const [paid, setPaid] = useState(order.paid);
+
+  const displayDate = format(new Date(order.due), 'MM/dd/yyyy');
 
   const completeOrder = async (order) => {
     try{
@@ -22,19 +29,50 @@ export function Order({order}) {
     }
   }
 
+  const orderPaid = async (order) => {
+    try{
+      const response = await axios.patch('http://localhost:5000/pay-for-order',
+        { 
+          "order_id": order.id,
+          "paid": paid
+        }
+      )
+      setPaid(response.data.order.paid)
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data.error);
+      } else{
+        console.log("Could not connect to server.");
+      }
+    }
+  }
+
   return (
-    <li style={{marginBottom: "10px", borderBottom: "1px solid #ccc"}}>
-      <strong>{!complete ? `Due on ${order.due}` : "Order complete"}</strong> - {order.racket_name} ${order.price}
-      <ul style={{fontSize: "0.9em", color: "#000000ff"}}>
+    <div className='order-container'>
+      <div className='order-header'>
+        <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
+        <p className='order-complete-status'>{!complete ? `Due: ${displayDate}` : "Order complete"}</p>
+      </div>
+      <button 
+        className="delete-btn"
+        onClick={(order) => onDelete(order)}
+        aria-label="Delete item"
+      >
+        X
+      </button>
+      <ul className='job-details-container'>
         {order.job_details?.map((job, index) => (
-          <li key={index}>
-            {job.string_brand} {job.string_name} @ {job.tension}lbs 
-            {job.direction ? ` (${job.direction})` : ''}
+          <li key={index} className='job-details'>
+            {job.direction ? `${job.direction === 'mains' ? 'Mains' : 'Crosses'}: ` : ''}
+            {job.string_brand} {job.string_name} at {job.tension}lbs 
           </li>
         ))}
       </ul>
-      {!complete && <button onClick={() => completeOrder(order)}>Complete Order</button>}
-    </li>
+      <div className='paid-complete-container'>
+        <button className={`paid-btn ${paid && 'paid-btn--paid'}`} onClick={() => orderPaid(order)}>{paid ? 'Paid' : 'Unpaid'}</button>
+        {!complete && <button className='complete-btn' onClick={() => completeOrder(order)}>Complete Order</button>}
+      </div>
+    </div>
   )
 }
 
@@ -77,6 +115,7 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
   const [sameForCrosses, setSameForCrosses] = useState(true);
   const [crossesId, setCrossesId] = useState("");
   const [crossesTension, setCrossesTension] = useState('');
+  const [paid, setPaid] = useState(false)
 
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
@@ -94,7 +133,8 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
         "tension": tension,
         "crosses_id": !sameForCrosses ? crossesId : null,
         "crosses_tension": !sameForCrosses ? crossesTension : null,
-        "same_for_crosses": sameForCrosses
+        "same_for_crosses": sameForCrosses,
+        "paid": paid
       })
 
       setRacketId("");
@@ -103,7 +143,8 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
       setTension('');
       setCrossesId("");
       setCrossesTension('');
-      setSameForCrosses(true)
+      setSameForCrosses(true);
+      setPaid(false);
 
       onOrderCreated();
     } catch (error) {
@@ -141,6 +182,10 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
             <input type="number" id="crossesTension" value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} /><br />
           </div>
         }
+
+        <label htmlFor="paid">Paid</label>
+        <input type="checkbox" id='paid' onChange={() => setPaid(!paid)} checked={paid}/>
+
         <input type="submit" value="Submit" />
       </form>
     </div>
