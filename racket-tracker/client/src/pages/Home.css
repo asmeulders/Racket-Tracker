@@ -5,18 +5,25 @@
   width: 100%;
 }
 
-.landing, .about-container, .service-container {
+.landing, .about, .service-container {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 0 20px; 
 }
 
-.footer {
+footer {
   margin-top: auto;
   width: 100%;
   padding: 20px;
   background-color: var(--secondary);
   color: white;
   text-align: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
 }
