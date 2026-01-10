@@ -58,29 +58,29 @@ const Home = () => {
                 </section>
             </div>
             <footer>
-                <div className='container'>
-                    <div className='footer'>
-                        <p>footer</p>
-                    </div>
-                    <div className='container'>
-                <section className='contact'>
-                    <h2>Request a service</h2>
+                <div className='footer'>
+                    <section className='contact'>
+                        <h4>Request a service</h4>
                         <form action="submit" className='contact-form' onSubmit={handleSubmit}>
-                            <label htmlFor="name">Name:</label>
-                            <input type="text" id='name' placeholder='Your Name' value={name} onChange={(e) => setName(e.target.value)}/>
-
-                            <label htmlFor="phone">Phone Number:</label>
-                            <input type="tel" id='phone' placeholder='Your Phone Number' value={phone} onChange={(e) => setPhone(e.target.value)}/>
-
-                            <label htmlFor="email">Email:</label>
-                            <input type="email" id='email' placeholder='Your Email' value={email} onChange={(e) => setEmail(e.target.value)}/>
-
-                            <label htmlFor="message">Message:</label>
-                            <textarea id="message" placeholder="Your Message" rows="5" value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
-                            <button type="submit">Submit Request</button>
+                            <label htmlFor="name" className='form-label' >Name:</label>
+                            <div className='form-input-field'><input type="text" id='name' placeholder='Your Name' value={name} onChange={(e) => setName(e.target.value)}/>
+                            </div>
+                            
+                            <label htmlFor="phone" className='form-label' >Phone Number:</label>
+                            <div className='form-input-field'><input type="tel" id='phone' placeholder='Your Phone Number' value={phone} onChange={(e) => setPhone(e.target.value)}/>
+                            </div>
+                            <label htmlFor="email" className='form-label' >Email:</label>
+                            <div className='form-input-field'><input type="email" id='email' placeholder='Your Email' value={email} onChange={(e) => setEmail(e.target.value)}/>
+                            </div>
+                            <label htmlFor="message" className='form-label' >Message:</label>
+                            <div className='form-input-field'><textarea id="message" placeholder="Your Message" rows="5" value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
+                            </div>
+                            <button type="submit" className='submit-btn'>Submit Request</button>
                         </form>
                     </section>
-                </div>
+                    <section className='links'>
+                        <h4>Links</h4>
+                    </section>
                 </div>
             </footer>
        </div>

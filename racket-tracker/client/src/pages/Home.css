@@ -21,9 +21,51 @@ footer {
   text-align: center;
 }
 
-.contact-form {
+.footer {
   display: flex;
-  flex-direction: column;
+  flex: row;
+}
+
+.contact-form {
+  display: grid;
+  grid-template-columns: auto auto;
   gap: 15px;
   max-width: 400px;
+}
+
+.form-label {
+  justify-self: right;
+  align-self: center;
+}
+
+.form-input-field {
+  justify-self: left;
+  padding: 15px;
+  border-left: 4px solid black;
+}
+
+.contact-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-width: 100%;
+  font-family: inherit; 
+  font-size: 1rem;
+}
+
+.landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+}
+
+.submit-btn {
+  color: white;
+  grid-column: 1 / span 2;
 }
