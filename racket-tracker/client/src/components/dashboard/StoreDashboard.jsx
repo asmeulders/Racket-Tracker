@@ -113,50 +113,53 @@ export function StoreDashboard() {
                 Initialize & Seed Databases
             </button>
             <div className='dashboard-container'>
-                <FilterSearch />
-                <div className='main-content'>
-                    <div className='tab-header'>
-                        <button 
-                            className={getTabClass('order')} 
-                            onClick={() => handleClick('order')}
-                        >
-                            Orders
-                        </button>
-                        <button 
-                            className={getTabClass('racket')} 
-                            onClick={() => handleClick('racket')}
-                        >
-                            Rackets
-                        </button>
-                        <button 
-                            className={getTabClass('string')} 
-                            onClick={() => handleClick('string')}
-                        >
-                            Strings
-                        </button>
-                        <button 
-                            className={getTabClass('user')} 
-                            onClick={() => handleClick('user')}
-                        >
-                            Users
-                        </button>
-                        <button 
-                            className={getTabClass('brand')} 
-                            onClick={() => handleClick('brand')}
-                        >
-                            Brands
-                        </button>
-                    </div>
-                    <div className='content-box'>
-                        <TabContent
-                            data={currentData}
-                            renderItem={currentTabConfig.renderItem}
-                            onDataDeleted={currentTabConfig.refetch}
-                            currentPage={currentPage}
-                            limit={limit}
-                            activeTab={activeTab}
-                        />
-                    </div>
+                <div className='filter-title'>
+                    <FilterSearch />
+                </div>
+                <div className='tab-header'>
+                    <button 
+                        className={getTabClass('order')} 
+                        onClick={() => handleClick('order')}
+                    >
+                        Orders
+                    </button>
+                    <button 
+                        className={getTabClass('racket')} 
+                        onClick={() => handleClick('racket')}
+                    >
+                        Rackets
+                    </button>
+                    <button 
+                        className={getTabClass('string')} 
+                        onClick={() => handleClick('string')}
+                    >
+                        Strings
+                    </button>
+                    <button 
+                        className={getTabClass('user')} 
+                        onClick={() => handleClick('user')}
+                    >
+                        Users
+                    </button>
+                    <button 
+                        className={getTabClass('brand')} 
+                        onClick={() => handleClick('brand')}
+                    >
+                        Brands
+                    </button>
+                </div>
+                <div className='filter-content'>
+                    
+                </div>
+                <div className='content-box'>
+                    <TabContent
+                        data={currentData}
+                        renderItem={currentTabConfig.renderItem}
+                        onDataDeleted={currentTabConfig.refetch}
+                        currentPage={currentPage}
+                        limit={limit}
+                        activeTab={activeTab}
+                    />
                     <div className='query-info-container'>
                         <p className='query-info'>
                             Queried {activeTab} - showing
@@ -168,14 +171,14 @@ export function StoreDashboard() {
                                 <option value="100">100</option>
                             </select> 
                             per page.
-                            <button onClick={goLeft}>{'<'}</button>
+                            <button className='arrow-btn' onClick={goLeft}>{'<'}</button>
                             {currentPage+1}
-                            <button onClick={goRight}>{'>'}</button>
+                            <button className='arrow-btn' onClick={goRight}>{'>'}</button>
                             of {maxPage}.
                         </p>
-                    </div>
-                </div>                
-            </div>
+                    </div>              
+                </div>
+            </div>  
             <OrderForm onOrderCreated={() => fetchOrders({onComplete: setOrders})} rackets={rackets} strings={strings} brands={brands} users={users}/>
             <RacketForm onRacketCreated={() => fetchRackets({onComplete: setRackets})} brands={brands}/>
             <StringForm onStringCreated={() => fetchStrings({onComplete: setStrings})} brands={brands}/>
