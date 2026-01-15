@@ -135,9 +135,10 @@ def search_users():
     pagination = db.paginate(select=statement, page=page, per_page=per_page)
     return {
         "items": [p.to_json() for p in pagination.items],
-        "total_pages": pagination.pages,
-        "current_page": pagination.page,
-        "has_next": pagination.has_next,
+        "totalPages": pagination.pages,
+        "currentPage": pagination.page,
+        "hasNext": pagination.has_next,
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
@@ -232,9 +233,10 @@ def search_rackets():
     pagination = db.paginate(select=statement, page=page, per_page=per_page)
     return {
         "items": [p.to_json() for p in pagination.items],
-        "total_pages": pagination.pages,
-        "current_page": pagination.page,
-        "has_next": pagination.has_next,
+        "totalPages": pagination.pages,
+        "currentPage": pagination.page,
+        "hasNext": pagination.has_next,
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
@@ -323,9 +325,10 @@ def search_strings():
     pagination = db.paginate(select=statement, page=page, per_page=per_page)
     return {
         "items": [p.to_json() for p in pagination.items],
-        "total_pages": pagination.pages,
-        "current_page": pagination.page,
-        "has_next": pagination.has_next,
+        "totalPages": pagination.pages,
+        "currentPage": pagination.page,
+        "hasNext": pagination.has_next,
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
     
@@ -415,9 +418,10 @@ def search_orders():
     pagination = db.paginate(select=statement, page=page, per_page=per_page)
     return {
         "items": [p.to_json() for p in pagination.items],
-        "total_pages": pagination.pages,
-        "current_page": pagination.page,
-        "has_next": pagination.has_next,
+        "totalPages": pagination.pages,
+        "currentPage": pagination.page,
+        "hasNext": pagination.has_next,
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
@@ -623,9 +627,10 @@ def search_brands():
     pagination = db.paginate(select=statement, page=page, per_page=per_page)
     return {
         "items": [p.to_json() for p in pagination.items],
-        "total_pages": pagination.pages,
-        "current_page": pagination.page,
-        "has_next": pagination.has_next,
+        "totalPages": pagination.pages,
+        "currentPage": pagination.page,
+        "hasNext": pagination.has_next,
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
@@ -709,9 +714,10 @@ def search_inquiries():
     pagination = db.paginate(select=statement, page=page, per_page=per_page)
     return {
         "items": [p.to_json() for p in pagination.items],
-        "total_pages": pagination.pages,
-        "current_page": pagination.page,
-        "has_next": pagination.has_next,
+        "totalPages": pagination.pages,
+        "currentPage": pagination.page,
+        "hasNext": pagination.has_next,
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 

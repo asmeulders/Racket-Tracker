@@ -34,13 +34,13 @@ export const fetchInquiries = async ({onComplete, limit = null}) => {
     fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
 };
 
-export const searchTable = async ({table, page, per_page, onComplete}) => {
+export const searchTable = async ({table, page, perPage, onComplete}) => {
     try {
         console.log(`Searching for data from ${table} on page ${page}`);
         const response = await axios.get(`http://127.0.0.1:5000/search-${table}/`,{
             params: {
                 'page': page,
-                'per_page': per_page
+                'per_page': perPage
             }
         });
         onComplete(response.data);

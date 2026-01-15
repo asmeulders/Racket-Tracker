@@ -14,22 +14,16 @@ import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searc
 export function StoreDashboard() {
     const [users, setUsers] = useState([]);
     const [rackets, setRackets] = useState([]);
-    const [orders, setOrders] = useState([]);
     const [strings, setStrings] = useState([]);
-    const [brands, setBrands] = useState([]);
-    const [inquiries, setInquiries] = useState([]);
-
-    
+    const [brands, setBrands] = useState([]);    
 
     const [activeTab, setActiveTab] = useState('orders');
-    const [limit, setLimit] = useState(25);
-    const [currentPage, setCurrentPage] = useState(1);
-
     const[pageData, setPageData] = useState({
-        'current_page': 1,
-        'limit': 25,
-        'total_pages': 1,
-        'items': []
+        'currentPage': 1,
+        'perPage': 1,
+        'totalPages': 1,
+        'items': [],
+        'hasNext': false
     })
 
     const initDatabases = async () => {
@@ -44,13 +38,12 @@ export function StoreDashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            searchTable({ table: activeTab, page: pageData.current_page, per_page: pageData.limit, onComplete: setPageData })
+            console.log(pageData);
+            searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })
         } catch (error) {
             console.error("Error connecting to server:" ,error)
         }
     }
-
-    const maxPage = Math.max(1, Math.ceil(pageData.items.length / limit));
 
     const tabConfig = {
         orders: {
@@ -78,26 +71,38 @@ export function StoreDashboard() {
     };
 
     const handleSelect = (event) => {
-        setLimit(Number(event.target.value));
-        setCurrentPage(1);
+        setPageData(prev => ({
+            ...prev,
+            'perPage': Number(event.target.value)
+        }));
     };
 
     const handleClick = (selectedTab) => {
         setActiveTab(selectedTab);
-        searchTable({ table: selectedTab, page: 1, per_page: pageData.limit, onComplete: setPageData })
+        searchTable({ table: selectedTab, page: 1, perPage: pageData.perPage, onComplete: setPageData })
     }
 
     const goLeft = () => {
-        setCurrentPage(prev => Math.max(0, prev - 1));
+        setPageData(prev => ({
+            ...prev,
+            'currentPage': Math.max(prev.currentPage-1, 1)
+        }));
     };
 
     const goRight = () => {
-        setCurrentPage(prev => Math.min(maxPage - 1, prev + 1));
+        setPageData(prev => ({
+            ...prev,
+            'currentPage': Math.min(prev.totalPages, prev.currentPage + 1)
+        }));
     };
 
     useEffect(() => {
         fetchDashboardData();
     }, []);
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, [pageData.currentPage, pageData.perPage]);
 
     const currentTabConfig = tabConfig[activeTab] || tabConfig.orders;
 
@@ -155,13 +160,14 @@ export function StoreDashboard() {
                     <TabContent
                         items={pageData.items}
                         renderItem={currentTabConfig.renderItem}
-                        onDataDeleted={() => searchTable({ table: activeTab, page: currentPage, per_page: pageData.limit, onComplete: setPageData })}
+                        onDataDeleted={() => searchTable({ table: activeTab, page: currentPage, perPage: pageData.perPage, onComplete: setPageData })}
                         activeTab={activeTab}
                     />
                     <div className='query-info-container'>
                         <p className='query-info'>
                             Queried {activeTab} - showing
-                            <select name="numResults" id="num-results" value={limit} onChange={handleSelect}>
+                            <select name="numResults" id="num-results" value={pageData.perPage} onChange={handleSelect}>
+                                <option value="1">1</option>
                                 <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="25">25</option>
@@ -170,9 +176,9 @@ export function StoreDashboard() {
                             </select> 
                             per page.
                             <button className='arrow-btn' onClick={goLeft}>{'<'}</button>
-                            {currentPage}
+                            {pageData.currentPage}
                             <button className='arrow-btn' onClick={goRight}>{'>'}</button>
-                            of {maxPage}.
+                            of {pageData.totalPages}.
                         </p>
                     </div>              
                 </div>
