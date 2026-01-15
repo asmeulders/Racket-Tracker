@@ -224,6 +224,27 @@ class Brand(db.Model):
             ]
         }
     
+class Inquiry(db.Model):
+    """
+    Docstring for Inquiry
+    """
+    __tablename__ = "inquiries"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(60), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(120), nullable=False)
+    message = db.Column(db.String(200), nullable=False)
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "phone": self.phone,
+            "email": self.email,
+            "message": self.message
+        }
+    
 # ===================================================================
 # --------Create Snapshot Data---------------------------------------
 # ===================================================================

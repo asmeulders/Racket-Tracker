@@ -29,3 +29,7 @@ export const fetchBrands = async ({onComplete, limit = null}) => {
 export const fetchUsers = async ({onComplete, limit = null}) => {
     fetchData({onComplete: onComplete, table: "users", limit: limit});
 }
+
+export const fetchInquiries = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
+}

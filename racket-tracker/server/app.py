@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError, IntegrityError
 from datetime import datetime, timedelta
 
 from db import db
-from models import User, Racket, Order, String, StrungWith, Owns, Brand
+from models import User, Racket, Order, String, StrungWith, Owns, Brand, Inquiry
 
 from datetime import date
 
@@ -25,9 +25,8 @@ CORS(app)
 @app.route('/init_db', methods=['POST'])
 def init_db():
     with app.app_context():
-        db.create_all() # Creates tables in both databases
+        db.create_all()
         
-        # Seed only if empty
         if not User.query.first():
             db.session.add(User(username="Alice"))
             db.session.add(User(username="Bob"))
@@ -97,7 +96,11 @@ def init_db():
         if not Owns.query.first():
             db.session.add(Owns(user=alice, racket=prostaff, quantity=1))
             db.session.add(Owns(user=bob, racket=speed, quantity=1))
-            db.session.commit()        
+            db.session.commit()  
+
+        if not Inquiry.query.first():
+            db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello')) 
+            db.session.commit()     
         
     return jsonify({"message": "Database initialized!"})
 
@@ -520,7 +523,7 @@ def delete_order(order_id: int):
 
 
 # =======================================================================================================================
-# ----------------------------Brand Routes-----------------------------------------------------------------------------=-
+# ----------------------------Brand Routes-------------------------------------------------------------------------------
 # =======================================================================================================================
 
 @app.route('/brands/', defaults={'limit': None})
@@ -586,7 +589,75 @@ def delete_brand(brand_id: int):
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
 
+# =======================================================================================================================
+# ----------------------------Inquiry Routes-------------------------------------------------------------------------------
+# =======================================================================================================================
+
+@app.route('/inquiries/', defaults={'limit': None})
+@app.route('/inquiries/<int:limit>', methods=['GET'])
+def get_inquiries(limit: int):
+    query = db.select(Inquiry).order_by(Inquiry.name.asc())
+
+    if limit is not None:
+        query = query.limit(limit)
+        
+    try:
+        inquiries = db.session.execute(query).scalars().all()
+        return jsonify([b.to_json() for b in inquiries])
+    except OperationalError:
+        return jsonify([])
+
+
+@app.route('/create-inquiry', methods=['POST'])
+def create_inquiry():
+    """    
+    Create an inquiry from a user form input
+    """
+    data = request.get_json()
+
+    if not data or "name" not in data or "email" not in data or "message" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'email', 'message' or 'data'"}), 400
+    
+    name = data.get('name')
+    phone = data.get('phone')
+    email = data.get('email')
+    message = data.get('message')
+
+    try:
+        inquiry = Inquiry(name=name, phone=phone, email=email, message=message)
+        db.session.add(inquiry)
+        db.session.commit()
+
+        return jsonify({"message": "Inquiry successfully created", "inquiry": inquiry.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
+@app.route('/delete-inquiry/<int:inquiry_id>', methods=['DELETE'])
+def delete_inquiry(inquiry_id: int):
+    """    
+    Delete a inquiry
+    """
+    
+    inquiry = db.session.get(Inquiry, inquiry_id)
+    if not inquiry:
+        return jsonify({"error": "Inquiry not found"}), 404
+
+    try:
+        db.session.delete(inquiry)
+        db.session.commit()
+
+        return jsonify({"message": "Inquiry successfully deleted"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
 # ================================================================
 # TODO: Assign a racket to a user by querying for the racket and 
 #       the user then creating a new Owns object and adding the 

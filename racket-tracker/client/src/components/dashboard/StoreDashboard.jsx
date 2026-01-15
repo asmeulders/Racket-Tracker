@@ -8,7 +8,8 @@ import { Order, OrderForm } from '../order/Order.jsx'
 import { String, StringForm } from '../string/String.jsx'
 import { User, UserForm } from '../user/User.jsx'
 import { Brand, BrandForm } from '../brand/Brand.jsx'
-import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers } from '../../common/db_utils.js';
+import { Inquiry } from '../inquiry/Inquiry.jsx';
+import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, fetchInquiries } from '../../common/db_utils.js';
 
 export function StoreDashboard() {
     const [users, setUsers] = useState([]);
@@ -16,6 +17,8 @@ export function StoreDashboard() {
     const [orders, setOrders] = useState([]);
     const [strings, setStrings] = useState([]);
     const [brands, setBrands] = useState([]);
+    const [inquiries, setInquiries] = useState([]);
+
     const [activeTab, setActiveTab] = useState('order');
     const [limit, setLimit] = useState(25);
     const [currentPage, setCurrentPage] = useState(0);
@@ -37,6 +40,7 @@ export function StoreDashboard() {
             fetchStrings({onComplete: setStrings});
             fetchBrands({onComplete: setBrands});
             fetchUsers({onComplete: setUsers});
+            fetchInquiries({onComplete: setInquiries})
         } catch (error) {
             console.error("Error connecting to server:", error);
         }
@@ -49,6 +53,7 @@ export function StoreDashboard() {
             case 'string': return strings;
             case 'user': return users;
             case 'brand': return brands;
+            case 'inquiry': return inquiries
             default: return [];
         }
     };
@@ -76,6 +81,10 @@ export function StoreDashboard() {
         brand: {
             renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
             refetch: () => fetchBrands({ onComplete: setBrands })
+        },
+        inquiry: {
+            renderItem: (item, handleDelete) => <Inquiry inquiry={item} onDelete={(item) => handleDelete(item)} />,
+            refetch: () => fetchInquiries({ onComplete: setInquiries })
         }
     };
 
@@ -147,9 +156,15 @@ export function StoreDashboard() {
                     >
                         Brands
                     </button>
+                    <button 
+                        className={getTabClass('inquiry')} 
+                        onClick={() => handleClick('inquiry')}
+                    >
+                        Inquiries
+                    </button>
                 </div>
                 <div className='filter-content'>
-                    
+                    <p>Fill in</p>
                 </div>
                 <div className='content-box'>
                     <TabContent
