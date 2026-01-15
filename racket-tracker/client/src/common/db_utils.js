@@ -28,8 +28,24 @@ export const fetchBrands = async ({onComplete, limit = null}) => {
 
 export const fetchUsers = async ({onComplete, limit = null}) => {
     fetchData({onComplete: onComplete, table: "users", limit: limit});
-}
+};
 
 export const fetchInquiries = async ({onComplete, limit = null}) => {
     fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
-}
+};
+
+export const searchTable = async ({table, page, per_page, onComplete}) => {
+    try {
+        console.log(`Searching for data from ${table} on page ${page}`);
+        const response = await axios.get(`http://127.0.0.1:5000/search-${table}/`,{
+            params: {
+                'page': page,
+                'per_page': per_page
+            }
+        });
+        onComplete(response.data);
+    } catch (error) {
+        console.error(`Error fetching ${table}:`, error);
+    }
+    
+};

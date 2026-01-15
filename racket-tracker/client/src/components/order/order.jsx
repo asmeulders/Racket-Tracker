@@ -12,7 +12,7 @@ export function Order({order, onDelete}) {
   const [complete, setComplete] = useState(order.complete);
   const [paid, setPaid] = useState(order.paid);
 
-  const displayDate = format(new Date(order.due), 'MM/dd/yyyy');
+  const displayDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
 
   const completeOrder = async (order) => {
     try{
@@ -51,7 +51,7 @@ export function Order({order, onDelete}) {
     <div className='order-container'>
       <div className='order-header'>
         <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
-        <p className='order-complete-status'>{!complete ? `Due: ${displayDate}` : "Order complete"}</p>
+        <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
       </div>
       <button 
         className="delete-btn"

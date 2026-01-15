@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './Inquiry.css';
 
 export function Inquiry({inquiry, onDelete}) {
-  
+  const displayDate = inquiry.date ? format(new Date(inquiry.date), 'MM/dd/yyyy') : null;
+
   return (
       <div className='inquiry-container'>
-        {inquiry.name}
+        <div className='inquiry-header'>
+          {displayDate ? `${displayDate}:` : ''} {inquiry.name}
+        </div>
+        <div className='contact-information'>
+          <ul>
+            <li>Phone number: {inquiry.phone}</li>
+            <li>Email: {inquiry.email}</li>
+          </ul>
+        </div>
+        <div className='message-container'>Message: {inquiry.message}</div>
         <button 
           className="delete-btn"
           onClick={(order) => onDelete(order)}

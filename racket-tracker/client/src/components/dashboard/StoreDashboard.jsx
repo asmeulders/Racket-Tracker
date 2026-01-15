@@ -9,7 +9,7 @@ import { String, StringForm } from '../string/String.jsx'
 import { User, UserForm } from '../user/User.jsx'
 import { Brand, BrandForm } from '../brand/Brand.jsx'
 import { Inquiry } from '../inquiry/Inquiry.jsx';
-import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, fetchInquiries } from '../../common/db_utils.js';
+import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../common/db_utils.js';
 
 export function StoreDashboard() {
     const [users, setUsers] = useState([]);
@@ -19,72 +19,57 @@ export function StoreDashboard() {
     const [brands, setBrands] = useState([]);
     const [inquiries, setInquiries] = useState([]);
 
-    const [activeTab, setActiveTab] = useState('order');
+    
+
+    const [activeTab, setActiveTab] = useState('orders');
     const [limit, setLimit] = useState(25);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const[pageData, setPageData] = useState({
+        'current_page': 1,
+        'limit': 25,
+        'total_pages': 1,
+        'items': []
+    })
 
     const initDatabases = async () => {
         try {
             await axios.post('http://127.0.0.1:5000/init_db');
             alert("Databases Created & Seeded!");
-            fetchAllData()
+            fetchDashboardData();
         } catch (error) {
             console.error("Error initializing DB:", error);
         }
     };
 
-    const fetchAllData = async () => {
+    const fetchDashboardData = async () => {
         try {
-            fetchOrders({onComplete: setOrders});
-            fetchRackets({onComplete: setRackets});
-            fetchStrings({onComplete: setStrings});
-            fetchBrands({onComplete: setBrands});
-            fetchUsers({onComplete: setUsers});
-            fetchInquiries({onComplete: setInquiries})
+            searchTable({ table: activeTab, page: pageData.current_page, per_page: pageData.limit, onComplete: setPageData })
         } catch (error) {
-            console.error("Error connecting to server:", error);
+            console.error("Error connecting to server:" ,error)
         }
-    };
+    }
 
-    const getCurrentData = () => {
-        switch (activeTab) {
-            case 'order': return orders;
-            case 'racket': return rackets;
-            case 'string': return strings;
-            case 'user': return users;
-            case 'brand': return brands;
-            case 'inquiry': return inquiries
-            default: return [];
-        }
-    };
-
-    const currentData = getCurrentData();
-    const maxPage = Math.max(1, Math.ceil(currentData.length / limit));
+    const maxPage = Math.max(1, Math.ceil(pageData.items.length / limit));
 
     const tabConfig = {
-        order: {
+        orders: {
             renderItem: (item, handleDelete) => <Order order={item} onDelete={(item) => handleDelete(item)} />,
-            refetch: () => fetchOrders({ onComplete: setOrders })
         },
-        racket: {
+        rackets: {
             renderItem: (item, handleDelete) => <Racket racket={item} onDelete={(item) => handleDelete(item)} />,
-            refetch: () => fetchRackets({ onComplete: setRackets })
         },
-        string: {
+        strings: {
             renderItem: (item, handleDelete) => <String string={item} onDelete={(item) => handleDelete(item)} />,
-            refetch: () => fetchStrings({ onComplete: setStrings })
         },
-        user: {
+        users: {
             renderItem: (item, handleDelete) => <User user={item} onDelete={(item) => handleDelete(item)} />,
-            refetch: () => fetchUsers({ onComplete: setUsers })
         },
-        brand: {
+        brands: {
             renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
-            refetch: () => fetchBrands({ onComplete: setBrands })
         },
-        inquiry: {
+        inquiries: {
             renderItem: (item, handleDelete) => <Inquiry inquiry={item} onDelete={(item) => handleDelete(item)} />,
-            refetch: () => fetchInquiries({ onComplete: setInquiries })
         }
     };
 
@@ -94,12 +79,12 @@ export function StoreDashboard() {
 
     const handleSelect = (event) => {
         setLimit(Number(event.target.value));
-        setCurrentPage(0);
+        setCurrentPage(1);
     };
 
     const handleClick = (selectedTab) => {
         setActiveTab(selectedTab);
-        setCurrentPage(0);
+        searchTable({ table: selectedTab, page: 1, per_page: pageData.limit, onComplete: setPageData })
     }
 
     const goLeft = () => {
@@ -111,10 +96,10 @@ export function StoreDashboard() {
     };
 
     useEffect(() => {
-        fetchAllData();
+        fetchDashboardData();
     }, []);
 
-    const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
+    const currentTabConfig = tabConfig[activeTab] || tabConfig.orders;
 
     return (
         <div className='store-dashboard-page'>
@@ -127,38 +112,38 @@ export function StoreDashboard() {
                 </div>
                 <div className='tab-header'>
                     <button 
-                        className={getTabClass('order')} 
-                        onClick={() => handleClick('order')}
+                        className={getTabClass('orders')} 
+                        onClick={() => handleClick('orders')}
                     >
                         Orders
                     </button>
                     <button 
-                        className={getTabClass('racket')} 
-                        onClick={() => handleClick('racket')}
+                        className={getTabClass('rackets')} 
+                        onClick={() => handleClick('rackets')}
                     >
                         Rackets
                     </button>
                     <button 
-                        className={getTabClass('string')} 
-                        onClick={() => handleClick('string')}
+                        className={getTabClass('strings')} 
+                        onClick={() => handleClick('strings')}
                     >
                         Strings
                     </button>
                     <button 
-                        className={getTabClass('user')} 
-                        onClick={() => handleClick('user')}
+                        className={getTabClass('users')} 
+                        onClick={() => handleClick('users')}
                     >
                         Users
                     </button>
                     <button 
-                        className={getTabClass('brand')} 
-                        onClick={() => handleClick('brand')}
+                        className={getTabClass('brands')} 
+                        onClick={() => handleClick('brands')}
                     >
                         Brands
                     </button>
                     <button 
-                        className={getTabClass('inquiry')} 
-                        onClick={() => handleClick('inquiry')}
+                        className={getTabClass('inquiries')} 
+                        onClick={() => handleClick('inquiries')}
                     >
                         Inquiries
                     </button>
@@ -168,11 +153,9 @@ export function StoreDashboard() {
                 </div>
                 <div className='content-box'>
                     <TabContent
-                        data={currentData}
+                        items={pageData.items}
                         renderItem={currentTabConfig.renderItem}
-                        onDataDeleted={currentTabConfig.refetch}
-                        currentPage={currentPage}
-                        limit={limit}
+                        onDataDeleted={() => searchTable({ table: activeTab, page: currentPage, per_page: pageData.limit, onComplete: setPageData })}
                         activeTab={activeTab}
                     />
                     <div className='query-info-container'>
@@ -187,7 +170,7 @@ export function StoreDashboard() {
                             </select> 
                             per page.
                             <button className='arrow-btn' onClick={goLeft}>{'<'}</button>
-                            {currentPage+1}
+                            {currentPage}
                             <button className='arrow-btn' onClick={goRight}>{'>'}</button>
                             of {maxPage}.
                         </p>
@@ -204,10 +187,7 @@ export function StoreDashboard() {
 }
 
 
-export const TabContent = ({ data, renderItem, onDataDeleted, currentPage, limit, activeTab}) => {
-    const startIndex = currentPage * limit;
-    const endIndex = Math.min(data.length, startIndex + limit);
-    const visibleData = data.slice(startIndex, endIndex);
+export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
 
     const handleDelete = async (item) => {
         try {
@@ -220,11 +200,11 @@ export const TabContent = ({ data, renderItem, onDataDeleted, currentPage, limit
 
     return (
         <div className="tab-content">
-            {visibleData.length === 0 ? (
+            {items.length === 0 ? (
                 <p>No data found.</p>
             ) : (
                 <ul className="data-list">
-                {visibleData.map((item) => (
+                {items.map((item) => (
                     <li key={item.id} className="data-item">
                         <div className="item-content">
                             {renderItem(item, () => handleDelete(item))}

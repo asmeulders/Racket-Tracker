@@ -235,6 +235,7 @@ class Inquiry(db.Model):
     phone = db.Column(db.String(20), nullable=True)
     email = db.Column(db.String(120), nullable=False)
     message = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.Date, nullable=False)
 
     def to_json(self):
         return {
@@ -242,7 +243,8 @@ class Inquiry(db.Model):
             "name": self.name,
             "phone": self.phone,
             "email": self.email,
-            "message": self.message
+            "message": self.message,
+            "date": self.date
         }
     
 # ===================================================================

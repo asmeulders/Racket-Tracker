@@ -99,7 +99,8 @@ def init_db():
             db.session.commit()  
 
         if not Inquiry.query.first():
-            db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello')) 
+            inquiryDate = date.today()
+            db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
             db.session.commit()     
         
     return jsonify({"message": "Database initialized!"})
@@ -122,6 +123,24 @@ def get_users(limit: int):
         return jsonify([user.to_json() for user in users])
     except OperationalError:
         return jsonify([])
+    
+
+@app.route('/search-users/', methods=['GET'])
+def search_users():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+        
+    statement = db.select(User).order_by(User.username)
+
+    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "total_pages": pagination.pages,
+        "current_page": pagination.page,
+        "has_next": pagination.has_next,
+        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+    }
+
     
 @app.route('/create-user', methods=['POST'])
 def create_user():
@@ -202,6 +221,24 @@ def get_racket_by_id(racket_id: int):
         return jsonify(racket.to_json())
     return jsonify({"error": "Racket not found"}), 404
 
+
+@app.route('/search-rackets/', methods=['GET'])
+def search_rackets():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+        
+    statement = db.select(Racket).order_by(Racket.name)
+
+    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "total_pages": pagination.pages,
+        "current_page": pagination.page,
+        "has_next": pagination.has_next,
+        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+    }
+
+
 @app.route('/create-racket', methods=['POST'])
 def create_racket():
     """    
@@ -274,6 +311,23 @@ def get_strings(limit: int):
         return jsonify([s.to_json() for s in strings])
     except OperationalError:
         return jsonify([])
+    
+
+@app.route('/search-strings/', methods=['GET'])
+def search_strings():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+        
+    statement = db.select(String).order_by(String.name)
+
+    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "total_pages": pagination.pages,
+        "current_page": pagination.page,
+        "has_next": pagination.has_next,
+        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+    }
     
 @app.route('/create-string', methods=['POST'])
 def create_string():
@@ -349,6 +403,24 @@ def get_orders(limit: int):
         return jsonify([order.to_json() for order in orders])
     except OperationalError:
         return jsonify([])
+
+
+@app.route('/search-orders/', methods=['GET'])
+def search_orders():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+        
+    statement = db.select(Order).order_by(Order.orderDate)
+
+    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "total_pages": pagination.pages,
+        "current_page": pagination.page,
+        "has_next": pagination.has_next,
+        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+    }
+
 
 @app.route('/create-order', methods=['POST'])
 def create_order():
@@ -541,6 +613,23 @@ def get_brands(limit: int):
         return jsonify([])
 
 
+@app.route('/search-brands/', methods=['GET'])
+def search_brands():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+        
+    statement = db.select(Brand).order_by(Brand.name)
+
+    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "total_pages": pagination.pages,
+        "current_page": pagination.page,
+        "has_next": pagination.has_next,
+        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+    }
+
+
 @app.route('/create-brand', methods=['POST'])
 def create_brand():
     """    
@@ -608,6 +697,23 @@ def get_inquiries(limit: int):
         return jsonify([b.to_json() for b in inquiries])
     except OperationalError:
         return jsonify([])
+    
+    
+@app.route('/search-inquiries/', methods=['GET'])
+def search_inquiries():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+        
+    statement = db.select(Inquiry).order_by(Inquiry.date)
+
+    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "total_pages": pagination.pages,
+        "current_page": pagination.page,
+        "has_next": pagination.has_next,
+        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+    }
 
 
 @app.route('/create-inquiry', methods=['POST'])
@@ -624,9 +730,10 @@ def create_inquiry():
     phone = data.get('phone')
     email = data.get('email')
     message = data.get('message')
+    inquiryDate = date.today()
 
     try:
-        inquiry = Inquiry(name=name, phone=phone, email=email, message=message)
+        inquiry = Inquiry(name=name, phone=phone, email=email, message=message, date=inquiryDate)
         db.session.add(inquiry)
         db.session.commit()
 
