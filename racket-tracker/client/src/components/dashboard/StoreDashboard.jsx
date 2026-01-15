@@ -20,7 +20,7 @@ export function StoreDashboard() {
     const [activeTab, setActiveTab] = useState('orders');
     const[pageData, setPageData] = useState({
         'currentPage': 1,
-        'perPage': 1,
+        'perPage': 25,
         'totalPages': 1,
         'items': [],
         'hasNext': false
@@ -167,7 +167,7 @@ export function StoreDashboard() {
                         <p className='query-info'>
                             Queried {activeTab} - showing
                             <select name="numResults" id="num-results" value={pageData.perPage} onChange={handleSelect}>
-                                <option value="1">1</option>
+                                {/* <option value="1">1</option> */}
                                 <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="25">25</option>

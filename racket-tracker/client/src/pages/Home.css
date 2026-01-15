@@ -1,71 +1,127 @@
 .page-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
   width: 100%;
-}
-
-.landing, .about, .service-container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px; 
-}
-
-footer {
-  margin-top: auto;
-  width: 100%;
-  padding: 20px;
-  background-color: var(--secondary);
-  color: white;
-  text-align: center;
-}
-
-.footer {
-  display: flex;
-  flex: row;
-}
-
-.contact-form {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 15px;
-  max-width: 400px;
-}
-
-.form-label {
-  justify-self: right;
-  align-self: center;
-}
-
-.form-input-field {
-  justify-self: left;
-  padding: 15px;
-  border-left: 4px solid black;
-}
-
-.contact-form textarea {
-  width: 100%;
-  box-sizing: border-box;
-  resize: vertical;
-  min-width: 100%;
-  font-family: inherit; 
-  font-size: 1rem;
+  display: block;
 }
 
 .landing {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+
   height: 100vh;
+  width: 100vw;
+
+  margin: 0;
+  padding: 0;
+
+  background-image: 
+    linear-gradient(rgba(90, 90, 90, 0.6), var(--secondary-transparent)),
+    url('../assets/machine-photo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-.contact {
-  display: flex;
-  flex-direction: column;
+.landing h1 {
+  color: white;
+  font-size: 70px;
 }
 
 .submit-btn {
   color: white;
   grid-column: 1 / span 2;
 }
+
+/* About Section */
+.about-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 40px;
+}
+
+/* Professional Experience Section */
+.experience {
+  width: 100%;
+  margin: 0;
+  padding: 50px;
+  background-color: white;
+}
+
+.experience-item {
+  display: flex;
+  /* align-items: center; */
+  margin-bottom: 40px;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.experience-item::before {
+  -webkit-mask-image: linear-gradient(90deg, #000000 0%, #00000000 100%);
+  mask-image: linear-gradient(90deg, #000000 0%, #000000 60%, #00000000 100%);
+
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100px;
+  width: 200px;
+  height: 200px;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bu-item::before {
+  background-image: url('../assets/bu-icon.svg');
+}
+
+.kempton-item::before {
+  background-image: url('../assets/kempton-pro-shop-icon.jpg');
+}
+
+.ctc-item::before {
+  background-image: url('../assets/ctc-icon.png');
+  width: 300px;
+}
+
+.experience-item:last-child {
+  margin-bottom: 0;
+}
+
+.experience-date {
+  width: 200px;
+}
+
+.experience-content {
+  flex: 1;
+  padding-left: 40px;
+}
+
+.experience-content h3 {
+  margin-bottom: 5px;
+}
+
+.experience-content h4 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.responsibility-list {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+/* .responsibility-item {
+  list-style-type: disc;
+} */

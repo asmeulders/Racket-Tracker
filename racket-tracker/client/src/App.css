@@ -1,6 +1,8 @@
 :root {
   --primary: #5589a1;
   --secondary: #193b57;
+  --primary-transparent: #5589a140;
+  --secondary-transparent: #193b5740;
   --text-main: #2d3436;
   --text-muted: #636e72;
   --bg-app: #f5f6fa;
@@ -86,7 +88,12 @@ button {
   justify-content: center;
 }
 
-.container {
+/* .container {
   margin: 0 auto;
   padding: 0 var(--space-md);
+} */
+
+.container {
+  margin: 0;
+  padding: 0;
 }
