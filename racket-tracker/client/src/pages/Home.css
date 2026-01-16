@@ -35,12 +35,45 @@
 }
 
 /* About Section */
-.about-content {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 40px;
+.about-section {
+  width: 100%;
+  margin: 0;
+  padding: 50px;
+  background-color: #f5f6fa;
 }
+
+.about-item {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.about-title {
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+
+  width: 250px;
+  min-width: 250px;
+  height: 80px;
+
+  padding: 15px;
+  text-align: center;
+  color: white;
+  background-color: var(--primary);
+  border-radius: 12px;
+}
+
+.about-title h2 {
+  margin: 0;
+}
+
+.about-text p {
+  line-height: 1.6;
+  margin: 0;
+}
+
 
 /* Professional Experience Section */
 .experience {
@@ -52,10 +85,8 @@
 
 .experience-item {
   display: flex;
-  /* align-items: center; */
   margin-bottom: 40px;
   position: relative;
-  /* overflow: hidden; */
 }
 
 .experience-item::before {
