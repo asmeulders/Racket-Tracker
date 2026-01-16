@@ -3,11 +3,11 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import './StoreDashboard.css';
 
-import { Racket, RacketForm } from '../racket/Racket.jsx'
+import { Racket, RacketForm, RacketFilter } from '../racket/Racket.jsx'
 import { Order, OrderForm } from '../order/Order.jsx'
 import { String, StringForm } from '../string/String.jsx'
 import { User, UserForm } from '../user/User.jsx'
-import { Brand, BrandForm } from '../brand/Brand.jsx'
+import { Brand, BrandForm, BrandFilter } from '../brand/Brand.jsx'
 import { Inquiry } from '../inquiry/Inquiry.jsx';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../common/db_utils.js';
 
@@ -17,8 +17,8 @@ export function StoreDashboard() {
     const [rackets, setRackets] = useState([]);
     const [strings, setStrings] = useState([]);
     const [brands, setBrands] = useState([]);    
+    const [filters, setFilters] = useState({})
     
-
     const [activeTab, setActiveTab] = useState('order');
     const[pageData, setPageData] = useState({
         'currentPage': 1,
@@ -40,7 +40,13 @@ export function StoreDashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })
+            searchTable({ 
+                table: activeTab, 
+                page: pageData.currentPage, 
+                perPage: pageData.perPage, 
+                filters: filters,
+                onComplete: setPageData
+            })
         } catch (error) {
             console.error("Error connecting to server:" ,error)
         }
@@ -49,21 +55,27 @@ export function StoreDashboard() {
     const tabConfig = {
         order: {
             renderItem: (item, handleDelete) => <Order order={item} onDelete={(item) => handleDelete(item)} />,
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
         },
         racket: {
             renderItem: (item, handleDelete) => <Racket racket={item} onDelete={(item) => handleDelete(item)} />,
+            renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />
         },
         string: {
             renderItem: (item, handleDelete) => <String string={item} onDelete={(item) => handleDelete(item)} />,
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
         },
         user: {
             renderItem: (item, handleDelete) => <User user={item} onDelete={(item) => handleDelete(item)} />,
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
         },
         brand: {
             renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
         },
         inquiry: {
             renderItem: (item, handleDelete) => <Inquiry inquiry={item} onDelete={(item) => handleDelete(item)} />,
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
         }
     };
 
@@ -80,6 +92,7 @@ export function StoreDashboard() {
 
     const handleClick = (selectedTab) => {
         setActiveTab(selectedTab);
+        setFilters({});
         searchTable({ table: selectedTab, page: 1, perPage: pageData.perPage, onComplete: setPageData })
     }
 
@@ -103,7 +116,7 @@ export function StoreDashboard() {
 
     useEffect(() => {
         fetchDashboardData();
-    }, [pageData.currentPage, pageData.perPage]);
+    }, [pageData.currentPage, pageData.perPage, filters, activeTab]);
 
     const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
 
@@ -155,12 +168,7 @@ export function StoreDashboard() {
                     </button>
                 </div>
                 <div className='filter-content'>
-                    <FilterSearch 
-                        table={activeTab} 
-                        page={pageData.currentPage} 
-                        perPage={pageData.perPage} 
-                        onComplete={setPageData}
-                    />
+                    <FilterSearch renderFilter={currentTabConfig.renderFilter} onFilterChange={setFilters} />
                 </div>
                 <div className='content-box'>
                     <TabContent
@@ -181,9 +189,9 @@ export function StoreDashboard() {
                                 <option value="100">100</option>
                             </select> 
                             per page.
-                            <button className='arrow-btn' onClick={goLeft}>{'<'}</button>
+                            <button className='arrow-btn' onClick={goLeft}>&laquo;</button>
                             {pageData.currentPage}
-                            <button className='arrow-btn' onClick={goRight}>{'>'}</button>
+                            <button className='arrow-btn' onClick={goRight}>&raquo;</button>
                             of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
                         </p>
                     </div>              
@@ -229,27 +237,12 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
     );
 };
 
-const FilterSearch =  ({ table, page, perPage, onComplete }) => {
-
-    const handleChange = async (brandName) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/filter-${table}/`, {
-                params: {
-                    'brand_name': brandName,
-                    'page': page,
-                    'per_page': perPage
-                }
-            });
-            onComplete(response.data)
-        } catch (error) {
-            console.error("Error filtering brand:", error);
-        }
-    }
+const FilterSearch =  ({ renderFilter, onFilterChange }) => {
 
     return (
         <div className='filter-container'>
             <form>
-                <input type="text" onChange={(e) => handleChange(e.target.value)}/>
+                {renderFilter(onFilterChange)}
             </form>
         </div>
     )

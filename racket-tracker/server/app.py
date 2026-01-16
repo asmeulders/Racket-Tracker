@@ -19,6 +19,15 @@ db.init_app(app)
 
 CORS(app)
 
+MODEL_MAP = {
+    "brand": Brand,
+    "racket": Racket,
+    "string": String,
+    "user": User,
+    "inquiry": Inquiry,
+    "order": Order
+}
+
 # --- Routes ---
 
 # Create DBs and seed data if empty (For testing)
@@ -636,14 +645,68 @@ def get_brands(limit: int):
         return jsonify([])
 
 
-@app.route('/search-brand-table/', methods=['GET'])
-def search_brands():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
-        
-    statement = db.select(Brand).order_by(Brand.name)
+@app.route('/search-table/', methods=['POST'])
+def search_table():
+    """
+    Search the database and return a pagination object. Filters can be applied and will
+    be applied programmatically based on the current tab.
+    """
+    data = request.get_json()
 
-    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+    if not data or 'table_name' not in data or 'page' not in data or 'per_page' not in data:
+        return jsonify({"error": "Missing required fields 'page' or 'per_page'"}), 400
+    
+    table_name = data.get('table_name')
+    table = MODEL_MAP[table_name]
+
+    page = data.get('page')
+    per_page = data.get('per_page')
+    filters = data.get('filters')
+
+    # Basic query
+    stmt = db.select(table)
+
+    ## Applying Filters
+    # Order Filtering
+    if filters and table == Order:
+        pass
+    # Racket Filtering
+    elif filters and table == Racket:
+        brand_name = filters.get('brand_name')
+        racket_name = filters.get('racket_name')
+        price_min = filters.get('price_min')
+        price_max = filters.get('price_max')
+
+        if brand_name:
+            stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%"))).order_by(table.name.asc())
+
+        if racket_name:
+            stmt = stmt.where(table.name.ilike(f"%{racket_name}%")).order_by(table.name.asc())
+        
+        if price_min:
+            stmt = stmt.where(table.price >= float(price_min))
+
+        if price_max:
+            stmt = stmt.where(table.price <= float(price_max))
+    # String Filtering
+    elif filters and table == String:
+        pass
+    # User Filtering
+    elif filters and table == User:
+        pass
+    # Brand Filtering
+    elif filters and table == Brand:
+        brand_name = filters.get('brand_name')
+
+        if brand_name:
+            stmt = stmt.where(table.name.ilike(f"%{brand_name}%")).order_by(table.name.asc())
+    # Inquiry Filtering
+    elif filters and table == Inquiry:
+        pass
+    
+    pagination = db.paginate(select=stmt, page=page, per_page=per_page)
+        
+
     return {
         "items": [p.to_json() for p in pagination.items],
         "totalPages": pagination.pages,
@@ -657,7 +720,7 @@ def search_brands():
 @app.route('/filter-brand/', methods=['GET'])
 def filter_brand():
     """
-    Docstring for filter_brand
+    Applies a filter to the pagination search for Brands when using the store dashboard
     Filters:
         - brand_name
     """

@@ -123,3 +123,36 @@ export const RacketSelect = ({ onRacketChange, value, rackets }) => {
     
   )
 }
+
+export const RacketFilter = ({onFilterChange}) => {
+  /**
+   * The filter component for a racket in the dashboard.
+   * Filters:
+   *  - Brand Name
+   *  - Racket Name
+   *  - Price range
+   */
+  const [brandName, setBrandName] = useState('')
+  const [racketName, setRacketName] = useState('');
+  const [priceMin, setPriceMin] = useState('');
+  const [priceMax, setPriceMax] = useState('');
+
+  // Whenever these are changed by the user update the search
+  useEffect(() => {
+    onFilterChange({
+      'brand_name': brandName,
+      'racket_name': racketName,
+      'price_min': priceMin,
+      'price_max': priceMax
+    })
+  }, [brandName, racketName, priceMin, priceMax])
+
+  return (
+    <div className='filter-container'>
+      <input type="text" placeholder='Brand Name' onChange={(e) => setBrandName(e.target.value)}/>
+      <input type="text" placeholder='Racket Name' onChange={(e) => setRacketName(e.target.value)}/>
+      <input type="number" placeholder='Price Min' onChange={(e) => setPriceMin(e.target.value)}/>
+      <input type="number" placeholder='Price Max' onChange={(e) => setPriceMax(e.target.value)}/>
+    </div>
+  );
+};
