@@ -142,6 +142,33 @@ def search_users():
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
+@app.route('/filter-user', methods=['GET'])
+def filter_user():
+    """
+    Docstring for filter_user
+    Filters:
+        - order date
+        - due date
+        - complete
+        - paid
+        - user
+        - racket
+        - string
+    """
+    data = request.get_json()
+
+    order_date = data.get('order_date')
+    due_date = data.get('due_date')
+    complete = data.get('complete')
+    paid = data.get('paid')
+    username = data.get('username')
+    racket = data.get('racket')
+    string = data.get('string')
+
+    pass
+
+
+
     
 @app.route('/create-user', methods=['POST'])
 def create_user():
@@ -625,6 +652,35 @@ def search_brands():
         "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
+
+
+@app.route('/filter-brand/', methods=['GET'])
+def filter_brand():
+    """
+    Docstring for filter_brand
+    Filters:
+        - brand_name
+    """
+    brand_name = request.args.get('brand_name', '', type=str)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+
+    stmt = db.select(Brand)
+    if brand_name:
+        stmt = stmt.where(Brand.name.ilike(f"%{brand_name}%"))
+
+    try:
+        pagination = db.paginate(select=stmt.order_by(Brand.name.asc()), page=page, per_page=per_page)
+        return {
+            "items": [p.to_json() for p in pagination.items],
+            "totalPages": pagination.pages,
+            "currentPage": pagination.page,
+            "hasNext": pagination.has_next,
+            "perPage": pagination.per_page
+            # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
+        }
+    except OperationalError:
+        return jsonify([])
 
 
 @app.route('/create-brand', methods=['POST'])

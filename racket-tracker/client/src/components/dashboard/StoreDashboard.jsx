@@ -113,8 +113,8 @@ export function StoreDashboard() {
                 Initialize & Seed Databases
             </button>
             <div className='dashboard-container'>
-                <div className='filter-title'>
-                    <FilterSearch />
+                <div className='filter-header'>
+                    Filters
                 </div>
                 <div className='tab-header'>
                     <button 
@@ -155,7 +155,12 @@ export function StoreDashboard() {
                     </button>
                 </div>
                 <div className='filter-content'>
-                    <p>Fill in</p>
+                    <FilterSearch 
+                        table={activeTab} 
+                        page={pageData.currentPage} 
+                        perPage={pageData.perPage} 
+                        onComplete={setPageData}
+                    />
                 </div>
                 <div className='content-box'>
                     <TabContent
@@ -224,12 +229,28 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
     );
 };
 
-const FilterSearch =  () => {
+const FilterSearch =  ({ table, page, perPage, onComplete }) => {
+
+    const handleChange = async (brandName) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/filter-${table}/`, {
+                params: {
+                    'brand_name': brandName,
+                    'page': page,
+                    'per_page': perPage
+                }
+            });
+            onComplete(response.data)
+        } catch (error) {
+            console.error("Error filtering brand:", error);
+        }
+    }
+
     return (
         <div className='filter-container'>
-            <div className='filter-header'>
-                Filters
-            </div>
+            <form>
+                <input type="text" onChange={(e) => handleChange(e.target.value)}/>
+            </form>
         </div>
     )
 }
