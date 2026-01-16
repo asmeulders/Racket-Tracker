@@ -125,7 +125,7 @@ def get_users(limit: int):
         return jsonify([])
     
 
-@app.route('/search-users/', methods=['GET'])
+@app.route('/search-user-table/', methods=['GET'])
 def search_users():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 25, type=int)
@@ -223,7 +223,7 @@ def get_racket_by_id(racket_id: int):
     return jsonify({"error": "Racket not found"}), 404
 
 
-@app.route('/search-rackets/', methods=['GET'])
+@app.route('/search-racket-table/', methods=['GET'])
 def search_rackets():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 25, type=int)
@@ -315,7 +315,7 @@ def get_strings(limit: int):
         return jsonify([])
     
 
-@app.route('/search-strings/', methods=['GET'])
+@app.route('/search-string-table/', methods=['GET'])
 def search_strings():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 25, type=int)
@@ -408,7 +408,7 @@ def get_orders(limit: int):
         return jsonify([])
 
 
-@app.route('/search-orders/', methods=['GET'])
+@app.route('/search-order-table/', methods=['GET'])
 def search_orders():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 25, type=int)
@@ -544,26 +544,18 @@ def complete_order():
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
-@app.route('/pay-for-order', methods=['PATCH'])
-def pay_for_order():
+@app.route('/pay-for-order/<int:order_id>', methods=['PATCH'])
+def pay_for_order(order_id: int):
     """
     Toggles paying for an order
-    """
-    data = request.get_json()
-
-    if not data or not "order_id" in data or 'paid' not in data:
-        return jsonify({"error": "Missing required field 'order_id' or 'paid'"}), 400
-    
-    order_id = data.get('order_id')
-    paid = data.get('paid')
-
+    """    
     try:
         order = db.session.get(Order, order_id)
         
         if not order:
             return jsonify({"error": "Order not found"}), 404
         
-        order.paid = not paid
+        order.paid = not order.paid
 
         db.session.add(order)
         db.session.commit()
@@ -617,7 +609,7 @@ def get_brands(limit: int):
         return jsonify([])
 
 
-@app.route('/search-brands/', methods=['GET'])
+@app.route('/search-brand-table/', methods=['GET'])
 def search_brands():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 25, type=int)
@@ -704,7 +696,7 @@ def get_inquiries(limit: int):
         return jsonify([])
     
     
-@app.route('/search-inquiries/', methods=['GET'])
+@app.route('/search-inquiry-table/', methods=['GET'])
 def search_inquiries():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 25, type=int)

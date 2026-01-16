@@ -62,22 +62,22 @@ export const InquiryForm = () => {
   }
 
   return(
-    <div>
-      <h4>Request a service</h4>
+    <div className='contact-form-container'>
+      <div className='form-header'><h2>Need a racket strung? Contact Me!</h2></div>
       <form action="submit" className='contact-form' onSubmit={handleSubmit}>
-          <label htmlFor="name" className='form-label' >Name:</label>
-          <div className='form-input-field'><input type="text" id='name' placeholder='Your Name' value={name} onChange={(e) => setName(e.target.value)} required/>
+          {/* Name */}
+          <div className='form-input-item'><input type="text" id='name' className='form-input-field' placeholder='Enter Your Name' value={name} onChange={(e) => setName(e.target.value)} required/>
           </div>
-          
-          <label htmlFor="phone" className='form-label' >Phone Number:</label>
-          <div className='form-input-field'><input type="tel" id='phone' placeholder='Your Phone Number' value={phone} onChange={(e) => setPhone(e.target.value)}/>
+          {/* Phone */}
+          <div className='form-input-item'><input type="tel" id='phone' className='form-input-field' placeholder='Enter Your Phone Number' value={phone} onChange={(e) => setPhone(e.target.value)}/>
           </div>
-          <label htmlFor="email" className='form-label' >Email:</label>
-          <div className='form-input-field'><input type="email" id='email' placeholder='Your Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
+          {/* Email */}
+          <div className='form-input-item'><input type="email" id='email' className='form-input-field' placeholder='Enter Your Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
           </div>
-          <label htmlFor="message" className='form-label' >Message:</label>
-          <div className='form-input-field'><textarea id="message" placeholder="Your Message" maxLength={200} rows="5" value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
+          {/* Message */}
+          <div className='form-input-item'><textarea id="message" className='form-input-field' placeholder="Enter Your Message" maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
           </div>
+
           <button type="submit" className='submit-btn'>Submit Request</button>
       </form>
     </div>   

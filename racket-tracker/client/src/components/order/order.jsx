@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import axios from 'axios'
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 
@@ -31,12 +31,7 @@ export function Order({order, onDelete}) {
 
   const orderPaid = async (order) => {
     try{
-      const response = await axios.patch('http://localhost:5000/pay-for-order',
-        { 
-          "order_id": order.id,
-          "paid": paid
-        }
-      )
+      const response = await axios.patch(`http://localhost:5000/pay-for-order/${order.id}`)
       setPaid(response.data.order.paid)
     } catch (error) {
       if (error.response) {
@@ -46,6 +41,11 @@ export function Order({order, onDelete}) {
       }
     }
   }
+
+  useEffect(() => {
+    setComplete(order.complete);
+    setPaid(order.paid);
+  }, [order]);
 
   return (
     <div className='order-container'>

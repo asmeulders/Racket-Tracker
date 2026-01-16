@@ -37,7 +37,7 @@ export const fetchInquiries = async ({onComplete, limit = null}) => {
 export const searchTable = async ({table, page, perPage, onComplete}) => {
     try {
         console.log(`Searching for data from ${table} on page ${page}`);
-        const response = await axios.get(`http://127.0.0.1:5000/search-${table}/`,{
+        const response = await axios.get(`http://127.0.0.1:5000/search-${table}-table/`,{
             params: {
                 'page': page,
                 'per_page': perPage

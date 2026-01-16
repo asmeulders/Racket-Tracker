@@ -1,8 +1,75 @@
+/* Inquiry Element */
 .inquiry-container {
     position: relative;
-    padding: 20px;
     padding-right: 40px;
     border-top: 1px solid grey;
     border-bottom: 1px solid grey;
     text-align: left;
+}
+
+/* Inquiry Form */
+.contact-form-container {
+    width: 500px;
+    margin: 20px;
+}
+
+.form-header {
+    width: 100%;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-input-item {
+    width: 100%;
+}
+
+.form-input-field {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    box-sizing: border-box;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    background-color: var(--primary);
+    color: white;
+    line-height: 15px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.form-input-field::placeholder {
+  color: white;
+  opacity: 1;
+  font-weight: 400;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-input-field:focus {
+    outline: none;
+    background-color: var(--primary-transparent);
+}
+
+.contact-form textarea {
+    resize: none;
+    min-width: 100%;
+    height: 100px;
+    font-family: inherit; 
+}
+
+.submit-btn {
+    margin: 5px;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    background-color: var(--primary);
+    font-family: inherit;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary-transparent);
 }

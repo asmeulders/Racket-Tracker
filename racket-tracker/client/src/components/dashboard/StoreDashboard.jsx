@@ -12,12 +12,14 @@ import { Inquiry } from '../inquiry/Inquiry.jsx';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../common/db_utils.js';
 
 export function StoreDashboard() {
+    const [orders, setOrders] = useState([])
     const [users, setUsers] = useState([]);
     const [rackets, setRackets] = useState([]);
     const [strings, setStrings] = useState([]);
     const [brands, setBrands] = useState([]);    
+    
 
-    const [activeTab, setActiveTab] = useState('orders');
+    const [activeTab, setActiveTab] = useState('order');
     const[pageData, setPageData] = useState({
         'currentPage': 1,
         'perPage': 25,
@@ -38,7 +40,6 @@ export function StoreDashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            console.log(pageData);
             searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })
         } catch (error) {
             console.error("Error connecting to server:" ,error)
@@ -46,22 +47,22 @@ export function StoreDashboard() {
     }
 
     const tabConfig = {
-        orders: {
+        order: {
             renderItem: (item, handleDelete) => <Order order={item} onDelete={(item) => handleDelete(item)} />,
         },
-        rackets: {
+        racket: {
             renderItem: (item, handleDelete) => <Racket racket={item} onDelete={(item) => handleDelete(item)} />,
         },
-        strings: {
+        string: {
             renderItem: (item, handleDelete) => <String string={item} onDelete={(item) => handleDelete(item)} />,
         },
-        users: {
+        user: {
             renderItem: (item, handleDelete) => <User user={item} onDelete={(item) => handleDelete(item)} />,
         },
-        brands: {
+        brand: {
             renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
         },
-        inquiries: {
+        inquiry: {
             renderItem: (item, handleDelete) => <Inquiry inquiry={item} onDelete={(item) => handleDelete(item)} />,
         }
     };
@@ -104,7 +105,7 @@ export function StoreDashboard() {
         fetchDashboardData();
     }, [pageData.currentPage, pageData.perPage]);
 
-    const currentTabConfig = tabConfig[activeTab] || tabConfig.orders;
+    const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
 
     return (
         <div className='store-dashboard-page'>
@@ -117,38 +118,38 @@ export function StoreDashboard() {
                 </div>
                 <div className='tab-header'>
                     <button 
-                        className={getTabClass('orders')} 
-                        onClick={() => handleClick('orders')}
+                        className={getTabClass('order')} 
+                        onClick={() => handleClick('order')}
                     >
                         Orders
                     </button>
                     <button 
-                        className={getTabClass('rackets')} 
-                        onClick={() => handleClick('rackets')}
+                        className={getTabClass('racket')} 
+                        onClick={() => handleClick('racket')}
                     >
                         Rackets
                     </button>
                     <button 
-                        className={getTabClass('strings')} 
-                        onClick={() => handleClick('strings')}
+                        className={getTabClass('string')} 
+                        onClick={() => handleClick('string')}
                     >
                         Strings
                     </button>
                     <button 
-                        className={getTabClass('users')} 
-                        onClick={() => handleClick('users')}
+                        className={getTabClass('user')} 
+                        onClick={() => handleClick('user')}
                     >
                         Users
                     </button>
                     <button 
-                        className={getTabClass('brands')} 
-                        onClick={() => handleClick('brands')}
+                        className={getTabClass('brand')} 
+                        onClick={() => handleClick('brand')}
                     >
                         Brands
                     </button>
                     <button 
-                        className={getTabClass('inquiries')} 
-                        onClick={() => handleClick('inquiries')}
+                        className={getTabClass('inquiry')} 
+                        onClick={() => handleClick('inquiry')}
                     >
                         Inquiries
                     </button>
@@ -160,7 +161,7 @@ export function StoreDashboard() {
                     <TabContent
                         items={pageData.items}
                         renderItem={currentTabConfig.renderItem}
-                        onDataDeleted={() => searchTable({ table: activeTab, page: currentPage, perPage: pageData.perPage, onComplete: setPageData })}
+                        onDataDeleted={() => searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })}
                         activeTab={activeTab}
                     />
                     <div className='query-info-container'>
@@ -178,7 +179,7 @@ export function StoreDashboard() {
                             <button className='arrow-btn' onClick={goLeft}>{'<'}</button>
                             {pageData.currentPage}
                             <button className='arrow-btn' onClick={goRight}>{'>'}</button>
-                            of {pageData.totalPages}.
+                            of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
                         </p>
                     </div>              
                 </div>
