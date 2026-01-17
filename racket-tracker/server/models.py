@@ -135,8 +135,8 @@ class Order(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
-            "order_date": self.orderDate.isoformat() if self.orderDate else None, 
-            "due": self.due if self.due else None,
+            "order_date": self.orderDate.strftime('%Y-%m-%d') if self.orderDate else None, 
+            "due": self.due.strftime('%Y-%m-%d') if self.due else None,
             "price": self.price,
             "complete": self.complete,
             "paid": self.paid,
@@ -244,7 +244,7 @@ class Inquiry(db.Model):
             "phone": self.phone,
             "email": self.email,
             "message": self.message,
-            "date": self.date
+            "date": self.date.strftime('%Y-%m-%d')
         }
     
 # ===================================================================

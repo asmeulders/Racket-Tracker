@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './User.css'
+import { Inquiry } from '../inquiry/Inquiry';
 
 export function User({user, onDelete}) {
   return (
@@ -127,5 +128,19 @@ export const UserSelect = ({ onUserChange, value, users }) => {
       </select>
     </div>
     
+  )
+}
+
+export const UserFilter = ({onFilterChange}) => {
+  /**
+   * The filter component for a user in the dashboard.
+   * Filters:
+   *  - User Name
+   */
+
+  return (
+    <div className='filter-container'>
+      <input type="text" placeholder='User Name' onChange={(e) => onFilterChange(e.target.value)}/>
+    </div>
   )
 }

@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import './StoreDashboard.css';
 
 import { Racket, RacketForm, RacketFilter } from '../racket/Racket.jsx'
-import { Order, OrderForm } from '../order/Order.jsx'
-import { String, StringForm } from '../string/String.jsx'
-import { User, UserForm } from '../user/User.jsx'
+import { Order, OrderForm, OrderFilter } from '../order/Order.jsx'
+import { String, StringForm, StringFilter } from '../string/String.jsx'
+import { User, UserForm, UserFilter } from '../user/User.jsx'
 import { Brand, BrandForm, BrandFilter } from '../brand/Brand.jsx'
-import { Inquiry } from '../inquiry/Inquiry.jsx';
+import { Inquiry, InquiryFilter } from '../inquiry/Inquiry.jsx';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../common/db_utils.js';
 
 export function StoreDashboard() {
@@ -55,7 +55,7 @@ export function StoreDashboard() {
     const tabConfig = {
         order: {
             renderItem: (item, handleDelete) => <Order order={item} onDelete={(item) => handleDelete(item)} />,
-            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />
         },
         racket: {
             renderItem: (item, handleDelete) => <Racket racket={item} onDelete={(item) => handleDelete(item)} />,
@@ -63,11 +63,11 @@ export function StoreDashboard() {
         },
         string: {
             renderItem: (item, handleDelete) => <String string={item} onDelete={(item) => handleDelete(item)} />,
-            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />
         },
         user: {
             renderItem: (item, handleDelete) => <User user={item} onDelete={(item) => handleDelete(item)} />,
-            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />
         },
         brand: {
             renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
@@ -75,7 +75,7 @@ export function StoreDashboard() {
         },
         inquiry: {
             renderItem: (item, handleDelete) => <Inquiry inquiry={item} onDelete={(item) => handleDelete(item)} />,
-            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />
         }
     };
 

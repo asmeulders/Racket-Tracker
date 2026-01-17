@@ -28,11 +28,14 @@ MODEL_MAP = {
     "order": Order
 }
 
-# --- Routes ---
-
-# Create DBs and seed data if empty (For testing)
+# =======================================================================================================================
+# ----------------------------General Routes--------------------------------------------------------------------------------
+# =======================================================================================================================
 @app.route('/init_db', methods=['POST'])
 def init_db():
+    """
+    Generates basic data to test database interactions and front end
+    """
     with app.app_context():
         db.create_all()
         
@@ -115,33 +118,153 @@ def init_db():
     return jsonify({"message": "Database initialized!"})
 
 
-# =======================================================================================================================
-# ----------------------------User Routes--------------------------------------------------------------------------------
-# =======================================================================================================================
+@app.route('/search-table/', methods=['POST'])
+def search_table():
+    """
+    Search the database and return a pagination object. Filters can be applied and will
+    be applied programmatically based on the current tab.
+    """
+    data = request.get_json()
 
-@app.route('/users/', defaults={'limit': None})
-@app.route('/users/<int:limit>', methods=['GET'])
-def get_users(limit: int):
-    query = db.select(User).order_by(User.username.asc())
-
-    if limit is not None:
-        query = query.limit(limit)
-
-    try:
-        users = db.session.execute(query).scalars().all()
-        return jsonify([user.to_json() for user in users])
-    except OperationalError:
-        return jsonify([])
+    if not data or 'table_name' not in data or 'page' not in data or 'per_page' not in data:
+        return jsonify({"error": "Missing required fields 'page' or 'per_page'"}), 400
     
+    table_name = data.get('table_name')
+    table = MODEL_MAP[table_name]
 
-@app.route('/search-user-table/', methods=['GET'])
-def search_users():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
+    page = data.get('page')
+    per_page = data.get('per_page')
+    filters = data.get('filters')
+
+    # Basic query
+    stmt = db.select(table)
+
+    # ==================== Applying Filters ============================
+    # Order Filtering
+    if filters and table == Order:
+        if filters:
+            username = filters.get('username')
+            order_date = filters.get('order_date')
+            due_date = filters.get('due_date')
+            completed = filters.get('completed')
+            paid = filters.get('paid')
+            racket_brand = filters.get('racket_brand')
+            racket_name = filters.get('racket_name')
+            string_brand = filters.get('string_brand')
+            string_name = filters.get('string_name')
+
+            if username:
+                stmt = stmt.where(table.user.has(User.username.ilike(f"%{username}%")))
+            
+            if order_date:
+                stmt = stmt.where(table.orderDate == order_date)
+
+            if due_date:
+                stmt = stmt.where(table.due == due_date)
+
+            if completed:
+                print(completed)
+                if completed == 'completed':
+                    stmt = stmt.where(table.complete == True)
+                elif completed == 'uncompleted':
+                    stmt = stmt.where(table.complete == False)
+
+            if paid:
+                if paid == 'paid':
+                    stmt = stmt.where(table.paid == True)
+                elif paid == 'unpaid':
+                    stmt = stmt.where(table.paid == False)                
+
+            if racket_brand:
+                stmt = stmt.where(table.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racket_brand}%"))))
+
+            if racket_name:
+                stmt = stmt.where(table.racket.has(Racket.name.ilike(f"%{racket_name}%")))
         
-    statement = db.select(User).order_by(User.username)
+            if string_brand:
+                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{string_brand}%")))))
 
-    pagination = db.paginate(select=statement, page=page, per_page=per_page)
+            if string_name:
+                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.name.ilike(f"%{string_name}%"))))
+
+        # Default Ordering
+        stmt = stmt.order_by(table.due.desc()).order_by(table.id.asc())
+    # Racket Filtering
+    elif table == Racket:
+        if filters:
+            brand_name = filters.get('brand_name')
+            racket_name = filters.get('racket_name')
+            price_min = filters.get('price_min')
+            price_max = filters.get('price_max')
+
+            if brand_name:
+                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%")))
+
+            if racket_name:
+                stmt = stmt.where(table.name.ilike(f"%{racket_name}%"))
+            
+            if price_min:
+                stmt = stmt.where(table.price >= float(price_min))
+
+            if price_max:
+                stmt = stmt.where(table.price <= float(price_max))
+
+        stmt = stmt.order_by(db.func.lower(table.name).asc())
+    # String Filtering
+    elif table == String:
+        if filters:
+            brand_name = filters.get('brand_name')
+            string_name = filters.get('string_name')
+            price_min = filters.get('price_min')
+            price_max = filters.get('price_max')
+
+            if brand_name:
+                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%")))
+
+            if string_name:
+                stmt = stmt.where(table.name.ilike(f"%{string_name}%"))
+            
+            if price_min:
+                stmt = stmt.where(table.price_per_racket >= float(price_min))
+
+            if price_max:
+                stmt = stmt.where(table.price_per_racket <= float(price_max))
+
+        stmt = stmt.order_by(db.func.lower(table.name).asc())
+    # User Filtering
+    elif table == User:
+        if filters:
+            username = filters.get('username')
+
+            if username:
+                stmt = stmt.where(table.username.ilike(f"%{username}%"))
+
+        stmt = stmt.order_by(db.func.lower(table.username).asc())
+    # Brand Filtering
+    elif table == Brand:
+        if filters:
+            brand_name = filters.get('brand_name')
+
+            if brand_name:
+                stmt = stmt.where(table.name.ilike(f"%{brand_name}%"))
+
+        stmt = stmt.order_by(db.func.lower(table.name).asc())
+    # Inquiry Filtering
+    elif table == Inquiry:
+        if filters:
+            username = filters.get('username')
+            inq_date = filters.get('inq_date')
+
+            if username:
+                stmt = stmt.where(table.name.ilike(f"%{username}%"))
+            
+            if inq_date:
+                stmt = stmt.where(table.date == inq_date)
+        
+        stmt = stmt.order_by(table.date.desc()).order_by(db.func.lower(table.name).asc())   
+    
+    pagination = db.paginate(select=stmt, page=page, per_page=per_page)
+
     return {
         "items": [p.to_json() for p in pagination.items],
         "totalPages": pagination.pages,
@@ -151,38 +274,42 @@ def search_users():
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
-@app.route('/filter-user', methods=['GET'])
-def filter_user():
+
+# =======================================================================================================================
+# ----------------------------User Routes--------------------------------------------------------------------------------
+# =======================================================================================================================
+
+@app.route('/users/', defaults={'limit': None})
+@app.route('/users/<int:limit>', methods=['GET'])
+def get_users(limit: int):
     """
-    Docstring for filter_user
-    Filters:
-        - order date
-        - due date
-        - complete
-        - paid
-        - user
-        - racket
-        - string
+    Gets users from the database
+
+    Parameters:
+        - limit (int): limits the number of items that are returned
     """
-    data = request.get_json()
+    query = db.select(User).order_by(User.username.asc())
 
-    order_date = data.get('order_date')
-    due_date = data.get('due_date')
-    complete = data.get('complete')
-    paid = data.get('paid')
-    username = data.get('username')
-    racket = data.get('racket')
-    string = data.get('string')
+    # Checks if there is a limit
+    if limit is not None:
+        query = query.limit(limit)
 
-    pass
-
-
+    try:
+        users = db.session.execute(query).scalars().all()
+        return jsonify([user.to_json() for user in users])
+    except OperationalError:
+        return jsonify([])
 
     
 @app.route('/create-user', methods=['POST'])
 def create_user():
     """    
     Create a user from a user form input
+
+    Expected JSON Format:
+    {
+        'username': username
+    }
     """
     data = request.get_json()
 
@@ -191,6 +318,7 @@ def create_user():
     
     username = data.get('username')
 
+    # Checks for an existing user
     existing_user = db.session.execute(db.select(User).filter_by(username=username)).first()
     if existing_user:
         return jsonify({"error": "This user already exists"}), 409
@@ -210,7 +338,10 @@ def create_user():
 @app.route('/delete-user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id: int):
     """    
-    Delete a user
+    Delete a user from the database
+
+    Parameters:
+        - user_id (int): identifies the user
     """
     
     user = db.session.get(User, user_id)
@@ -235,8 +366,15 @@ def delete_user(user_id: int):
 @app.route('/rackets/', defaults={'limit': None})
 @app.route('/rackets/<int:limit>', methods=['GET'])
 def get_rackets(limit: int):
+    """
+    Fetches rackets from the database
+
+    Parameters:
+        - limit (int): limits the number of items returned by the databse
+    """
     query = db.select(Racket).order_by(Racket.name.asc())
 
+    # Checks for a limit
     if limit is not None:
         query = query.limit(limit)
         
@@ -249,9 +387,10 @@ def get_rackets(limit: int):
 @app.route('/get-racket-by-id/<int:racket_id>', methods=['GET'])
 def get_racket_by_id(racket_id: int):
     """    
-    :param racket_id: id of the racket
-    :type racket_id: int
-    :returns racket: json object
+    Fetches a single racket from the database by its id
+
+    Parameter:
+        - racket_id (int): identifies the racket
     """
     racket = db.session.get(Racket, racket_id)
     if racket: 
@@ -259,28 +398,17 @@ def get_racket_by_id(racket_id: int):
     return jsonify({"error": "Racket not found"}), 404
 
 
-@app.route('/search-racket-table/', methods=['GET'])
-def search_rackets():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
-        
-    statement = db.select(Racket).order_by(Racket.name)
-
-    pagination = db.paginate(select=statement, page=page, per_page=per_page)
-    return {
-        "items": [p.to_json() for p in pagination.items],
-        "totalPages": pagination.pages,
-        "currentPage": pagination.page,
-        "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
-        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-    }
-
-
 @app.route('/create-racket', methods=['POST'])
 def create_racket():
     """    
-    Create a racket from a user form input
+    Creates a racket
+
+    Expected JSON Format:
+    {
+        'name': name,
+        'price': price,
+        'brand_id': brand_id
+    }
     """
     data = request.get_json()
 
@@ -291,10 +419,12 @@ def create_racket():
     price = data.get('price')
     brand_id = data.get('brand_id')
 
+    # Looks for brand first
     brand = db.session.get(Brand, brand_id)
     if not brand:
         return jsonify({"error": "Brand does not exist"}), 404
 
+    # Checks for an existing racket
     existing_racket = db.session.execute(db.select(Racket).filter_by(name=name, price=price, brand=brand)).first()
     if existing_racket:
         return jsonify({"error": "This racket already exists"}), 409
@@ -314,9 +444,11 @@ def create_racket():
 @app.route('/delete-racket/<int:racket_id>', methods=['DELETE'])
 def delete_racket(racket_id: int):
     """    
-    Delete a racket
+    Deletes a single racket from the database by its id
+
+    Parameter:
+        - racket_id (int): identifies the racket
     """
-    
     racket = db.session.get(Racket, racket_id)
     if not racket:
         return jsonify({"error": "Racket not found"}), 404
@@ -339,6 +471,12 @@ def delete_racket(racket_id: int):
 @app.route('/strings/', defaults={'limit': None})
 @app.route('/strings/<int:limit>', methods=['GET'])
 def get_strings(limit: int):
+    """
+    Fetches strings from the database
+
+    Parameters:
+        - limit (int): limits the number of items returned by the databse
+    """
     query = db.select(String).order_by(String.name.asc())
 
     if limit is not None:
@@ -349,29 +487,19 @@ def get_strings(limit: int):
         return jsonify([s.to_json() for s in strings])
     except OperationalError:
         return jsonify([])
-    
 
-@app.route('/search-string-table/', methods=['GET'])
-def search_strings():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
-        
-    statement = db.select(String).order_by(String.name)
-
-    pagination = db.paginate(select=statement, page=page, per_page=per_page)
-    return {
-        "items": [p.to_json() for p in pagination.items],
-        "totalPages": pagination.pages,
-        "currentPage": pagination.page,
-        "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
-        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-    }
     
 @app.route('/create-string', methods=['POST'])
 def create_string():
     """    
-    Create a string from a user form input
+    Creates a string
+
+    Expected JSON Format:
+    {
+        'name': name,
+        'price_per_racket': price_per_racket,
+        'brand_id': brand_id
+    }
     """
     data = request.get_json()
 
@@ -382,10 +510,12 @@ def create_string():
     price_per_racket = data.get('price_per_racket')
     brand_id = data.get('brand_id')
 
+    # Looks for brand
     string_brand = db.session.get(Brand, brand_id)
     if not string_brand:
         return jsonify({"error": "Brand does not exist"}), 404
 
+    # Checks for an existing string
     existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket, brand=string_brand)).first()
     if existing_string:
         return jsonify({"error": "This string already exists"}), 409
@@ -406,9 +536,11 @@ def create_string():
 @app.route('/delete-string/<int:string_id>', methods=['DELETE'])
 def delete_string(string_id: int):
     """    
-    Delete a string
+    Deletes a string from the database by its id
+
+    Parameter:
+        - string_id (int): identifies the string
     """
-    
     string = db.session.get(String, string_id)
     if not string:
         return jsonify({"error": "String not found"}), 404
@@ -432,6 +564,12 @@ def delete_string(string_id: int):
 @app.route('/orders/', defaults={'limit': None})
 @app.route('/orders/<int:limit>', methods=['GET'])
 def get_orders(limit: int):
+    """
+    Fetches orders from the database
+
+    Parameters:
+        - limit (int): limits the number of items returned by the databse
+    """
     query = db.select(Order).order_by(Order.due.desc())
 
     if limit is not None:
@@ -444,33 +582,32 @@ def get_orders(limit: int):
         return jsonify([])
 
 
-@app.route('/search-order-table/', methods=['GET'])
-def search_orders():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
-        
-    statement = db.select(Order).order_by(Order.orderDate)
-
-    pagination = db.paginate(select=statement, page=page, per_page=per_page)
-    return {
-        "items": [p.to_json() for p in pagination.items],
-        "totalPages": pagination.pages,
-        "currentPage": pagination.page,
-        "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
-        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-    }
-
-
 @app.route('/create-order', methods=['POST'])
 def create_order():
     """    
-    Create an order from a user form input.
-    Need to get date and set the due date then set price
+    Creates an order. Automatically calculates the price based on the strings plus the default labor cost.
+    The variable same_for_crosses will is false for a hybrid setup. Change the labor_cost and labor_days 
+    variables to adjust the final price and the due date.
+
+    Expected JSON Format:
+    {
+        'user_id': user_id,
+        'racket_id': racket_id,
+        'string_id': string_id,
+        'tension': tension,
+        'same_for_crosses': same_for_crosses,
+        'paid': paid
+    }
+
+    Default Labor Cost: $25 per racket -> labor_cost
+    Default Labor Days: 4 days per racket -> labor_days
+
     ================================================================================
     TODO: include logic to add the racket to their list of rackets if it does not exist?
     ================================================================================
     """
+    labor_cost = 25
+    labor_days = 4
     data = request.get_json()
 
     if not data or "racket_id" not in data or "user_id" not in data or "string_id" not in data or "tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
@@ -487,9 +624,9 @@ def create_order():
     tension = data.get('tension')
     paid = data.get('paid')
 
-    # dates
+    # Dates
     orderDate = date.today()
-    four_days_later = date.today() + timedelta(days=4)
+    four_days_later = date.today() + timedelta(days=labor_days)
 
     user = db.session.get(User, user_id)
     if not user:
@@ -503,6 +640,7 @@ def create_order():
     if not mains:
         return jsonify({"error": "String does not exist"}), 404
     
+
     if not same_for_crosses:
         crosses_id = data.get('crosses_id')
         crosses_tension = data.get('crosses_tension')
@@ -514,7 +652,8 @@ def create_order():
     
     try:
         if same_for_crosses:
-            price = 25 + mains.price_per_racket
+            # Single string setup
+            price = labor_cost + mains.price_per_racket
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
             
@@ -524,7 +663,8 @@ def create_order():
             db.session.add(order)
             db.session.commit()
         else:
-            price = 25 + (mains.price_per_racket + crosses.price_per_racket)/2
+            # Hybrid setup
+            price = labor_cost + (mains.price_per_racket + crosses.price_per_racket)/2
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
 
@@ -546,7 +686,10 @@ def create_order():
 @app.route('/complete-order', methods=['PATCH'])
 def complete_order():
     """
-    Completes an order
+    Marks and order as completed/uncompleted. Is toggled from the store dashboard.
+
+    ======================================================================
+    TODO: Change implementation to a toggle
     """
     data = request.get_json()
 
@@ -583,7 +726,7 @@ def complete_order():
 @app.route('/pay-for-order/<int:order_id>', methods=['PATCH'])
 def pay_for_order(order_id: int):
     """
-    Toggles paying for an order
+    Marks and order as paid/unpaid. Is toggled from the store dashboard.
     """    
     try:
         order = db.session.get(Order, order_id)
@@ -607,7 +750,10 @@ def pay_for_order(order_id: int):
 @app.route('/delete-order/<int:order_id>', methods=['DELETE'])
 def delete_order(order_id: int):
     """    
-    Delete an order
+    Deletes an order from the database by its id
+
+    Parameter:
+        - order_id (int): identifies the order
     """
     
     order = db.session.get(Order, order_id)
@@ -633,6 +779,12 @@ def delete_order(order_id: int):
 @app.route('/brands/', defaults={'limit': None})
 @app.route('/brands/<int:limit>', methods=['GET'])
 def get_brands(limit: int):
+    """
+    Fetches brands from the database
+
+    Parameters:
+        - limit (int): limits the number of items returned by the databse
+    """
     query = db.select(Brand).order_by(Brand.name.asc())
 
     if limit is not None:
@@ -645,111 +797,15 @@ def get_brands(limit: int):
         return jsonify([])
 
 
-@app.route('/search-table/', methods=['POST'])
-def search_table():
-    """
-    Search the database and return a pagination object. Filters can be applied and will
-    be applied programmatically based on the current tab.
-    """
-    data = request.get_json()
-
-    if not data or 'table_name' not in data or 'page' not in data or 'per_page' not in data:
-        return jsonify({"error": "Missing required fields 'page' or 'per_page'"}), 400
-    
-    table_name = data.get('table_name')
-    table = MODEL_MAP[table_name]
-
-    page = data.get('page')
-    per_page = data.get('per_page')
-    filters = data.get('filters')
-
-    # Basic query
-    stmt = db.select(table)
-
-    ## Applying Filters
-    # Order Filtering
-    if filters and table == Order:
-        pass
-    # Racket Filtering
-    elif filters and table == Racket:
-        brand_name = filters.get('brand_name')
-        racket_name = filters.get('racket_name')
-        price_min = filters.get('price_min')
-        price_max = filters.get('price_max')
-
-        if brand_name:
-            stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%"))).order_by(table.name.asc())
-
-        if racket_name:
-            stmt = stmt.where(table.name.ilike(f"%{racket_name}%")).order_by(table.name.asc())
-        
-        if price_min:
-            stmt = stmt.where(table.price >= float(price_min))
-
-        if price_max:
-            stmt = stmt.where(table.price <= float(price_max))
-    # String Filtering
-    elif filters and table == String:
-        pass
-    # User Filtering
-    elif filters and table == User:
-        pass
-    # Brand Filtering
-    elif filters and table == Brand:
-        brand_name = filters.get('brand_name')
-
-        if brand_name:
-            stmt = stmt.where(table.name.ilike(f"%{brand_name}%")).order_by(table.name.asc())
-    # Inquiry Filtering
-    elif filters and table == Inquiry:
-        pass
-    
-    pagination = db.paginate(select=stmt, page=page, per_page=per_page)
-        
-
-    return {
-        "items": [p.to_json() for p in pagination.items],
-        "totalPages": pagination.pages,
-        "currentPage": pagination.page,
-        "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
-        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-    }
-
-
-@app.route('/filter-brand/', methods=['GET'])
-def filter_brand():
-    """
-    Applies a filter to the pagination search for Brands when using the store dashboard
-    Filters:
-        - brand_name
-    """
-    brand_name = request.args.get('brand_name', '', type=str)
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
-
-    stmt = db.select(Brand)
-    if brand_name:
-        stmt = stmt.where(Brand.name.ilike(f"%{brand_name}%"))
-
-    try:
-        pagination = db.paginate(select=stmt.order_by(Brand.name.asc()), page=page, per_page=per_page)
-        return {
-            "items": [p.to_json() for p in pagination.items],
-            "totalPages": pagination.pages,
-            "currentPage": pagination.page,
-            "hasNext": pagination.has_next,
-            "perPage": pagination.per_page
-            # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-        }
-    except OperationalError:
-        return jsonify([])
-
-
 @app.route('/create-brand', methods=['POST'])
 def create_brand():
     """    
-    Create a brand from a user form input
+    Creates a brand
+
+    Expected JSON Format:
+    {
+        'name': name
+    }
     """
     data = request.get_json()
 
@@ -757,7 +813,8 @@ def create_brand():
         return jsonify({"error": "Missing required fields 'name' or 'data'"}), 400
     
     name = data.get('name')
-
+    
+    # Checks for an existing brand
     existing_brand = db.session.execute(db.select(Brand).filter_by(name=name)).first()
     if existing_brand:
         return jsonify({"error": "This user already exists"}), 409
@@ -777,7 +834,10 @@ def create_brand():
 @app.route('/delete-brand/<int:brand_id>', methods=['DELETE'])
 def delete_brand(brand_id: int):
     """    
-    Delete a brand
+    Deletes a brand from the database by its id
+
+    Parameter:
+        - brand_id (int): identifies the brand
     """
     
     brand = db.session.get(Brand, brand_id)
@@ -803,6 +863,12 @@ def delete_brand(brand_id: int):
 @app.route('/inquiries/', defaults={'limit': None})
 @app.route('/inquiries/<int:limit>', methods=['GET'])
 def get_inquiries(limit: int):
+    """
+    Fetches inquiries from the database
+
+    Parameters:
+        - limit (int): limits the number of items returned by the databse
+    """
     query = db.select(Inquiry).order_by(Inquiry.name.asc())
 
     if limit is not None:
@@ -813,30 +879,20 @@ def get_inquiries(limit: int):
         return jsonify([b.to_json() for b in inquiries])
     except OperationalError:
         return jsonify([])
-    
-    
-@app.route('/search-inquiry-table/', methods=['GET'])
-def search_inquiries():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 25, type=int)
-        
-    statement = db.select(Inquiry).order_by(Inquiry.date)
-
-    pagination = db.paginate(select=statement, page=page, per_page=per_page)
-    return {
-        "items": [p.to_json() for p in pagination.items],
-        "totalPages": pagination.pages,
-        "currentPage": pagination.page,
-        "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
-        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-    }
 
 
 @app.route('/create-inquiry', methods=['POST'])
 def create_inquiry():
     """    
-    Create an inquiry from a user form input
+    Creates a brand
+
+    Expected JSON Format:
+    {
+        'name': name,
+        'phone': phone,
+        'email': email,
+        'message': message
+    }
     """
     data = request.get_json()
 
@@ -864,7 +920,10 @@ def create_inquiry():
 @app.route('/delete-inquiry/<int:inquiry_id>', methods=['DELETE'])
 def delete_inquiry(inquiry_id: int):
     """    
-    Delete a inquiry
+    Deletes an inquiry from the database by its id
+
+    Parameter:
+        - inquiry_id (int): identifies the inquiry
     """
     
     inquiry = db.session.get(Inquiry, inquiry_id)

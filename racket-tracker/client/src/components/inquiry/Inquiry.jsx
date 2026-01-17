@@ -4,8 +4,9 @@ import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './Inquiry.css';
 
 export function Inquiry({inquiry, onDelete}) {
-  const displayDate = inquiry.date ? format(new Date(inquiry.date), 'MM/dd/yyyy') : null;
-
+  const displayDate = inquiry.date ? format(parseISO(inquiry.date), 'MM/dd/yyyy') : null;
+  
+  console.log(inquiry.date, displayDate)
   return (
       <div className='inquiry-container'>
         <div className='inquiry-header'>
@@ -81,5 +82,31 @@ export const InquiryForm = () => {
           <button type="submit" className='submit-btn'>Submit Request</button>
       </form>
     </div>   
+  )
+}
+
+export const InquiryFilter = ({onFilterChange}) => {
+  /**
+   * The filter component for an inquiry in the dashboard.
+   * Filters:
+   *  - User Name
+   *  - Inquiry Date
+   */
+  const [username, setUsername] = useState('')
+  const [inqDate, setInqDate] = useState('');
+
+  // Whenever these are changed by the user update the search
+  useEffect(() => {
+    onFilterChange({
+      'username': username,
+      'inq_date': inqDate
+    })
+  }, [username, inqDate])
+
+  return (
+    <div className='filter-container'>
+      <input type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
+      <input type="date" onChange={(e) => setInqDate(e.target.value)}/>
+    </div>
   )
 }
