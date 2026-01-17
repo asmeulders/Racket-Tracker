@@ -682,21 +682,11 @@ def create_order():
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
-@app.route('/complete-order', methods=['PATCH'])
-def complete_order():
+@app.route('/complete-order/<int:order_id>', methods=['PATCH'])
+def complete_order(order_id: int):
     """
     Marks and order as completed/uncompleted. Is toggled from the store dashboard.
-
-    ======================================================================
-    TODO: Change implementation to a toggle
     """
-    data = request.get_json()
-
-    if not data or not "order_id" in data:
-        return jsonify({"error": "Missing required field 'order_id'"}), 400
-    
-    order_id = data.get('order_id')
-
     try:
         order = db.session.get(Order, order_id)
         
@@ -709,7 +699,7 @@ def complete_order():
                 "order": order.to_json() 
             }), 200
         
-        order.complete = True
+        order.complete = not order.complete
 
         db.session.add(order)
         db.session.commit()
