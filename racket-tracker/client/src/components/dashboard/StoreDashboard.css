@@ -6,6 +6,7 @@
   width: 100%;
 }
 
+/* Dashboard Navbar */
 .tab-button {
   flex: 1;
   padding: 10px 20px;
@@ -48,12 +49,14 @@
   overflow: hidden;
 }
 
+/* Filters */
 .filter-content {
   background-color: white;
 }
 
 .filter-container {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   width: 200px;
 }
@@ -70,6 +73,18 @@
   color: white;
 }
 
+/* Racket/String Input Boxes */
+.brand-item-container {
+  display: flex;
+  width: 100%;
+}
+
+.brand-item-container input {
+  display: flex;
+  width: 100%;
+}
+
+/* Main Content */
 .content-box {
   display: flex;
   flex-direction: column;
@@ -86,6 +101,7 @@
   padding: 20px;
 }
 
+/* Dashboard footer */
 .query-info-container {
   width: 100%;
   box-sizing: border-box;
@@ -99,20 +115,4 @@
   color: white;
   border: solid 1px white;
   border-radius: 3px;
-}
-
-.filter-container {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-}
-
-.brand-item-container {
-  display: flex;
-  width: 100%;
-}
-
-.brand-item-container input {
-  display: flex;
-  width: 100%;
 }

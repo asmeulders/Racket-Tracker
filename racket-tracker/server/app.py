@@ -163,7 +163,6 @@ def search_table():
                 stmt = stmt.where(table.due == due_date)
 
             if completed:
-                print(completed)
                 if completed == 'completed':
                     stmt = stmt.where(table.complete == True)
                 elif completed == 'uncompleted':
