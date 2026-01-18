@@ -17,7 +17,7 @@
 
   background-image: 
     linear-gradient(rgba(90, 90, 90, 0.6), var(--secondary-transparent)),
-    url('../assets/machine-photo.jpg');
+    url('./assets/machine-photo.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

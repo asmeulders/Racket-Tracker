@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { OrderForm } from '../../components/order/Order';
+import { OrderForm } from './Order';
 import { fetchOrders, fetchRackets, fetchStrings, fetchUsers } from '../../common/db_utils';
+import { useParams } from 'react-router-dom';
+import axios from 'axios'
+
 
 export function OrderPage() {
     const [orders, setOrders] = useState([])
@@ -39,3 +42,19 @@ export function OrderPage() {
         </div>
     );
 };
+
+export const EditOrderPage = () => {
+    const { id } = useParams();
+    const [order, setOrder] = useState(null);
+
+    useEffect(() => {
+        axios.get(`http://localhost:5000/get-order/${id}`)
+        .then(res => setOrder(res.data));
+    }, [id]);
+
+    return(
+        <div>
+            <p>{order && order.id}</p>
+        </div>
+    )
+}

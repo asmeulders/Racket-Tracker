@@ -579,6 +579,20 @@ def get_orders(limit: int):
         return jsonify([order.to_json() for order in orders])
     except OperationalError:
         return jsonify([])
+    
+
+@app.route('/get-order/<int:order_id>', methods=['GET'])
+def get_order_by_id(order_id: int):
+    """    
+    Fetches a single racket from the database by its id
+
+    Parameter:
+        - racket_id (int): identifies the racket
+    """
+    racket = db.session.get(Order, order_id)
+    if racket: 
+        return jsonify(racket.to_json())
+    return jsonify({"error": "Racket not found"}), 404
 
 
 @app.route('/create-order', methods=['POST'])

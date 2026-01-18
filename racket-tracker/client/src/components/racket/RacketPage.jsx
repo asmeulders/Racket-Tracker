@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RacketForm } from '../../components/racket/Racket';
+import { RacketForm } from './Racket';
 import { fetchBrands, fetchRackets } from '../../common/db_utils';
 
 export function RacketPage() {

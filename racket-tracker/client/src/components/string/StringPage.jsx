@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { StringForm } from '../../components/string/String';
+import { StringForm } from './String';
 import { fetchBrands, fetchStrings } from '../../common/db_utils';
 
 export function StringPage() {

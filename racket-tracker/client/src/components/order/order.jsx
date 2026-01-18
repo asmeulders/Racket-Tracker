@@ -1,6 +1,7 @@
 import { use, useEffect, useState } from 'react';
 import axios from 'axios'
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 import { RacketSelect } from '../racket/Racket'
 import { StringSelect } from '../string/String'
@@ -14,6 +15,8 @@ export function Order({order, onDelete}) {
 
   const displayDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
 
+  const navigate = useNavigate();
+  
   const completeOrder = async (order) => {
     try{
       const response = await axios.patch(`http://localhost:5000/complete-order/${order.id}`)
@@ -40,6 +43,8 @@ export function Order({order, onDelete}) {
     }
   }
 
+  // const handleClick = async(order) = {}
+
   useEffect(() => {
     setComplete(order.complete);
     setPaid(order.paid);
@@ -48,6 +53,9 @@ export function Order({order, onDelete}) {
   return (
     <div className='order-container'>
       <div className='order-header'>
+        <button onClick={() => navigate(`/edit-order/${order.id}`)}>
+          Edit Order
+        </button>
         <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
         <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
       </div>

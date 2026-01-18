@@ -5,7 +5,7 @@ import './Home.css';
 
 import { Footer } from './components/footer/Footer';
 
-import buIcon from '../assets/bu-icon.svg';
+import buIcon from './assets/bu-icon.svg';
 
 const Home = () => {
     
@@ -24,22 +24,20 @@ const Home = () => {
                         <div className='about-text'>
                             <p>
                                 I am a student at <a href="https://www.bu.edu/" target='_blank' rel="noreferrer">Boston University</a> with a major in 
-                                Computer Science and a minor in Physics in the class of 2027. I play on the 
-                                <a href="https://www.instagram.com/bostonuclubtennis/?hl=en" target='_blank' rel="noreferrer"> BU Club Tennis Team</a> playing in 
-                                sectionals for two years in a row and I currently serve as the treasurer and p
-                                reviously I was one of the captains. I coach tennis  at BU in the Track and 
-                                Tennis Center and string racquets on my own! I coached tennis over the summer 
-                                of 2025 at the Cambridge Tennis Club for their outreach clinic and I used to work 
-                                at Kempton Pro Shop in Watertown, MA. There, I strung an average of 6 racquets 
-                                every four hours while attending to customers giving advice and selling merchandise. 
-                                Now I string on my own and decided to make this website! I have played throughout 
-                                high school where we had great success in our section and I was captain and MVP 
-                                my senior year. My favorite player is Roger Federer and he inspires me to play
-                                with an aggressive serve and volley playstyle. I was so fortunate to attend 
+                                Computer Science and a minor in Physics graduating in 2027. I play on the 
+                                <a href="https://www.instagram.com/bostonuclubtennis/?hl=en" target='_blank' rel="noreferrer"> BU Club Tennis Team</a>, competing in 
+                                sectionals for two years in a row. I currently serve as the treasurer, and
+                                led team practices as a captain the year prior. I also coach tennis at BU in the Track and 
+                                Tennis Center, and enjoy stringing racquets on my own. Over Summer 2025, I coached tennis 
+                                at the Cambridge Tennis Club for their outreach clinic and I used to work 
+                                at Kempton Pro Shop in Watertown, MA. There I strung an average of 6 racquets 
+                                every four hours while attending to customers, giving advice and selling merchandise. 
+                                Utilizing my experiences, I now string independently and made this website to better organize my work. I have played throughout 
+                                high school, where we had great success in our section. During senior year, I was captain and MVP. My favorite player is Roger Federer, and he inspires me to compete
+                                with an aggressive serve and volley playstyle. I was very fortunate to attend 
                                 the <a href='https://greatbasetennis.com/' target='_blank' rel="noreferrer">Great Base Tennis Academy</a> where
-                                I learned so much about the way I know coach and play tennis. Without this
-                                experience I would not be the same person I am today because it motivated me to 
-                                dedicate myself to my training and to tennis in a way I had never done before.
+                                I learned the fundamentals of both coaching and playing tennis. My time at the Academy motivated me to 
+                                dedicate myself to my training and to tennis in a way I had never done before, and in a way that allows me to help others.
                             </p>
                         </div>
                     </div>

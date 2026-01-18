@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { UserForm } from '../../components/user/User';
+import { UserForm } from './User';
 import { fetchUsers } from '../../common/db_utils';
 
 export function UserPage() {
