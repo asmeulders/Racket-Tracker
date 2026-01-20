@@ -9,6 +9,7 @@ import { String, StringForm, StringFilter } from '../string/String.jsx'
 import { User, UserForm, UserFilter } from '../user/User.jsx'
 import { Brand, BrandForm, BrandFilter } from '../brand/Brand.jsx'
 import { Inquiry, InquiryFilter } from '../inquiry/Inquiry.jsx';
+import ItemModal from './ItemModal.jsx';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../common/db_utils.js';
 
 export function StoreDashboard() {
@@ -208,13 +209,21 @@ export function StoreDashboard() {
 
 
 export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleDelete = async (item) => {
-        try {
-            await axios.delete(`http://localhost:5000/delete-${activeTab}/${item.id}`);
-            onDataDeleted(); 
-        } catch (error) {
-            console.error("Error deleting item:", error);
+        const confirmed = window.confirm("Are you sure you want to delete this item?");
+  
+        if (confirmed) {
+            try {
+                await axios.delete(`http://localhost:5000/delete-${activeTab}/${item.id}`);
+                onDataDeleted(); 
+            } catch (error) {
+                console.error("Error deleting item:", error);
+            }
+            console.log("Item deleted!");
+        } else {
+            console.log("Action cancelled.");
         }
     };
 
@@ -229,6 +238,12 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                         <div className="item-content">
                             {renderItem(item, () => handleDelete(item))}
                         </div>
+                        <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+
+                        <ItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                            <button>Edit</button>
+                            <button onClick={(item) => handleDelete(item)}>Delete</button>
+                        </ItemModal>
                     </li>
                 ))}
                 </ul>
