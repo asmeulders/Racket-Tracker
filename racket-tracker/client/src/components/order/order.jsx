@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { RacketSelect } from '../racket/Racket'
 import { StringSelect } from '../string/String'
 import { UserSelect } from '../user/User';
+import Dropdown from '../dashboard/Dropdown';
 
 import './Order.css';
 
@@ -43,7 +44,22 @@ export function Order({order, onDelete}) {
     }
   }
 
-  // const handleClick = async(order) = {}
+  const handleDelete = async () => {
+    console.log(order);
+    const confirmed = window.confirm("Are you sure you want to delete this item?");
+
+    if (confirmed) {
+      try {
+        await axios.delete(`http://localhost:5000/delete-order/${order.id}`);
+        onDelete();
+      } catch (error) {
+        console.error("Error deleting order:", error);
+      }
+      console.log("Item deleted!");
+    } else {
+      console.log("Action cancelled.");
+    }
+  };
 
   useEffect(() => {
     setComplete(order.complete);
@@ -53,9 +69,7 @@ export function Order({order, onDelete}) {
   return (
     <div className='order-container'>
       <div className='order-header'>
-        <button onClick={() => navigate(`/edit-order/${order.id}`)}>
-          Edit Order
-        </button>
+        <Dropdown onDelete={handleDelete} onEdit={() => navigate(`/edit-order/${order.id}`)}></Dropdown>                        
         <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
         <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
       </div>
