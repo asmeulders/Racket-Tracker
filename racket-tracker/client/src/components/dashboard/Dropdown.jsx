@@ -18,10 +18,14 @@ const Dropdown = ({onDelete, onEdit}) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    console.log(isOpen);
+  }, [isOpen])
+
   return (
-    <div ref={dropdownRef} className="dropdown-container" style={{ position: 'relative', display: 'inline-block' }}>
+    <div ref={dropdownRef} className='meatballs-btn'>
       <button onClick={toggleDropdown}>
-        Options ▼
+        &hellip;
       </button>
 
       {isOpen && (

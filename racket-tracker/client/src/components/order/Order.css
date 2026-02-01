@@ -1,11 +1,11 @@
-.order-container {
+/* .order-container {
     position: relative;
     padding-bottom: 10px;
     padding-right: 40px;
     border-top: 1px solid grey;
     border-bottom: 1px solid grey;
     text-align: left;
-}
+} */
 
 .order-header {
     display: flex;
@@ -35,14 +35,6 @@
     align-items: right;
     width: 100%;
     gap: 10px;
-}
-
-.delete-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px;
-    line-height: 1;
 }
 
 .paid-btn {

@@ -4,17 +4,10 @@ import "./String.css"
 
 import { BrandSelect } from '../brand/Brand'
 
-export function String({string, onDelete}) {
+export function String({string}) {
   return (
     <div className='string-container'>
       {string.brand_name} {string.name} - ${string.price_per_racket} 
-      <button 
-          className="delete-btn"
-          onClick={(order) => onDelete(order)}
-          aria-label="Delete item"
-        >
-          X
-      </button>
     </div>
   )
 }

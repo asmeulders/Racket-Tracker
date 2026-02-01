@@ -55,27 +55,27 @@ export function StoreDashboard() {
 
     const tabConfig = {
         order: {
-            renderItem: (item, handleDelete) => <Order order={item} onDelete={(item) => handleDelete(item)} />,
+            renderItem: (item) => <Order order={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />
         },
         racket: {
-            renderItem: (item, handleDelete) => <Racket racket={item} onDelete={(item) => handleDelete(item)} />,
+            renderItem: (item) => <Racket racket={item} />,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />
         },
         string: {
-            renderItem: (item, handleDelete) => <String string={item} onDelete={(item) => handleDelete(item)} />,
+            renderItem: (item) => <String string={item} />,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />
         },
         user: {
-            renderItem: (item, handleDelete) => <User user={item} onDelete={(item) => handleDelete(item)} />,
+            renderItem: (item) => <User user={item} />,
             renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />
         },
         brand: {
-            renderItem: (item, handleDelete) => <Brand brand={item} onDelete={(item) => handleDelete(item)} />,
+            renderItem: (item) => <Brand brand={item} />,
             renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
         },
         inquiry: {
-            renderItem: (item, handleDelete) => <Inquiry inquiry={item} onDelete={(item) => handleDelete(item)} />,
+            renderItem: (item) => <Inquiry inquiry={item} />,
             renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />
         }
     };
@@ -209,21 +209,22 @@ export function StoreDashboard() {
 
 
 export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
-    // const handleDelete = async (item) => {
-    //     const confirmed = window.confirm("Are you sure you want to delete this item?");
-  
-    //     if (confirmed) {
-    //         try {
-    //             await axios.delete(`http://localhost:5000/delete-${activeTab}/${item.id}`);
-    //             onDataDeleted(); 
-    //         } catch (error) {
-    //             console.error("Error deleting item:", error);
-    //         }
-    //         console.log("Item deleted!");
-    //     } else {
-    //         console.log("Action cancelled.");
-    //     }
-    // };
+    const handleDelete = async (item) => {
+        console.log(item);
+        const confirmed = window.confirm("Are you sure you want to delete this item?");
+
+        if (confirmed) {
+        try {
+            await axios.delete(`http://localhost:5000/delete-order/${item.id}`);
+            onDelete();
+        } catch (error) {
+            console.error("Error deleting order:", error);
+        }
+        console.log("Item deleted!");
+        } else {
+        console.log("Action cancelled.");
+        }
+    };
 
     return (
         <div className="tab-content">
@@ -235,6 +236,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                         <li key={item.id} className="data-item">
                             <div className="item-content">
                                 {renderItem(item, onDataDeleted)}
+                                <Dropdown onDelete={(item) => handleDelete(item)} onEdit={() => navigate(`/edit-order/${item.id}`)}></Dropdown>                        
                             </div>                        
                         </li>
                     ))}

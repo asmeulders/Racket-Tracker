@@ -1,22 +1,21 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios'
-import { format, parseISO, formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 import { RacketSelect } from '../racket/Racket'
 import { StringSelect } from '../string/String'
 import { UserSelect } from '../user/User';
-import Dropdown from '../dashboard/Dropdown';
 
 import './Order.css';
 
-export function Order({order, onDelete}) {
+export function Order({order}) {
   const [complete, setComplete] = useState(order.complete);
   const [paid, setPaid] = useState(order.paid);
 
   const displayDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   
   const completeOrder = async (order) => {
     try{
@@ -44,22 +43,22 @@ export function Order({order, onDelete}) {
     }
   }
 
-  const handleDelete = async () => {
-    console.log(order);
-    const confirmed = window.confirm("Are you sure you want to delete this item?");
+  // const handleDelete = async () => {
+  //   console.log(order);
+  //   const confirmed = window.confirm("Are you sure you want to delete this item?");
 
-    if (confirmed) {
-      try {
-        await axios.delete(`http://localhost:5000/delete-order/${order.id}`);
-        onDelete();
-      } catch (error) {
-        console.error("Error deleting order:", error);
-      }
-      console.log("Item deleted!");
-    } else {
-      console.log("Action cancelled.");
-    }
-  };
+  //   if (confirmed) {
+  //     try {
+  //       await axios.delete(`http://localhost:5000/delete-order/${order.id}`);
+  //       onDelete();
+  //     } catch (error) {
+  //       console.error("Error deleting order:", error);
+  //     }
+  //     console.log("Item deleted!");
+  //   } else {
+  //     console.log("Action cancelled.");
+  //   }
+  // };
 
   useEffect(() => {
     setComplete(order.complete);
@@ -69,17 +68,9 @@ export function Order({order, onDelete}) {
   return (
     <div className='order-container'>
       <div className='order-header'>
-        <Dropdown onDelete={handleDelete} onEdit={() => navigate(`/edit-order/${order.id}`)}></Dropdown>                        
         <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
         <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
       </div>
-      <button 
-        className="delete-btn"
-        onClick={(order) => onDelete(order)}
-        aria-label="Delete item"
-      >
-        &hellip;
-      </button>
       <ul className='job-details-container'>
         {order.job_details?.map((job, index) => (
           <li key={index} className='job-details'>

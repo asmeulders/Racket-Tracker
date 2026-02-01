@@ -3,7 +3,7 @@ import axios from 'axios'
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './Inquiry.css';
 
-export function Inquiry({inquiry, onDelete}) {
+export function Inquiry({inquiry}) {
   const displayDate = inquiry.date ? format(parseISO(inquiry.date), 'MM/dd/yyyy') : null;
   
   console.log(inquiry.date, displayDate)
@@ -19,13 +19,6 @@ export function Inquiry({inquiry, onDelete}) {
           </ul>
         </div>
         <div className='message-container'>Message: {inquiry.message}</div>
-        <button 
-          className="delete-btn"
-          onClick={(order) => onDelete(order)}
-          aria-label="Delete item"
-        >
-          X
-      </button>
       </div>
   )
 }

@@ -4,7 +4,7 @@ import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './User.css'
 import { Inquiry } from '../inquiry/Inquiry';
 
-export function User({user, onDelete}) {
+export function User({user}) {
   return (
     <div key={user.id} className='user-container'>
       <strong>{user.username}</strong>
@@ -24,13 +24,6 @@ export function User({user, onDelete}) {
           ))}
         </ul>
       </div>
-      <button 
-          className="delete-btn"
-          onClick={(order) => onDelete(order)}
-          aria-label="Delete item"
-        >
-          X
-      </button>
     </div>   
   )
 }

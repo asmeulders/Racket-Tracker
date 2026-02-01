@@ -2,18 +2,11 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './Brand.css';
 
-export function Brand({brand, onDelete}) {
+export function Brand({brand}) {
   
   return (
       <div className='brand-container'>
         {brand.name}
-        <button 
-          className="delete-btn"
-          onClick={(order) => onDelete(order)}
-          aria-label="Delete item"
-        >
-          X
-      </button>
       </div>
   )
 }
