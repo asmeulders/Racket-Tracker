@@ -1,7 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-
-import { StoreDashboard } from './StoreDashboard';
+import { StoreDashboard } from './components/StoreDashboard';
 
 export function StoreDashboardPage(){
     return (

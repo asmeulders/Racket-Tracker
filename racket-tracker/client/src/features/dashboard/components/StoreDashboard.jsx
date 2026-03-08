@@ -1,17 +1,16 @@
-import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './StoreDashboard.css';
 
-import { Racket, RacketForm, RacketFilter } from '../../components/racket/Racket.jsx'
-import { Order, OrderForm, OrderFilter } from '../../components/order/Order.jsx'
+import { Racket, RacketForm, RacketFilter } from '../../../racket';
+import { Order, OrderForm, OrderFilter } from '../../../order'
 import { String, StringForm, StringFilter } from '../../components/string/String.jsx'
 import { User, UserForm, UserFilter } from '../../components/user/User.jsx'
-import { Brand, BrandForm, BrandFilter } from '../../brand/components/Brand.jsx'
-import { Inquiry, InquiryFilter } from '../../inquiry/components/Inquiry.jsx';
+import { Brand, BrandForm, BrandFilter } from '../../../brand'
+import { Inquiry, InquiryFilter } from '../../../inquiry';
 import Dropdown from './Dropdown.jsx';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../../utils/db_utils.js';
+import './StoreDashboard.css';
 
 export function StoreDashboard() {
     const [orders, setOrders] = useState([])

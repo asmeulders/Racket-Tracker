@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import "./String.css"
 
-import { BrandSelect } from '../brand/components/Brand'
+import { BrandSelect } from '../../brand/components/Brand'
 
 export function String({string}) {
   return (
