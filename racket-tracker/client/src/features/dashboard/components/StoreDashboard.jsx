@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './StoreDashboard.css';
 
-import { Racket, RacketForm, RacketFilter } from '../racket/Racket.jsx'
-import { Order, OrderForm, OrderFilter } from '../order/Order.jsx'
-import { String, StringForm, StringFilter } from '../string/String.jsx'
-import { User, UserForm, UserFilter } from '../user/User.jsx'
-import { Brand, BrandForm, BrandFilter } from '../brand/Brand.jsx'
-import { Inquiry, InquiryFilter } from '../inquiry/Inquiry.jsx';
+import { Racket, RacketForm, RacketFilter } from '../../components/racket/Racket.jsx'
+import { Order, OrderForm, OrderFilter } from '../../components/order/Order.jsx'
+import { String, StringForm, StringFilter } from '../../components/string/String.jsx'
+import { User, UserForm, UserFilter } from '../../components/user/User.jsx'
+import { Brand, BrandForm, BrandFilter } from '../../brand/components/Brand.jsx'
+import { Inquiry, InquiryFilter } from '../../inquiry/components/Inquiry.jsx';
 import Dropdown from './Dropdown.jsx';
-import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../common/db_utils.js';
+import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../../utils/db_utils.js';
 
 export function StoreDashboard() {
     const [orders, setOrders] = useState([])

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrandForm } from './Brand';
+import { BrandForm } from './components/Brand';
 import { fetchBrands } from '../../common/db_utils';
 
 export function BrandPage() {

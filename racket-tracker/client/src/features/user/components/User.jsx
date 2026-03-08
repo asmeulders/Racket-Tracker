@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import './User.css'
-import { Inquiry } from '../inquiry/Inquiry';
+import { Inquiry } from '../inquiry/components/Inquiry';
 
 export function User({user}) {
   return (

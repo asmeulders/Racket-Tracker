@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { OrderForm } from './Order';
+import { OrderForm } from './components/Order';
 import { fetchOrders, fetchRackets, fetchStrings, fetchUsers } from '../../common/db_utils';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'

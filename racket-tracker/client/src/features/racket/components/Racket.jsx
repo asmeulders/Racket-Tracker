@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './Racket.css'
 
-import { BrandSelect } from '../brand/Brand'
+import { BrandSelect } from '../brand/components/Brand'
 
 export function Racket({racket}) {
   return (

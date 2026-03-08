@@ -3,9 +3,9 @@ import axios from 'axios'
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
-import { RacketSelect } from '../racket/Racket'
-import { StringSelect } from '../string/String'
-import { UserSelect } from '../user/User';
+import { RacketSelect } from '../../racket/Racket'
+import { StringSelect } from '../../string/String'
+import { UserSelect } from '../../user/User';
 
 import './Order.css';
 
