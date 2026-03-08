@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './StoreDashboard.css';
 
 import { Racket, RacketForm, RacketFilter } from '../racket/Racket.jsx'
@@ -209,20 +210,21 @@ export function StoreDashboard() {
 
 
 export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
+    const navigate = useNavigate();
+    
     const handleDelete = async (item) => {
-        console.log(item);
         const confirmed = window.confirm("Are you sure you want to delete this item?");
 
         if (confirmed) {
-        try {
-            await axios.delete(`http://localhost:5000/delete-order/${item.id}`);
-            onDelete();
-        } catch (error) {
-            console.error("Error deleting order:", error);
-        }
-        console.log("Item deleted!");
-        } else {
-        console.log("Action cancelled.");
+            try {
+                await axios.delete(`http://localhost:5000/delete-order/${item.id}`);
+                onDataDeleted();
+            } catch (error) {
+                console.error("Error deleting order:", error);
+            }
+            console.log("Item deleted!");
+            } else {
+            console.log("Action cancelled.");
         }
     };
 
@@ -236,7 +238,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                         <li key={item.id} className="data-item">
                             <div className="item-content">
                                 {renderItem(item, onDataDeleted)}
-                                <Dropdown onDelete={(item) => handleDelete(item)} onEdit={() => navigate(`/edit-order/${item.id}`)}></Dropdown>                        
+                                <Dropdown onDelete={() => handleDelete(item)} onEdit={() => navigate(`/edit-order/${item.id}`)}></Dropdown>                        
                             </div>                        
                         </li>
                     ))}

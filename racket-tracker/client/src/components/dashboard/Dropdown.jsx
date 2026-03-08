@@ -18,10 +18,6 @@ const Dropdown = ({onDelete, onEdit}) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    console.log(isOpen);
-  }, [isOpen])
-
   return (
     <div ref={dropdownRef} className='meatballs-btn'>
       <button onClick={toggleDropdown}>
