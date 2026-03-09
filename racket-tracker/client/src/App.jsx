@@ -7,8 +7,8 @@ import {
 
 import Home from "./index";
 import Layout from './components/layout/Layout';
-import { StoreDashboardPage} from "./components/dashboard/StoreDashboardPage"
-import { EditOrderPage } from './components/order/OrderPage';
+import { StoreDashboardPage } from './features/dashboard/StoreDashboardPage';
+import { OrderPage } from './features/order/OrderPage';
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<Layout />} >
             <Route index element={<Home />} />
             <Route path="/store-dashboard" element={<StoreDashboardPage />} />
-            <Route path="/edit-order/:id" element={<EditOrderPage />} />
+            <Route path="/edit-order/:id" element={<OrderPage />} />
           </Route>
         </Routes>
       </Router>

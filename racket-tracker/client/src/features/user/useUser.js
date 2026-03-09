@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function useUser() {
 
-    const createUser = async ({ name, pricePerRacket, brandId }) => {
+    const createUser = async ({ username }) => {
         try {
             await axios.post("http://localhost:5000/create-user", {
                 "username": username

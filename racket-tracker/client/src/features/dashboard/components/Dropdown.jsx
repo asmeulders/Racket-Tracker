@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
+
 import "./Dropdown.css";
 
-const Dropdown = ({onDelete, onEdit}) => {
+export const Dropdown = ({onDelete, onEdit}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 export const RacketFilter = ({onFilterChange}) => {
   /**
    * The filter component for a racket in the dashboard.

@@ -1,4 +1,4 @@
-import './Brand.css';
+import '../Brand.css';
 
 export function Brand({brand}) {
   

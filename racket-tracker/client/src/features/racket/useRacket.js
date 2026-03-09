@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function useRackets() {
+export function useRacket() {
   const createRacket = async ({ name, price, brandId }) => {
     try {
       await axios.post("http://localhost:5000/create-racket", {

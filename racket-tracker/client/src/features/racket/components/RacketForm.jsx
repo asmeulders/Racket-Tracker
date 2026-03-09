@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { BrandSelect } from '../../brand/components/Brand';
-import { useRackets } from '../useRackets';
+import { BrandSelect } from '../../brand/';
+import { useRacket } from '../useRacket';
 
 export const RacketForm = ({ onRacketCreated, brands }) => {
-    const { createRacket } = useRackets();
+    const { createRacket } = useRacket();
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [brandId, setBrandId] = useState('');

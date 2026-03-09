@@ -1,4 +1,4 @@
-import './Racket.css';
+import '../Racket.css';
 
 
 export function Racket({racket}) {

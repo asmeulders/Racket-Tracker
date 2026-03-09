@@ -1,6 +1,9 @@
 import { useState } from 'react';
 
 import { useOrder } from '../useOrder';
+import { UserSelect } from '../../user';
+import { RacketSelect } from '../../racket';
+import { StringSelect } from '../../string';
 
 export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
     const { createOrder } = useOrder();

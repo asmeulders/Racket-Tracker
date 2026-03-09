@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { RacketForm } from './Racket';
-import { fetchBrands, fetchRackets } from '../../common/db_utils';
+
+import { RacketForm } from './racket';
+import { fetchBrands, fetchRackets } from '../../utils/db_utils';
 
 export function RacketPage() {
     const [rackets, setRackets] = useState([])

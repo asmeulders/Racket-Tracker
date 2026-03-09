@@ -1,15 +1,13 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { Racket, RacketForm, RacketFilter } from '../../../racket';
-import { Order, OrderForm, OrderFilter } from '../../../order';
-import { String, StringForm, StringFilter } from '../../../string';
-import { User, UserForm, UserFilter } from '../../../user';
-import { Brand, BrandForm, BrandFilter } from '../../../brand';
-import { Inquiry, InquiryFilter } from '../../../inquiry';
-import Dropdown from './Dropdown.jsx';
-import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../../utils/db_utils.js';
+import { Racket, RacketForm, RacketFilter } from '../../racket';
+import { Order, OrderForm, OrderFilter } from '../../order';
+import { String, StringForm, StringFilter } from '../../string';
+import { User, UserForm, UserFilter } from '../../user';
+import { Brand, BrandForm, BrandFilter } from '../../brand';
+import { Inquiry, InquiryFilter } from '../../inquiry';
+import { FilterSearch, TabContent } from '../index.js';
+import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable, initDatabases } from '../../../utils/db_utils.js';
 import './StoreDashboard.css';
 
 export function StoreDashboard() {
@@ -29,19 +27,9 @@ export function StoreDashboard() {
         'hasNext': false
     })
 
-    const initDatabases = async () => {
-        try {
-            await axios.post('http://127.0.0.1:5000/init_db');
-            alert("Databases Created & Seeded!");
-            fetchDashboardData();
-        } catch (error) {
-            console.error("Error initializing DB:", error);
-        }
-    };
-
     const fetchDashboardData = async () => {
         try {
-            searchTable({ 
+            await searchTable({ 
                 table: activeTab, 
                 page: pageData.currentPage, 
                 perPage: pageData.perPage, 
@@ -51,6 +39,11 @@ export function StoreDashboard() {
         } catch (error) {
             console.error("Error connecting to server:" ,error)
         }
+    }
+
+    const handleInit = async () => {
+        await initDatabases();
+        fetchDashboardData();
     }
 
     const tabConfig = {
@@ -123,7 +116,7 @@ export function StoreDashboard() {
 
     return (
         <div className='store-dashboard-page'>
-            <button onClick={initDatabases} style={{ marginBottom: "20px" }}>
+            <button onClick={handleInit} style={{ marginBottom: "20px" }}>
                 Initialize & Seed Databases
             </button>
             <div className='dashboard-container'>
@@ -203,57 +196,6 @@ export function StoreDashboard() {
             <StringForm onStringCreated={() => fetchStrings({onComplete: setStrings})} brands={brands}/>
             <UserForm onUserCreated={() => fetchUsers({onComplete: setUsers})} />   
             <BrandForm onBrandCreated={() => fetchBrands({onComplete: setBrands})}/>
-        </div>
-    )
-}
-
-
-export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
-    const navigate = useNavigate();
-    
-    const handleDelete = async (item) => {
-        const confirmed = window.confirm("Are you sure you want to delete this item?");
-
-        if (confirmed) {
-            try {
-                await axios.delete(`http://localhost:5000/delete-order/${item.id}`);
-                onDataDeleted();
-            } catch (error) {
-                console.error("Error deleting order:", error);
-            }
-            console.log("Item deleted!");
-            } else {
-            console.log("Action cancelled.");
-        }
-    };
-
-    return (
-        <div className="tab-content">
-            {items.length === 0 ? (
-                <p>No data found.</p>
-            ) : (
-                <ul className="data-list">
-                    {items.map((item) => (
-                        <li key={item.id} className="data-item">
-                            <div className="item-content">
-                                {renderItem(item, onDataDeleted)}
-                                <Dropdown onDelete={() => handleDelete(item)} onEdit={() => navigate(`/edit-order/${item.id}`)}></Dropdown>                        
-                            </div>                        
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
-};
-
-const FilterSearch =  ({ renderFilter, onFilterChange }) => {
-
-    return (
-        <div className='filter-container'>
-            <form>
-                {renderFilter(onFilterChange)}
-            </form>
         </div>
     )
 }

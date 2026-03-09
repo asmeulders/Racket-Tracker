@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+export const initDatabases = async () => {
+    try {
+        await axios.post('http://127.0.0.1:5000/init_db');
+        console.log("Databases Created & Seeded!");
+    } catch (error) {
+        console.error("Error initializing DB:", error);
+    }
+};
+
 export const fetchData = async ({onComplete, table, limit = null}) => {
     try {
         console.log(`Fetching data for ${table} - Limit of ${limit ? limit : "(none)"}`);
