@@ -25,11 +25,6 @@ export function Order({order}) {
     }
   }
 
-  // useEffect(() => { // what is this for here?
-  //   setComplete(order.complete);
-  //   setPaid(order.paid);
-  // }, [order]);
-
   return (
     <div className='order-container'>
       <div className='order-header'>

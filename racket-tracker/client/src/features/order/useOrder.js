@@ -20,8 +20,20 @@ export function useOrder() {
                 console.error("Could not connect to server.");
             }
         }
-        
     };
+
+    const getOrderById = async (id) => {
+        try {
+            const res = await axios.get(`http://localhost:5000/get-order/${id}`);
+            return res.data;
+        } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else{
+                console.error("Could not connect to server.");
+            }
+        }
+    }
 
     const deleteOrder = async (id) => {
         await axios.delete(`http://localhost:5000/delete-order/${id}`);
@@ -53,5 +65,5 @@ export function useOrder() {
         }
     }
 
-    return { createOrder, deleteOrder, completeOrder, orderPaid };
+    return { createOrder, getOrderById, deleteOrder, completeOrder, orderPaid };
 }
