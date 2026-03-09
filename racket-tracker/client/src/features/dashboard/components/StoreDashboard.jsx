@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Racket, RacketForm, RacketFilter } from '../../../racket';
-import { Order, OrderForm, OrderFilter } from '../../../order'
-import { String, StringForm, StringFilter } from '../../components/string/String.jsx'
-import { User, UserForm, UserFilter } from '../../components/user/User.jsx'
-import { Brand, BrandForm, BrandFilter } from '../../../brand'
+import { Order, OrderForm, OrderFilter } from '../../../order';
+import { String, StringForm, StringFilter } from '../../../string';
+import { User, UserForm, UserFilter } from '../../../user';
+import { Brand, BrandForm, BrandFilter } from '../../../brand';
 import { Inquiry, InquiryFilter } from '../../../inquiry';
 import Dropdown from './Dropdown.jsx';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable } from '../../../utils/db_utils.js';

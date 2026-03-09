@@ -1,11 +1,13 @@
 import axios from 'axios';
 
-export function useBrand() {
+export function useString() {
 
-    const createBrand = async ({ name }) => {
+    const createString = async ({ name, pricePerRacket, brandId }) => {
         try {
-            await axios.post("http://localhost:5000/create-brand", {
-                "name": name
+            await axios.post("http://localhost:5000/create-string", {
+                name,
+                "price_per_racket": pricePerRacket,
+                "brand_id": brandId
             })
         } catch (error) {
             if (error.response) {
@@ -17,9 +19,9 @@ export function useBrand() {
         
     };
 
-    const deleteBrand = async (id) => {
+    const deleteString = async (id) => {
         await axios.delete(`http://localhost:5000/delete-brand/${id}`);
     };
 
-    return { createBrand, deleteBrand };
+    return { createString, deleteString };
 }
