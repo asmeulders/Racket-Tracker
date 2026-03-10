@@ -1,7 +1,5 @@
-import React from "react";
+import { InquiryForm } from "../../features/inquiry";
 import "./Footer.css";
-
-import { InquiryForm } from "../inquiry/Inquiry";
 
 export const Footer = () => {
     return (

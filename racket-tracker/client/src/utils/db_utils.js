@@ -1,0 +1,60 @@
+import axios from 'axios';
+
+export const initDatabases = async () => {
+    try {
+        await axios.post('http://127.0.0.1:5000/init_db');
+        console.log("Databases Created & Seeded!");
+    } catch (error) {
+        console.error("Error initializing DB:", error);
+    }
+};
+
+export const fetchData = async ({onComplete, table, limit = null}) => {
+    try {
+        console.log(`Fetching data for ${table} - Limit of ${limit ? limit : "(none)"}`);
+        const response = await axios.get(`http://127.0.0.1:5000/${table}/${limit ? limit : ""}`);
+        onComplete(response.data);
+    } catch (error) {
+        console.error(`Error fetching ${table}:`, error);
+    }
+};
+
+export const fetchOrders = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "orders", limit: limit});
+}
+
+export const fetchRackets = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "rackets", limit: limit});
+}
+
+export const fetchStrings = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "strings", limit: limit});
+}
+
+export const fetchBrands = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "brands", limit: limit});
+}
+
+export const fetchUsers = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "users", limit: limit});
+};
+
+export const fetchInquiries = async ({onComplete, limit = null}) => {
+    fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
+};
+
+export const searchTable = async ({table, page, perPage, filters, onComplete}) => {
+    try {
+        console.log(`Searching for data from ${table} on page ${page}`);
+        const response = await axios.post(`http://127.0.0.1:5000/search-table/`,{
+            'table_name': table,
+            'page': page,
+            'per_page': perPage,
+            'filters': filters
+        });
+        onComplete(response.data);
+    } catch (error) {
+        console.error(`Error fetching ${table}:`, error);
+    }
+    
+};
