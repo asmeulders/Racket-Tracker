@@ -99,9 +99,12 @@
 }
 
 .order-details {
+    border-radius: 5pt;
+    background-color: lightgrey;
     display: flex;
     flex-direction: column;
     margin: 25pt;
+    padding: 10pt 25pt;
     justify-content: space-between;
 }
 
@@ -110,6 +113,9 @@
 }
 
 .order-field label {
+    background-color: var(--primary);
+    border-radius: 5pt;
+    padding: 5pt;
     margin-right: 5pt;
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
@@ -122,11 +128,13 @@
 
 .order-field button {
     border-radius: 5pt;
-    padding: 5pt;
-    padding-left: 10pt;
-    padding-right: 10pt;
+    padding: 2pt 5pt;
     margin: 5pt;
     background-color: var(--primary);
+}
+
+.order-field button:hover {
+    background-color: var(--primary-transparent);
 }
 
 .order-actions {

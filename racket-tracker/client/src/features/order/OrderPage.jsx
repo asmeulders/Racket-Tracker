@@ -59,10 +59,10 @@ export const OrderPage = () => {
                         </div>
                         <div className="order-field">
                             <label>Stringing:</label>
-                            <span>{mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
+                            <span>(Mains) {mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
                             {crosses 
-                                ? <span>{crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs (crosses)</span>
-                                : <span>Same for crosses</span>
+                                ? <span> (Crosses) {crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs</span>
+                                : <span> (Same for crosses)</span>
                             }
                             <button>Edit</button>
                         </div>
