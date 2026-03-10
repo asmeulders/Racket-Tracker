@@ -54,6 +54,8 @@
 
 .order-page {
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     overflow-x: hidden;
 }
@@ -76,23 +78,31 @@
 }
 
 .order-header--complete {
-    border-color: green;
-    background-color: rgba(0, 255, 0, 0.2);;
+    border-color: rgb(51, 81, 51);
+    background-color: rgb(95, 143, 95);;
 }
 
 .order-header--late {
-    border-color: red;
-    background-color: rgba(255, 0, 0, 0.2);;
+    color: white;
+    border-color: rgba(157, 40, 38, 0.804);
+    background-color: rgb(62, 9, 9);;
 }
 
 .order-header div {
     margin: 15pt;
 }
 
+.order-page-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
 .order-details {
     display: flex;
     flex-direction: column;
     margin: 25pt;
+    justify-content: space-between;
 }
 
 .order-field {
@@ -117,4 +127,21 @@
     padding-right: 10pt;
     margin: 5pt;
     background-color: var(--primary);
+}
+
+.order-actions {
+    display: flex;
+    flex-direction: column;
+    margin: 10pt;
+}
+
+.order-actions button {
+    background-color: var(--primary);
+    border-radius: 5pt;
+    margin: 5pt;
+    padding: 5pt;
+}
+
+.order-actions button:hover {
+    background-color: var(--primary-transparent);
 }

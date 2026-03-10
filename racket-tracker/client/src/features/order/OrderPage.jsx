@@ -36,43 +36,44 @@ export const OrderPage = () => {
                 <div>Due: {order.due}</div>
             </div>
 
-            <div className="order-card">
+            <div className='order-page-content'>
+                <div className="order-card">
 
-                {/* <div className="order-photo-section">
-                    <div className="racket-photo">
-                        <img src={order.racket.photo} alt="Racket" />
-                    </div>
-                    <span>Ordered: {order.order_date}</span>
-                </div> */}
+                    {/* <div className="order-photo-section">
+                        <div className="racket-photo">
+                            <img src={order.racket.photo} alt="Racket" />
+                        </div>
+                        <span>Ordered: {order.order_date}</span>
+                    </div> */}
 
-                <div className="order-details">
-                    <div className="order-field">
-                        <label>Customer:</label>
-                        <span>{order.user_name}</span>
-                        <button>Edit</button>
-                    </div>
-                    <div className="order-field">
-                        <label>Racket:</label>
-                        <span>{order.racket_name}</span>
-                        <button>Edit</button>
-                    </div>
-                    <div className="order-field">
-                        <label>Stringing:</label>
-                        <span>{mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
-                        {crosses 
-                            ? <span>{crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs (crosses)</span>
-                            : <span>Same for crosses</span>
-                        }
-                        <button>Edit</button>
-                    </div>
-                    <div className="order-field">
-                        <label>Price:</label>
-                        <span>${order.price}</span>
-                        <button>Edit</button>
+                    <div className="order-details">
+                        <div className="order-field">
+                            <label>Customer:</label>
+                            <span>{order.user_name}</span>
+                            <button>Edit</button>
+                        </div>
+                        <div className="order-field">
+                            <label>Racket:</label>
+                            <span>{order.racket_name}</span>
+                            <button>Edit</button>
+                        </div>
+                        <div className="order-field">
+                            <label>Stringing:</label>
+                            <span>{mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
+                            {crosses 
+                                ? <span>{crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs (crosses)</span>
+                                : <span>Same for crosses</span>
+                            }
+                            <button>Edit</button>
+                        </div>
+                        <div className="order-field">
+                            <label>Price:</label>
+                            <span>${order.price}</span>
+                            <button>Edit</button>
+                        </div>
                     </div>
                 </div>
 
-                {/* RIGHT — action buttons */}
                 <div className="order-actions">
                     <button className="btn-delete">Delete Order</button>
                     <button className="btn-complete">
@@ -83,6 +84,8 @@ export const OrderPage = () => {
                 </div>
 
             </div>
+
+            
         </div>
     )
 }
