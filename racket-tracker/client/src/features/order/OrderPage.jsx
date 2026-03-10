@@ -3,44 +3,6 @@ import { useParams } from 'react-router-dom';
 
 import { useOrder } from './index';
 
-// export function OrderPage() {
-//     const [orders, setOrders] = useState([])
-//     const [strings, setStrings] = useState([])
-//     const [rackets, setRackets] = useState([])
-//     const [users, setUsers] = useState([])
-
-//     const fetchAllData = async () => {
-//         try {
-//             fetchOrders({onComplete: setOrders});
-//             fetchRackets({onComplete: setRackets});
-//             fetchStrings({onComplete: setStrings});
-//             fetchUsers({onComplete: setUsers});
-//         } catch (error) {
-//             console.error("Error connecting to server:", error);
-//         }
-//     };
-
-//     const handleSubmit = () => {
-//         try {
-//             fetchOrders({onComplete: setOrders});
-//             fetchUsers({onComplete: setUsers});
-//         } catch (error) {
-//             console.error("Error connecting to server:", error);
-//         }
-//     };
-
-//     useEffect(() => {
-//         fetchAllData();
-//     }, []);    
-
-//     return (
-//         <div>
-//             {/* <OrderList orders={orders} onOrderDeleted={() => fetchOrders({onComplete: setOrders})} /> */}
-//             <OrderForm onOrderCreated={handleSubmit} rackets={rackets} strings={strings} users={users}/>
-//         </div>
-//     );
-// };
-
 export const OrderPage = () => {
     const { getOrderById } = useOrder();
     const { orderId } = useParams();
@@ -68,39 +30,34 @@ export const OrderPage = () => {
     return(
         <div className="order-page">
 
-            {/* STATUS HEADER — green if complete, red if late, grey otherwise */}
-            <div className={`order-header ${order?.complete ? "completed" : isLate ? "late" : ""}`}>
-                <span>Order #{order.id}</span>
-                <span>Status: {order.complete ? "Complete" : "To Do"}</span>
-                <span>Paid: {order.paid ? "Paid" : "Unpaid"}</span>
-                <span>Due: {order.due}</span>
+            <div className={`order-header ${order?.complete ? "order-header--completed" : isLate ? "order-header--late" : ""}`}>
+                <div>Status: {order.complete ? "Complete" : "To Do"}</div>
+                <div>Paid: {order.paid ? "Paid" : "Unpaid"}</div>
+                <div>Due: {order.due}</div>
             </div>
 
-            {/* MAIN CARD */}
             <div className="order-card">
 
-                {/* LEFT — photo + date ordered */}
-                <div className="order-photo-section">
+                {/* <div className="order-photo-section">
                     <div className="racket-photo">
-                        {/* <img src={order.racket.photo} alt="Racket" /> */}
+                        <img src={order.racket.photo} alt="Racket" />
                     </div>
                     <span>Ordered: {order.order_date}</span>
-                </div>
+                </div> */}
 
-                {/* CENTER — editable fields */}
                 <div className="order-details">
                     <div className="order-field">
-                        <label>Customer</label>
+                        <label>Customer:</label>
                         <span>{order.user_name}</span>
                         <button>Edit</button>
                     </div>
                     <div className="order-field">
-                        <label>Racket</label>
+                        <label>Racket:</label>
                         <span>{order.racket_name}</span>
                         <button>Edit</button>
                     </div>
                     <div className="order-field">
-                        <label>Stringing</label>
+                        <label>Stringing:</label>
                         <span>{mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
                         {crosses 
                             ? <span>{crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs (crosses)</span>
@@ -109,7 +66,7 @@ export const OrderPage = () => {
                         <button>Edit</button>
                     </div>
                     <div className="order-field">
-                        <label>Price</label>
+                        <label>Price:</label>
                         <span>${order.price}</span>
                         <button>Edit</button>
                     </div>

@@ -1,12 +1,3 @@
-/* .order-container {
-    position: relative;
-    padding-bottom: 10px;
-    padding-right: 40px;
-    border-top: 1px solid grey;
-    border-bottom: 1px solid grey;
-    text-align: left;
-} */
-
 .order-header {
     display: flex;
     justify-content: space-between;
@@ -14,10 +5,6 @@
     align-items: center;
     width: 100%;
 }
-
-/* .order-title {
-    padding-right: 30px;
-} */
 
 .order-complete-status {
     text-align: right;
@@ -59,4 +46,75 @@
 
 .complete-btn {
     line-height: 1;
+}
+
+/* *********************************************
+** Order Page **********************************
+********************************************** */
+
+.order-page {
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.order-header {
+    box-sizing: border-box;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    border: 5px solid;
+    border-radius: 10pt;
+    border-color: rgb(0, 0, 0, 0.9);
+    background-color: rgb(0, 0, 0, 0.2);
+    margin: 15pt;
+    padding: 20pt;
+    font-size: x-large;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 700;
+}
+
+.order-header div {
+    margin: 15pt;
+}
+
+.order-header--complete {
+    border-color: green;
+    background-color: rgba(0, 255, 0, 0.2);;
+}
+
+.order-header--late {
+    border-color: red;
+    background-color: rgba(255, 0, 0, 0.2);;
+}
+
+.order-details {
+    display: flex;
+    flex-direction: column;
+    margin: 25pt;
+}
+
+.order-field {
+    margin: 5pt;
+}
+
+.order-field label {
+    margin-right: 5pt;
+    font-size: large;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+
+.order-field span {
+    font-size: large;
+}
+
+.order-field button {
+    border-radius: 5pt;
+    padding: 5pt;
+    padding-left: 10pt;
+    padding-right: 10pt;
+    margin: 5pt;
+    background-color: var(--primary);
 }
