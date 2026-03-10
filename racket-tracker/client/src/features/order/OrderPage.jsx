@@ -30,8 +30,8 @@ export const OrderPage = () => {
     return(
         <div className="order-page">
 
-            <div className={`order-header ${order?.complete ? "order-header--completed" : isLate ? "order-header--late" : ""}`}>
-                <div>Status: {order.complete ? "Complete" : "To Do"}</div>
+            <div className={`order-header ${order?.complete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
+                <div>Status: {order.complete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
                 <div>Paid: {order.paid ? "Paid" : "Unpaid"}</div>
                 <div>Due: {order.due}</div>
             </div>

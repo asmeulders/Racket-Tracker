@@ -8,7 +8,7 @@ export const UserForm = ({ onUserCreated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createUser(username);
+        await createUser({ username });
         
         setUsername('');
         onUserCreated();

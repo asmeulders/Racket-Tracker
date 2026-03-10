@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function useDashboard() {
 
-    const deleteItem = ({item}) => {
+    const deleteItem = ({ item }) => {
         
     }
 }

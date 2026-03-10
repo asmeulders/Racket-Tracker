@@ -9,14 +9,8 @@ export const RacketForm = ({ onRacketCreated, brands }) => {
     const [price, setPrice] = useState('');
     const [brandId, setBrandId] = useState('');
 
-    const [error, setError] = useState('');
-    const [status, setStatus] = useState('');
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        setError(null);
-        setStatus(null);
         await createRacket({ name, price, brandId });
         
         setName('');
@@ -28,8 +22,6 @@ export const RacketForm = ({ onRacketCreated, brands }) => {
     return(
         <div>
             <h2>Create a racket</h2>
-            {error && <div>{error}</div>}
-            {status && <div>{status}</div>}
             <form onSubmit={handleSubmit}>
                 <BrandSelect value={brandId} brands={brands} onBrandChange={setBrandId} />
 

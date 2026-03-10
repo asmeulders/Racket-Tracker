@@ -106,6 +106,11 @@ export function StoreDashboard() {
 
     useEffect(() => {
         fetchDashboardData();
+        // Get data for forms
+        fetchRackets({onComplete: setRackets});
+        fetchUsers({onComplete: setUsers});
+        fetchStrings({onComplete: setStrings});
+        fetchBrands({onComplete: setBrands});
     }, []);
 
     useEffect(() => {
@@ -191,11 +196,26 @@ export function StoreDashboard() {
                     </div>              
                 </div>
             </div>  
-            <OrderForm onOrderCreated={() => fetchOrders({onComplete: setOrders})} rackets={rackets} strings={strings} brands={brands} users={users}/>
-            <RacketForm onRacketCreated={() => fetchRackets({onComplete: setRackets})} brands={brands}/>
-            <StringForm onStringCreated={() => fetchStrings({onComplete: setStrings})} brands={brands}/>
-            <UserForm onUserCreated={() => fetchUsers({onComplete: setUsers})} />   
-            <BrandForm onBrandCreated={() => fetchBrands({onComplete: setBrands})}/>
+            <OrderForm onOrderCreated={() => {
+                fetchOrders({onComplete: setOrders});
+                if (activeTab == "order") { fetchDashboardData(); }
+            }} rackets={rackets} strings={strings} brands={brands} users={users}/>
+            <RacketForm onRacketCreated={() => {
+                fetchRackets({onComplete: setRackets});
+                if (activeTab == "racket") { fetchDashboardData(); }
+            }} brands={brands}/>
+            <StringForm onStringCreated={() => {
+                fetchStrings({onComplete: setStrings});
+                if (activeTab == "string") { fetchDashboardData(); }
+            }} brands={brands}/>
+            <UserForm onUserCreated={() => {
+                fetchUsers({onComplete: setUsers}); 
+                if (activeTab == "user") { fetchDashboardData(); }
+            }} />   
+            <BrandForm onBrandCreated={() => {
+                fetchBrands({onComplete: setBrands});
+                if (activeTab == "brand") { fetchDashboardData(); }
+            }}/>
         </div>
     )
 }

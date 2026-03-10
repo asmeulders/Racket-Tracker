@@ -8,7 +8,7 @@ export const BrandForm = ({ onBrandCreated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createBrand(name);
+        await createBrand({ name });
 
         setName('');
         onBrandCreated();

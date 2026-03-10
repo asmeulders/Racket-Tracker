@@ -19,7 +19,7 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createOrder(racketId, userId, stringId, tension, crossesId, crossesTension, sameForCrosses, paid);
+        await createOrder({ racketId, userId, stringId, tension, crossesId, crossesTension, sameForCrosses, paid });
 
         setRacketId("");
         setUserId('');

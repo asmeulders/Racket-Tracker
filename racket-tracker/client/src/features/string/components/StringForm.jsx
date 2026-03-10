@@ -1,15 +1,17 @@
 import { useState } from 'react';
 
 import { BrandSelect } from '../../brand';
+import { useString } from '../index';
 
 export const StringForm = ({ onStringCreated, brands }) => {
+    const { createString } = useString();
     const [name, setName] = useState('');
     const [brandId, setBrandId] = useState('');
     const [pricePerRacket, setPricePerRacket] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createString(name, pricePerRacket, brandId);
+        await createString({ name, pricePerRacket, brandId });
         
         setName('');
         setPricePerRacket('');
@@ -19,6 +21,7 @@ export const StringForm = ({ onStringCreated, brands }) => {
 
     return(
         <div>
+            <h2>Create a string</h2>
             <form onSubmit={handleSubmit}>
                 <BrandSelect value={brandId} brands={brands} onBrandChange={setBrandId} />
 

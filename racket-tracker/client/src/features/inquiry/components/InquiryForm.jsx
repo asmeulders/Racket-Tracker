@@ -11,8 +11,7 @@ export const InquiryForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        await createInquiry(name, phone, email, message);
+        await createInquiry({ name, phone, email, message });
         
         setName('');
         setPhone('');

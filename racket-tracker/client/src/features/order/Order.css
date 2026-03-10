@@ -1,4 +1,4 @@
-.order-header {
+.order-item-header {
     display: flex;
     justify-content: space-between;
     padding-right: 10px;
@@ -75,10 +75,6 @@
     font-weight: 700;
 }
 
-.order-header div {
-    margin: 15pt;
-}
-
 .order-header--complete {
     border-color: green;
     background-color: rgba(0, 255, 0, 0.2);;
@@ -87,6 +83,10 @@
 .order-header--late {
     border-color: red;
     background-color: rgba(255, 0, 0, 0.2);;
+}
+
+.order-header div {
+    margin: 15pt;
 }
 
 .order-details {

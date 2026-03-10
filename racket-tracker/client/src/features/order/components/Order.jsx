@@ -27,7 +27,7 @@ export function Order({order}) {
 
   return (
     <div className='order-container'>
-      <div className='order-header'>
+      <div className='order-item-header'>
         <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
         <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
       </div>
