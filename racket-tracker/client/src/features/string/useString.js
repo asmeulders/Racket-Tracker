@@ -20,7 +20,7 @@ export function useString() {
     };
 
     const deleteString = async (id) => {
-        await axios.delete(`http://localhost:5000/delete-brand/${id}`);
+        await axios.delete(`http://localhost:5000/delete-string/${id}`);
     };
 
     return { createString, deleteString };
