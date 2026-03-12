@@ -699,7 +699,7 @@ def create_order():
 @app.route('/complete-order/<int:order_id>', methods=['PATCH'])
 def complete_order(order_id: int):
     """
-    Marks and order as completed/uncompleted. Is toggled from the store dashboard.
+    Marks an order as completed.
     """
     try:
         order = db.session.get(Order, order_id)
@@ -715,10 +715,38 @@ def complete_order(order_id: int):
         
         order.complete = not order.complete
 
+        print("Is complete:", order.complete)
+
         db.session.add(order)
         db.session.commit()
 
         return jsonify({"message": "Order successfully completed", "order": order.to_json()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+@app.route('/toggle-complete/<int:order_id>', methods=['PATCH'])
+def toggle_complete(order_id: int):
+    """
+    Marks and order as completed/uncompleted. Is toggled from the store dashboard.
+    """
+    try:
+        order = db.session.get(Order, order_id)
+        
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+        
+        order.complete = not order.complete
+
+        print("Is complete:", order.complete)
+
+        db.session.add(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order complete field successfully toggled", "order": order.to_json()}), 200
 
     except Exception as e:
         db.session.rollback()

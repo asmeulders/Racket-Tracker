@@ -6,10 +6,12 @@ import { useOrder } from './index';
 
 export const OrderPage = () => {
     const navigate = useNavigate()
-    const { getOrderById, deleteOrder } = useOrder();
+    const { getOrderById, deleteOrder, completeOrder, orderPaid } = useOrder();
     const { orderId } = useParams();
     const [ loading, setLoading ] = useState(true);
-    const [ order, setOrder ]= useState(null);
+    const [ order, setOrder ] = useState(null);
+    const [ isComplete, setIsComplete ] = useState(false);
+    const [ isPaid, setIsPaid ] = useState(false);
 
     useEffect(() => {
         getOrderById(orderId)
@@ -18,6 +20,13 @@ export const OrderPage = () => {
 
         
     }, [orderId])
+
+    useEffect(() => {
+        if (order !== null) {
+            setIsComplete(order.complete);
+            setIsPaid(order.paid);
+        }
+    }, [order]);
 
     if (loading) return <div>Loading...</div>;
     if (!order) return <div>Order not found.</div>;
@@ -38,14 +47,24 @@ export const OrderPage = () => {
         }
     }
 
+    const handleComplete = async () => {
+        const res = await completeOrder(order);
+        console.log(res);
+        setIsComplete(res);
+    }
 
+    const handlePay = async () => {
+        const res = await orderPaid(order);
+        console.log(res);
+        setIsPaid(res);
+    }
 
     return(
         <div className="order-page">
 
-            <div className={`order-header ${order?.complete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
-                <div>Status: {order.complete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
-                <div>Paid: {order.paid ? "Paid" : "Unpaid"}</div>
+            <div className={`order-header ${isComplete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
+                <div>Status: {isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
+                <div>Paid: {isPaid ? "Paid" : "Unpaid"}</div>
                 <div>Due: {order.due}</div>
             </div>
 
@@ -94,10 +113,12 @@ export const OrderPage = () => {
 
                 <div className="order-actions">
                     <button className="btn-delete" onClick={handleDelete}>Delete Order</button>
-                    <button className="btn-complete">
-                        {order.complete ? "Mark Incomplete" : "Mark Complete"}
+                    <button className="btn-complete" onClick={handleComplete}>
+                        {isComplete ? "Mark Incomplete" : "Mark Complete"}
                     </button>
-                    <button className="btn-pay">Pay / Unpay</button>
+                    <button className="btn-pay" onClick={handlePay}>
+                        {isPaid ? "Mark Unpaid" : "Mark Paid"}
+                    </button>
                     <button className="btn-new-order">Create New Order</button>
                 </div>
 

@@ -41,7 +41,8 @@ export function useOrder() {
 
     const completeOrder = async (order) => {
         try{
-            const response = await axios.patch(`http://localhost:5000/complete-order/${order.id}`);
+            console.log("Completing order: ", order.id);
+            const response = await axios.patch(`http://localhost:5000/toggle-complete/${order.id}`);
             return response.data.order.complete;
         } catch (error) {
             if (error.response) {
@@ -54,6 +55,7 @@ export function useOrder() {
 
     const orderPaid = async (order) => {
         try{
+            console.log("Paying for order: ", order.id);
             const response = await axios.patch(`http://localhost:5000/pay-for-order/${order.id}`);
             return response.data.order.paid;
             } catch (error) {
