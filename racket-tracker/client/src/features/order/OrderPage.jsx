@@ -47,30 +47,35 @@ export const OrderPage = () => {
                     </div> */}
 
                     <div className="order-details">
-                        <div className="order-field">
+                        <div className='field-label'>
                             <label>Customer:</label>
-                            <span>{order.user_name}</span>
-                            <button>Edit</button>
                         </div>
-                        <div className="order-field">
+                        <span>{order.user_name}</span>
+                        <button>Edit</button>
+
+                        <div className='field-label'>
                             <label>Racket:</label>
-                            <span>{order.racket_name}</span>
-                            <button>Edit</button>
                         </div>
-                        <div className="order-field">
+                        <span>{order.racket_name}</span>
+                        <button>Edit</button>
+
+                        <div className='field-label'>
                             <label>Stringing:</label>
+                        </div>
+                        <div className='string-directions'>
                             <span>(Mains) {mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
                             {crosses 
                                 ? <span> (Crosses) {crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs</span>
                                 : <span> (Same for crosses)</span>
                             }
-                            <button>Edit</button>
                         </div>
-                        <div className="order-field">
-                            <label>Price:</label>
-                            <span>${order.price}</span>
-                            <button>Edit</button>
+                        <button>Edit</button>
+
+                        <div className='field-label'>
+                            <label>Price:</label>   
                         </div>
+                        <span>${order.price}</span>
+                        <button>Edit</button>
                     </div>
                 </div>
 

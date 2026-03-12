@@ -101,40 +101,49 @@
 .order-details {
     border-radius: 5pt;
     background-color: lightgrey;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 10px;
+    align-items: center;
     margin: 25pt;
     padding: 10pt 25pt;
     justify-content: space-between;
 }
 
-.order-field {
-    margin: 5pt;
-}
-
-.order-field label {
-    background-color: var(--primary);
-    border-radius: 5pt;
-    padding: 5pt;
-    margin-right: 5pt;
+.order-details label {
+    text-align: right;
+    width: fit-content;
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
     color: black;
 }
 
-.order-field span {
+.field-label {
+    display: flex;
+    justify-self: right;
+    background-color: var(--primary);
+    border-radius: 5pt;
+    padding: 5pt;
+}
+
+.order-details span {
     font-size: large;
 }
 
-.order-field button {
+.order-details button {
     border-radius: 5pt;
     padding: 2pt 5pt;
-    margin: 5pt;
+    margin: 10pt;
     background-color: var(--primary);
 }
 
-.order-field button:hover {
+.order-details button:hover {
     background-color: var(--primary-transparent);
+}
+
+.string-directions {
+    display: flex;
+    flex-direction: column;
 }
 
 .order-actions {
@@ -153,3 +162,4 @@
 .order-actions button:hover {
     background-color: var(--primary-transparent);
 }
+
