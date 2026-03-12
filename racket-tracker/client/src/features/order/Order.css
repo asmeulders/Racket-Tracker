@@ -149,7 +149,10 @@
 .order-actions {
     display: flex;
     flex-direction: column;
+    height: fit-content;
     margin: 10pt;
+    border-radius: 5pt;
+    background-color: lightgrey;
 }
 
 .order-actions button {

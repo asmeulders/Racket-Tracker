@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 import { useOrder } from './index';
 
 export const OrderPage = () => {
-    const { getOrderById } = useOrder();
+    const navigate = useNavigate()
+    const { getOrderById, deleteOrder } = useOrder();
     const { orderId } = useParams();
     const [ loading, setLoading ] = useState(true);
     const [ order, setOrder ]= useState(null);
@@ -26,6 +28,17 @@ export const OrderPage = () => {
 
     const mains = jobDetails.find(j => j.direction === "mains") ?? jobDetails.find(j => j.direction === null);
     const crosses = jobDetails.find(j => j.direction === "crosses");
+
+    const handleDelete = () => {
+        const confirmed = window.confirm("Are you sure you want to delete this order?");
+
+        if (confirmed) {
+            deleteOrder(orderId);
+            navigate('/store-dashboard');
+        }
+    }
+
+
 
     return(
         <div className="order-page">
@@ -80,7 +93,7 @@ export const OrderPage = () => {
                 </div>
 
                 <div className="order-actions">
-                    <button className="btn-delete">Delete Order</button>
+                    <button className="btn-delete" onClick={handleDelete}>Delete Order</button>
                     <button className="btn-complete">
                         {order.complete ? "Mark Incomplete" : "Mark Complete"}
                     </button>
