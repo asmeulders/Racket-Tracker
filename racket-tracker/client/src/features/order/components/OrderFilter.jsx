@@ -42,7 +42,7 @@ export const OrderFilter = ({onFilterChange}) => {
     return (
         <div className='filter-container'>
             {/* User Name */}
-            <input type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
+            <input className="filter-text-input" type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
             {/* Order Date */}
             <label htmlFor="orderDate">Order Date</label>
             <input type="date" id='orderDate' onChange={(e) => setOrderDate(e.target.value)}/>
@@ -51,13 +51,13 @@ export const OrderFilter = ({onFilterChange}) => {
             <input type="date" id='dueDate' onChange={(e) => setDueDate(e.target.value)}/>
             {/* Racket */}
             <div className='brand-item-container'>
-                <input type="text" placeholder='Racket Brand' onChange={(e) => setRacketBrand(e.target.value)}/>
-                <input type="text" placeholder='Racket Name' onChange={(e) => setRacketName(e.target.value)}/>
+                <input className="filter-text-input" type="text" placeholder='Racket Brand' onChange={(e) => setRacketBrand(e.target.value)}/>
+                <input className="filter-text-input" type="text" placeholder='Racket Name' onChange={(e) => setRacketName(e.target.value)}/>
             </div>
             {/* String */}
             <div className='brand-item-container'>
-                <input type="text" placeholder='String Brand' onChange={(e) => setStringBrand(e.target.value)}/>
-                <input type="text" placeholder='String Name' onChange={(e) => setStringName(e.target.value)}/>
+                <input className="filter-text-input" type="text" placeholder='String Brand' onChange={(e) => setStringBrand(e.target.value)}/>
+                <input className="filter-text-input" type="text" placeholder='String Name' onChange={(e) => setStringName(e.target.value)}/>
             </div>
             {/* Paid */}
             <select onChange={(e) => setPaid(e.target.value)} value={paid}>

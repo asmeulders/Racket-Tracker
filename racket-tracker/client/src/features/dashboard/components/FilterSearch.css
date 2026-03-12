@@ -1,0 +1,16 @@
+.filter-text-input {
+    width: auto;
+    margin: 5px 2px;
+    padding: 2px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 2px;
+    background-color: var(--primary-transparent);
+    color: black;
+}
+
+.filter-text-input:focus {
+    box-sizing: border-box;
+    outline: none;
+    border: 1px solid var(--secondary);
+}

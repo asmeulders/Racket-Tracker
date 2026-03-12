@@ -1,9 +1,9 @@
+import './FilterSearch.css';
+
 export function FilterSearch({ renderFilter, onFilterChange }) {
     return (
-        <div className='filter-container'>
-            <form>
-                {renderFilter(onFilterChange)}
-            </form>
-        </div>
+        <form>
+            {renderFilter(onFilterChange)}
+        </form>
     )
 }
