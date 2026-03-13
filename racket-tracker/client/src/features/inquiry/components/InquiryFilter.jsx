@@ -20,8 +20,11 @@ export const InquiryFilter = ({onFilterChange}) => {
 
   return (
     <div className='filter-container'>
-      <input type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
-      <input type="date" onChange={(e) => setInqDate(e.target.value)}/>
+      <label htmlFor="usernameFilter">Inquirer Name:</label>
+      <input id="usernameFilter" className='filter-text-input' type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
+      
+      <label htmlFor="orderDateFilter">Inquiry Date:</label>
+      <input id="orderDateFilter" className="filter-date-input" type="date" onChange={(e) => setInqDate(e.target.value)}/>
     </div>
   )
 }

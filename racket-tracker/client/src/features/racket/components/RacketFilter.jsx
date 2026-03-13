@@ -25,10 +25,17 @@ export const RacketFilter = ({onFilterChange}) => {
 
   return (
     <div className='filter-container'>
-      <input type="text" placeholder='Brand Name' onChange={(e) => setBrandName(e.target.value)}/>
-      <input type="text" placeholder='Racket Name' onChange={(e) => setRacketName(e.target.value)}/>
-      <input type="number" placeholder='Price Min' onChange={(e) => setPriceMin(e.target.value)}/>
-      <input type="number" placeholder='Price Max' onChange={(e) => setPriceMax(e.target.value)}/>
+      <label htmlFor="brandNameFilter">Brand Name:</label>
+      <input id="brandNameFilter" className='filter-text-input' type="text" placeholder='Brand Name' onChange={(e) => setBrandName(e.target.value)}/>
+      
+      <label htmlFor="racketNameFilter">Racket Name:</label>
+      <input className="filter-text-input" type="text" placeholder='Racket Name' onChange={(e) => setRacketName(e.target.value)}/>
+      
+      <label htmlFor="priceFilterMin">Price Minimum:</label>
+      <input id="priceFilterMin" className='filter-num-input' type="number" placeholder='Price Min' onChange={(e) => setPriceMin(e.target.value)}/>
+      
+      <label htmlFor="priceFilterMax">Price Maximum:</label>
+      <input id="priceFilterMax" className='filter-num-input' type="number" placeholder='Price Max' onChange={(e) => setPriceMax(e.target.value)}/>
     </div>
   );
 };
