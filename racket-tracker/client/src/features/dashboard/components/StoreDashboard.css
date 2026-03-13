@@ -119,6 +119,14 @@
   flex-shrink: 0;
 }
 
+.query-info-container select {
+  margin: 5pt;
+}
+
+.query-info-container button {
+  margin: 2pt;
+}
+
 .arrow-btn {
   color: white;
   border: solid 1px white;

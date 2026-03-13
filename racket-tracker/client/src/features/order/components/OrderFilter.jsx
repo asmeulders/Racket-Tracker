@@ -45,10 +45,10 @@ export const OrderFilter = ({onFilterChange}) => {
             <input className="filter-text-input" type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
             {/* Order Date */}
             <label htmlFor="orderDate">Order Date</label>
-            <input type="date" id='orderDate' onChange={(e) => setOrderDate(e.target.value)}/>
+            <input className="filter-date-input" type="date" id='orderDate' onChange={(e) => setOrderDate(e.target.value)}/>
             {/* Order Due Date */}
             <label htmlFor="orderDate">Order Due</label>
-            <input type="date" id='dueDate' onChange={(e) => setDueDate(e.target.value)}/>
+            <input className="filter-date-input" type="date" id='dueDate' onChange={(e) => setDueDate(e.target.value)}/>
             {/* Racket */}
             <div className='brand-item-container'>
                 <input className="filter-text-input" type="text" placeholder='Racket Brand' onChange={(e) => setRacketBrand(e.target.value)}/>
@@ -61,13 +61,13 @@ export const OrderFilter = ({onFilterChange}) => {
             </div>
             {/* Paid */}
             <select onChange={(e) => setPaid(e.target.value)} value={paid}>
-                <option value="">Show All</option>
+                <option value="">Show All (Payment Status)</option>
                 <option value="unpaid">Show Only Unpaid</option>
                 <option value="paid">Show Only Paid</option>
             </select>
             {/* Completed */}
             <select onChange={(e) => setCompleted(e.target.value)} value={completed}>
-                <option value="">Show all</option>
+                <option value="">Show All (Order Progress)</option>
                 <option value="uncompleted">Show Only Uncompleted</option>
                 <option value="completed">Show Only Completed</option>
             </select>

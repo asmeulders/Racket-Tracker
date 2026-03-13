@@ -4,8 +4,11 @@
     padding: 2px;
     box-sizing: border-box;
     border: 1px solid black;
-    border-radius: 2px;
+    border-radius: 5px;
     background-color: var(--primary-transparent);
+}
+
+.filter-text-input::placeholder {
     color: black;
 }
 
@@ -13,4 +16,18 @@
     box-sizing: border-box;
     outline: none;
     border: 1px solid var(--secondary);
+}
+
+.filter-container select {
+    width: auto;
+    border: none;
+    margin: 3pt;
+    padding: 3pt;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: var(--primary-transparent);
+}
+
+.filter-date-input {
+    background-color: var(--primary);
 }
