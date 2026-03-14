@@ -107,6 +107,10 @@ export const OrderPage = () => {
         setOrder(prev => ({ ...prev, racket_id: racketId }))
     }
 
+    const handleStringChange = (stringId) => {
+        console.log("String ID: ", stringId);
+    }
+
     return(
         <div className="order-page"><span>{order.user_name}</span><span>{order.user_name}</span>
 
@@ -165,10 +169,13 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing["string"] ? 
-                                ( order.job_details.same_for_crosses ?
-                                    <span>Same</span> : 
-                                    <span>Not same</span> 
-                                ) : 
+                                <div>
+                                    <StringSelect onStringChange={handleStringChange} value={order?.job_details[0].string_id} strings={strings} />
+                                    <input type="checkbox" onChange={(e) => setOrder(prev => ({ ...prev, same_for_crosses: e.target.checked}))} checked={order.same_for_crosses} />
+                                    {!order?.same_for_crosses ?
+                                        <StringSelect onStringChange={handleStringChange} value={order?.job_details[1].string_id} strings={strings} /> : null
+                                    }
+                                </div> : 
                                 <div className='string-directions'>
                                     <span>(Mains) {mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
                                     {crosses 
