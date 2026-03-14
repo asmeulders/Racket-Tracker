@@ -65,7 +65,7 @@ class StrungWith(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
-            "order": self.order.to_json(), 
+            "order": self.order.to_json(),
             "string": self.string.to_json() if self.string else None,
             "tension": self.tension,
             "direction": self.direction,
@@ -140,8 +140,9 @@ class Order(db.Model):
             "price": self.price,
             "complete": self.complete,
             "paid": self.paid,
-            "user_id": self.user.id if self.user else None,
+            "user_id": self.user_id,
             "user_name": self.user.username if self.user else None,
+            "racket_id": self.racket_id,
             "racket_brand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racket_name": self.racket.name if self.racket else None,
             # =========================================
@@ -149,6 +150,7 @@ class Order(db.Model):
             # =========================================
             "job_details": [
                 {
+                    "string_id": record.string.id if record.string else None,
                     "string_name": record.string.name if record.string else None, 
                     "string_brand": record.string.brand.name if record.string and record.string.brand else None,
                     "tension": record.tension,         

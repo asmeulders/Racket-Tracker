@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useOrder } from './index';
 import { UserSelect } from '../user';
+import { RacketSelect } from '../racket';
+import { StringSelect } from '../string';
 import { fetchUsers, fetchRackets, fetchStrings, fetchOrders } from '../../utils/db_utils'
 
 export const OrderPage = () => {
@@ -98,7 +100,11 @@ export const OrderPage = () => {
     }
 
     const handleUserChange = (userId) => {
-        setOrder(prev => ({ ...prev, user_id: userId}));
+        setOrder(prev => ({ ...prev, user_id: userId }));
+    }
+
+    const handleRacketChange = (racketId) => {
+        setOrder(prev => ({ ...prev, racket_id: racketId }))
     }
 
     return(
@@ -127,45 +133,72 @@ export const OrderPage = () => {
                         <div>
                             {isEditing["customer"] ? 
                                 <UserSelect onUserChange={handleUserChange} value={order?.user_id} users={users} /> : 
-                                <span>{order.user_name}</span>}
+                                <span>{order.user_name}</span>
+                            }
                         </div>
                         <div>
-                            {isEditing["customer"] ? <button onClick={() => handleSave("customer")}>Save</button> :
-                            <button onClick={async () => await handleEdit("customer")}>Edit</button>}
+                            {isEditing["customer"] ? 
+                                <button onClick={() => handleSave("customer")}>Save</button> :
+                                <button onClick={async () => await handleEdit("customer")}>Edit</button>
+                            }
                         </div>
                         
 
                         <div className='field-label'>
                             <label>Racket:</label>
                         </div>
-                        <span>{order.racket_name}</span>
                         <div>
-                            {isEditing["racket"] ? <button onClick={() => handleSave("racket")}>Save</button> :
-                            <button onClick={() => handleEdit("racket")}>Edit</button>}
+                            {isEditing["racket"] ? 
+                                <RacketSelect onRacketChange={handleRacketChange} value={order?.racket_id} rackets={rackets} /> : 
+                                <span>{order.racket_brand} {order.racket_name}</span>
+                            }
+                        </div>
+                        <div>
+                            {isEditing["racket"] ? 
+                                <button onClick={() => handleSave("racket")}>Save</button> :
+                                <button onClick={() => handleEdit("racket")}>Edit</button>
+                            }
                         </div>
 
                         <div className='field-label'>
                             <label>Stringing:</label>
                         </div>
-                        <div className='string-directions'>
-                            <span>(Mains) {mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
-                            {crosses 
-                                ? <span> (Crosses) {crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs</span>
-                                : <span> (Same for crosses)</span>
+                        <div>
+                            {isEditing["string"] ? 
+                                ( order.job_details.same_for_crosses ?
+                                    <span>Same</span> : 
+                                    <span>Not same</span> 
+                                ) : 
+                                <div className='string-directions'>
+                                    <span>(Mains) {mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
+                                    {crosses 
+                                        ? <span> (Crosses) {crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs</span>
+                                        : <span> (Same for crosses)</span>
+                                    }
+                                </div> 
                             }
                         </div>
                         <div>
-                            {isEditing["string"] ? <button onClick={() => handleSave("string")}>Save</button> :
-                            <button onClick={() => handleEdit("string")}>Edit</button>}
+                            {isEditing["string"] ? 
+                                <button onClick={() => handleSave("string")}>Save</button> :
+                                <button onClick={() => handleEdit("string")}>Edit</button>
+                            }
                         </div>
 
                         <div className='field-label'>
                             <label>Price:</label>   
                         </div>
-                        <span>${order.price}</span>
                         <div>
-                            {isEditing["price"] ? <button onClick={() => handleSave("price")}>Save</button> :
-                            <button onClick={() => handleEdit("price")}>Edit</button>}
+                            {isEditing["price"] ? 
+                                <input type="number" placeholder='Price' value={order.price} onChange={(e) => setOrder(prev => ({ ...prev, price: e.target.value }))}/> :
+                                <span>${order.price}</span>
+                            }
+                        </div>
+                        <div>
+                            {isEditing["price"] ? 
+                                <button onClick={() => handleSave("price")}>Save</button> :
+                                <button onClick={() => handleEdit("price")}>Edit</button>
+                            }
                         </div>
                     </div>
                 </div>
