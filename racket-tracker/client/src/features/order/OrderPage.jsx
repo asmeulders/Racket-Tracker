@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 
 import { useOrder } from './index';
+import { UserSelect } from '../user';
+import { fetchUsers, fetchRackets, fetchStrings, fetchOrders } from '../../utils/db_utils'
 
 export const OrderPage = () => {
     const navigate = useNavigate()
@@ -12,6 +14,18 @@ export const OrderPage = () => {
     const [ order, setOrder ] = useState(null);
     const [ isComplete, setIsComplete ] = useState(false);
     const [ isPaid, setIsPaid ] = useState(false);
+
+    const [ users, setUsers ] = useState(null);
+    const [ rackets, setRackets ] = useState(null);
+    const [ strings, setStrings ] = useState(null);
+    const [ orders, setOrders ] = useState(null);
+
+    const [ isEditing, setIsEditing ] = useState({
+        customer: false,
+        racket: false,
+        string: false,
+        price: false
+    })
 
     useEffect(() => {
         getOrderById(orderId)
@@ -59,8 +73,36 @@ export const OrderPage = () => {
         setIsPaid(res);
     }
 
+    const handleEdit = async (field) => {
+        setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
+
+        switch (field) {
+            case "customer":
+                await fetchUsers({ onComplete: setUsers });
+                break;
+            case "racket":
+                await fetchRackets({ onComplete: setRackets });
+                break;
+            case "string":
+                await fetchStrings({ onComplete: setStrings });
+                break;
+            case "price":
+                await fetchOrders({ onComplete: setOrders });
+                break;
+        }
+    }
+
+    const handleSave = (field) => {
+        console.log("Order saved: ", order);
+        setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
+    }
+
+    const handleUserChange = (userId) => {
+        setOrder(prev => ({ ...prev, user_id: userId}));
+    }
+
     return(
-        <div className="order-page">
+        <div className="order-page"><span>{order.user_name}</span><span>{order.user_name}</span>
 
             <div className={`order-header ${isComplete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
                 <div>Status: {isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
@@ -82,14 +124,25 @@ export const OrderPage = () => {
                         <div className='field-label'>
                             <label>Customer:</label>
                         </div>
-                        <span>{order.user_name}</span>
-                        <button>Edit</button>
+                        <div>
+                            {isEditing["customer"] ? 
+                                <UserSelect onUserChange={handleUserChange} value={order?.user_id} users={users} /> : 
+                                <span>{order.user_name}</span>}
+                        </div>
+                        <div>
+                            {isEditing["customer"] ? <button onClick={() => handleSave("customer")}>Save</button> :
+                            <button onClick={async () => await handleEdit("customer")}>Edit</button>}
+                        </div>
+                        
 
                         <div className='field-label'>
                             <label>Racket:</label>
                         </div>
                         <span>{order.racket_name}</span>
-                        <button>Edit</button>
+                        <div>
+                            {isEditing["racket"] ? <button onClick={() => handleSave("racket")}>Save</button> :
+                            <button onClick={() => handleEdit("racket")}>Edit</button>}
+                        </div>
 
                         <div className='field-label'>
                             <label>Stringing:</label>
@@ -101,13 +154,19 @@ export const OrderPage = () => {
                                 : <span> (Same for crosses)</span>
                             }
                         </div>
-                        <button>Edit</button>
+                        <div>
+                            {isEditing["string"] ? <button onClick={() => handleSave("string")}>Save</button> :
+                            <button onClick={() => handleEdit("string")}>Edit</button>}
+                        </div>
 
                         <div className='field-label'>
                             <label>Price:</label>   
                         </div>
                         <span>${order.price}</span>
-                        <button>Edit</button>
+                        <div>
+                            {isEditing["price"] ? <button onClick={() => handleSave("price")}>Save</button> :
+                            <button onClick={() => handleEdit("price")}>Edit</button>}
+                        </div>
                     </div>
                 </div>
 

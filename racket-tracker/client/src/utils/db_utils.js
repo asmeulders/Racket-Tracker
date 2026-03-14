@@ -13,6 +13,7 @@ export const fetchData = async ({onComplete, table, limit = null}) => {
     try {
         console.log(`Fetching data for ${table} - Limit of ${limit ? limit : "(none)"}`);
         const response = await axios.get(`http://127.0.0.1:5000/${table}/${limit ? limit : ""}`);
+        console.log(response.data);
         onComplete(response.data);
     } catch (error) {
         console.error(`Error fetching ${table}:`, error);
@@ -36,7 +37,7 @@ export const fetchBrands = async ({onComplete, limit = null}) => {
 }
 
 export const fetchUsers = async ({onComplete, limit = null}) => {
-    fetchData({onComplete: onComplete, table: "users", limit: limit});
+    await fetchData({onComplete: onComplete, table: "users", limit: limit});
 };
 
 export const fetchInquiries = async ({onComplete, limit = null}) => {

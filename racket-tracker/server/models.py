@@ -140,6 +140,7 @@ class Order(db.Model):
             "price": self.price,
             "complete": self.complete,
             "paid": self.paid,
+            "user_id": self.user.id if self.user else None,
             "user_name": self.user.username if self.user else None,
             "racket_brand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racket_name": self.racket.name if self.racket else None,

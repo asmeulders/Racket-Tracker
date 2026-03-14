@@ -696,6 +696,96 @@ def create_order():
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
+@app.route('/update-order', methods=['POST'])
+def update_order():
+    """    
+    Updates an order.
+
+    Expected JSON Format:
+    {
+        'user_id': user_id,
+        'racket_id': racket_id,
+        'string_id': string_id,
+        'tension': tension,
+        'same_for_crosses': same_for_crosses,
+        'paid': paid
+    }
+    """
+    data = request.get_json()
+
+    if not data or "racket_id" not in data or "user_id" not in data or "string_id" not in data or "tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
+        return jsonify({"error": "Missing required fields 'racket', 'user_id', 'string', 'same_for_crosses', 'paid', or 'tension'"}), 400
+    
+    same_for_crosses = data.get('same_for_crosses')
+
+    if not same_for_crosses and "crosses_id" not in data and 'crosses_tension' in data or "crosses_id" in data and 'crosses_tension' not in data:
+        return jsonify({"error": "Missing required fields 'crosses_id' or 'crosses_tension'"}), 400
+    
+    racket_id = data.get('racket_id')
+    user_id = data.get('user_id')
+    string_id = data.get('string_id')
+    tension = data.get('tension')
+    paid = data.get('paid')
+
+    # Dates
+    orderDate = date.today()
+    four_days_later = date.today() + timedelta(days=labor_days)
+
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({"error": "User does not exist"}), 404
+    
+    racket = db.session.get(Racket, racket_id)
+    if not racket:
+        return jsonify({"error": "Racket does not exist"}), 404
+    
+    mains = db.session.get(String, string_id)
+    if not mains:
+        return jsonify({"error": "String does not exist"}), 404
+    
+
+    if not same_for_crosses:
+        crosses_id = data.get('crosses_id')
+        crosses_tension = data.get('crosses_tension')
+        crosses = db.session.get(String, crosses_id)
+        if not crosses:
+            return jsonify({"error": "String does not exist"}), 404
+        
+        same_for_crosses = crosses.id == mains.id and crosses_tension == tension
+    
+    try:
+        if same_for_crosses:
+            # Single string setup
+            price = labor_cost + mains.price_per_racket
+
+            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
+            
+            racketStrungWith = StrungWith(tension=tension, direction=None, string=mains)
+            order.strung_with_records.append(racketStrungWith)
+            
+            db.session.add(order)
+            db.session.commit()
+        else:
+            # Hybrid setup
+            price = labor_cost + (mains.price_per_racket + crosses.price_per_racket)/2
+
+            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
+
+            mainsStrungWith = StrungWith(tension=tension, direction="mains", string=mains)
+            crossesStrungWith = StrungWith(tension=crosses_tension, direction="crosses", string=crosses)
+
+            order.strung_with_records.extend([mainsStrungWith, crossesStrungWith])
+            db.session.add(order)
+            db.session.commit()
+
+        return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
+
 @app.route('/complete-order/<int:order_id>', methods=['PATCH'])
 def complete_order(order_id: int):
     """
