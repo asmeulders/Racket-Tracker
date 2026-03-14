@@ -7,7 +7,8 @@ export const UserFilter = ({onFilterChange}) => {
 
   return (
     <div className='filter-container'>
-      <input type="text" placeholder='User Name' onChange={(e) => onFilterChange(e.target.value)}/>
+      <label htmlFor="usernameFilter">User Name:</label>
+      <input id='usernameFilter' className='filter-text-input' type="text" placeholder='User Name' onChange={(e) => onFilterChange(e.target.value)}/>
     </div>
   )
 }
