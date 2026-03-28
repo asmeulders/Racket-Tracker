@@ -92,8 +92,9 @@ export const OrderPage = () => {
         }
     }
 
-    const handleSave = (field) => {
+    const handleSave = async (field) => {
         console.log("Order saved: ", order);
+        // update the order
         setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
     }
 
@@ -102,7 +103,7 @@ export const OrderPage = () => {
     }
 
     return(
-        <div className="order-page"><span>{order.user_name}</span><span>{order.user_name}</span>
+        <div className="order-page">
 
             <div className={`order-header ${isComplete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
                 <div>Status: {isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
@@ -130,7 +131,7 @@ export const OrderPage = () => {
                                 <span>{order.user_name}</span>}
                         </div>
                         <div>
-                            {isEditing["customer"] ? <button onClick={() => handleSave("customer")}>Save</button> :
+                            {isEditing["customer"] ? <button onClick={async () => await handleSave("customer")}>Save</button> :
                             <button onClick={async () => await handleEdit("customer")}>Edit</button>}
                         </div>
                         
