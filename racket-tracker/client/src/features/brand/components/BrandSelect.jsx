@@ -9,7 +9,7 @@ export const BrandSelect = ({ onBrandChange, value, brands }) => {
             <label htmlFor='brand'>Brand:</label>
             <select name="brands" id="brand" value={value} required onChange={handleSelect}>
                 <option value="">--Please choose a brand--</option>
-                {brands.map(brand => (
+                {brands?.map(brand => (
                 <option key={brand.id} value={brand.id}>{brand.name}</option>
                 ))}
             </select>

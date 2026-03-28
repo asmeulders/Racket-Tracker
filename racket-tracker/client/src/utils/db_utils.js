@@ -21,19 +21,19 @@ export const fetchData = async ({onComplete, table, limit = null}) => {
 };
 
 export const fetchOrders = async ({onComplete, limit = null}) => {
-    fetchData({onComplete: onComplete, table: "orders", limit: limit});
+    await fetchData({onComplete: onComplete, table: "orders", limit: limit});
 }
 
 export const fetchRackets = async ({onComplete, limit = null}) => {
-    fetchData({onComplete: onComplete, table: "rackets", limit: limit});
+    await fetchData({onComplete: onComplete, table: "rackets", limit: limit});
 }
 
 export const fetchStrings = async ({onComplete, limit = null}) => {
-    fetchData({onComplete: onComplete, table: "strings", limit: limit});
+    await fetchData({onComplete: onComplete, table: "strings", limit: limit});
 }
 
 export const fetchBrands = async ({onComplete, limit = null}) => {
-    fetchData({onComplete: onComplete, table: "brands", limit: limit});
+    await fetchData({onComplete: onComplete, table: "brands", limit: limit});
 }
 
 export const fetchUsers = async ({onComplete, limit = null}) => {
@@ -41,7 +41,7 @@ export const fetchUsers = async ({onComplete, limit = null}) => {
 };
 
 export const fetchInquiries = async ({onComplete, limit = null}) => {
-    fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
+    await fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
 };
 
 export const searchTable = async ({table, page, perPage, filters, onComplete}) => {
