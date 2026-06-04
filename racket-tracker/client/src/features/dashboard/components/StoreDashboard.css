@@ -38,6 +38,7 @@
 }
 
 .dashboard-container {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 4fr;
   grid-template-rows: 50px auto;
@@ -86,6 +87,7 @@
 
 /* Main Content */
 .content-box {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -111,6 +113,8 @@
 
 /* Dashboard footer */
 .query-info-container {
+  position: sticky;
+  bottom: 0;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--secondary);
@@ -131,4 +135,21 @@
   color: white;
   border: solid 1px white;
   border-radius: 3px;
+}
+
+/* New Item Button */
+.new-item-btn {
+  position: absolute;
+  display: flex;
+  bottom: 100px;
+  right: 50px;
+  width: 25pt;
+  height: 25pt;
+  border-radius: 5pt;
+  padding-bottom: 6px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: var(--primary);
+  font-size: 25px;
 }

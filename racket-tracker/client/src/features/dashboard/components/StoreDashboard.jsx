@@ -185,9 +185,9 @@ export function StoreDashboard() {
                         <button className='arrow-btn' onClick={goRight}>&raquo;</button>
                         of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
                     </p>
-                </div>              
+                </div>       
             </div>
-            <NewItem />
+            <NewItem id='new-item-btn'/>
         </div>  
     )
 }

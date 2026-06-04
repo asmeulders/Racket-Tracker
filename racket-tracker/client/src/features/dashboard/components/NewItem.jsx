@@ -4,7 +4,7 @@ export function NewItem() {
 
     return (
         <div className="new-item-btn">
-            <p>hello</p>
+            <p>+</p>
         </div>
     )
 }
