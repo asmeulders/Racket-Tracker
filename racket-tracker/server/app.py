@@ -623,8 +623,8 @@ def create_order():
     labor_days = 4
     data = request.get_json()
 
-    if not data or "racket_id" not in data or "user_id" not in data or "string_id" not in data or "tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
-        return jsonify({"error": "Missing required fields 'racket', 'user_id', 'string', 'same_for_crosses', 'paid', or 'tension'"}), 400
+    if not data or "racket_id" not in data or "user_id" not in data or "mains_id" not in data or "mains_tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
+        return jsonify({"error": "Missing required fields 'racket_id', 'user_id', 'mains_id', 'mains_tension', 'same_for_crosses', or 'paid'"}), 400
     
     same_for_crosses = data.get('same_for_crosses')
 
@@ -633,8 +633,8 @@ def create_order():
     
     racket_id = data.get('racket_id')
     user_id = data.get('user_id')
-    string_id = data.get('string_id')
-    tension = data.get('tension')
+    mains_id = data.get('mains_id')
+    mains_tension = data.get('mains_tension')
     paid = data.get('paid')
 
     # Dates
@@ -649,7 +649,7 @@ def create_order():
     if not racket:
         return jsonify({"error": "Racket does not exist"}), 404
     
-    mains = db.session.get(String, string_id)
+    mains = db.session.get(String, mains_id)
     if not mains:
         return jsonify({"error": "String does not exist"}), 404
     
@@ -661,7 +661,7 @@ def create_order():
         if not crosses:
             return jsonify({"error": "String does not exist"}), 404
         
-        same_for_crosses = crosses.id == mains.id and crosses_tension == tension
+        same_for_crosses = crosses.id == mains.id and crosses_tension == mains_tension
     
     try:
         if same_for_crosses:
@@ -670,7 +670,7 @@ def create_order():
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
             
-            racketStrungWith = StrungWith(tension=tension, direction=None, string=mains)
+            racketStrungWith = StrungWith(tension=mains_tension, direction=None, string=mains)
             order.strung_with_records.append(racketStrungWith)
             
             db.session.add(order)
@@ -681,7 +681,7 @@ def create_order():
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
 
-            mainsStrungWith = StrungWith(tension=tension, direction="mains", string=mains)
+            mainsStrungWith = StrungWith(tension=mains_tension, direction="mains", string=mains)
             crossesStrungWith = StrungWith(tension=crosses_tension, direction="crosses", string=crosses)
 
             order.strung_with_records.extend([mainsStrungWith, crossesStrungWith])

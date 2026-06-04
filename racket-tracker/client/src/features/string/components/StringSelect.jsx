@@ -1,9 +1,22 @@
 import Form from 'react-bootstrap/Form';
 
-export const StringSelect = ({ onStringChange, value, strings }) => {
+export const StringSelect = ({ onStringChange, value, strings, direction }) => {
   const handleSelect = (event) => {
     const stringId = event.target.value;
-    onStringChange(prev => ({ ...prev, stringId: stringId}));
+    switch (direction) {
+      case 'mains':
+        onStringChange(prev => ({ ...prev, mainsId: stringId}));
+        break;
+      
+      case 'crosses':
+        onStringChange(prev => ({ ...prev, crossesId: stringId}));
+        break;
+
+      default:
+        console.log("Unknown direction");
+        break;
+    }
+    
   }
   
   return (
