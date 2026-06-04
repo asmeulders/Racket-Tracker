@@ -1,4 +1,4 @@
-import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {
     BrowserRouter as Router,
     Routes,
@@ -9,6 +9,7 @@ import Home from "./index";
 import Layout from './components/layout/Layout';
 import { StoreDashboardPage } from './features/dashboard/StoreDashboardPage';
 import { OrderPage } from './features/order/OrderPage';
+import './App.css'
 
 function App() {
   return (

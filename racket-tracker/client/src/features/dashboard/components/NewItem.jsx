@@ -1,10 +1,8 @@
 import "./NewItem.css";
 
-export function NewItem() {
+export function NewItem({ onClick, className}) {
 
     return (
-        <div className="new-item-btn">
-            <p>+</p>
-        </div>
+        <button className={className} onClick={onClick}>+</button>
     )
 }

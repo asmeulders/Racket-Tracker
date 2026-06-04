@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import { useOrder } from '../useOrder';
 import { UserSelect } from '../../user';
@@ -33,35 +36,61 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
     }
 
     return(
-        <div>
-            <h2>Create an order</h2>
-            <form onSubmit={handleSubmit}>
-                <UserSelect onUserChange={setUserId} value={userId} users={users} />
+        <>
+            <Modal.Header closeButton>
+                <Modal.Title>Create an Order</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <form onSubmit={handleSubmit}>
+                
+                   <UserSelect onUserChange={setUserId} value={userId} users={users} />
 
-                <RacketSelect onRacketChange={setRacketId} value={racketId} rackets={rackets}/>
+                   <RacketSelect onRacketChange={setRacketId} value={racketId} rackets={rackets}/>
                 
-                <StringSelect onStringChange={setStringId} value={stringId} strings={strings} />
+                   <StringSelect onStringChange={setStringId} value={stringId} strings={strings} />
                 
-                <label htmlFor="tension">Tension:</label>
-                <input type="number" id="tension" value={tension} onChange={(e) => setTension(e.target.value)} /><br />
+                    <Form.Group>
+                        <Form.Label>
+                            Mains Tension:
+                        </Form.Label>
+                        <Form.Control type='number' id='tension' value={tension} onChange={(e) => setTension(e.target.value)} >
 
-                <label htmlFor="sameForCrosses">{sameForCrosses ? 'Same for crosses' : 'Different for crosses'}</label>
-                <input type="checkbox" id="sameForCrosses" onChange={(e) => setSameForCrosses(e.target.checked)} checked={sameForCrosses}/><br />
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Check 
+                        type='checkbox'
+                        id="sameForCrosses"
+                        onChange={(e) => setSameForCrosses(e.target.checked)}
+                        checked={sameForCrosses}
+                        label={sameForCrosses ? 'Same for crosses' : 'Different for crosses'}
+                    />
                 
-                {!sameForCrosses && 
-                <div>
-                    <StringSelect onStringChange={setCrossesId} value={crossesId} strings={strings} />
+                    {!sameForCrosses && 
+                    <div>
+                        <StringSelect onStringChange={setCrossesId} value={crossesId} strings={strings} />
                     
-                    <label htmlFor="crossesTension">crossesTension:</label>
-                    <input type="number" id="crossesTension" value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} /><br />
-                </div>
-                }
+                        <Form.Group>
+                            <Form.Label>
+                                Crosses Tension:
+                            </Form.Label>
+                            <Form.Control type='number' id='crossesTension' value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} >
 
-                <label htmlFor="paid">Paid</label>
-                <input type="checkbox" id='paid' onChange={(e) => setPaid(e.target.value)} checked={paid}/>
+                            </Form.Control>
+                        </Form.Group>
+                    </div>
+                    }
 
-                <input type="submit" value="Submit" />
-            </form>
-        </div>
+                    <Form.Check 
+                        type='checkbox'
+                        id="paid"
+                        onChange={(e) => setPaid(e.target.checked)}
+                        checked={paid}
+                        label="Paid"
+                    />
+
+                </form>
+            </Modal.Body>
+        </>
     )
 }

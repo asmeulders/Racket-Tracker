@@ -93,6 +93,7 @@
   justify-content: space-between;
   flex: 1;
   box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto; 
   width: 100%;
   background-color: white;
@@ -135,21 +136,4 @@
   color: white;
   border: solid 1px white;
   border-radius: 3px;
-}
-
-/* New Item Button */
-.new-item-btn {
-  position: absolute;
-  display: flex;
-  bottom: 100px;
-  right: 50px;
-  width: 25pt;
-  height: 25pt;
-  border-radius: 5pt;
-  padding-bottom: 6px;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  background-color: var(--primary);
-  font-size: 25px;
 }
