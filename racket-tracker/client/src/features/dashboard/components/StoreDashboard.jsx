@@ -41,13 +41,6 @@ export function StoreDashboard() {
     }
 
     const handleCreateItem = async () => {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-
-        setValidated(true);
         handleClose();
         await fetchDashboardData();
     }
@@ -191,7 +184,8 @@ export function StoreDashboard() {
             <div className='filter-content'>
                 <FilterSearch renderFilter={currentTabConfig.renderFilter} onFilterChange={setFilters} />
             </div>
-            <div className='content-box'>
+            <div className='content-box'> 
+                {/* TODO: make sure the buttons on the order thing works */}
                 <TabContent
                     items={pageData.items}
                     renderItem={currentTabConfig.renderItem}

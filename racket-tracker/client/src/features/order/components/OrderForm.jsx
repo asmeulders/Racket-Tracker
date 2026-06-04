@@ -26,14 +26,16 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
     const [validated, setValidated] = useState(false);
     const [errors, setErrors] = useState({});
 
-    const handleCreateItem = async (e) => {
+    const handleSubmit = async (e) => {
+        console.log("submitted");
         e.preventDefault();
         const form = e.currentTarget;
-        const newErors = validate();
+        const newErrors = validate();
 
         if (form.checkValidity() === false || Object.keys(errors).length > 0) {
             e.stopPropagation();
             setErrors(newErrors);
+            console.log("Please fill in all required fields");
         } else {
             setErrors({});
             await createOrder({ 
@@ -51,8 +53,8 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
         }        
     };
 
-    const validate = () => {
-        
+    const validate = () => { // TODO: fill in validation
+        return {};
     };
 
     return(
@@ -61,7 +63,7 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
                 <Modal.Title>Create an Order</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleCreateItem}>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 
                    <UserSelect onUserChange={setFields} value={fields.userId} users={users} />
 
@@ -109,16 +111,11 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
                         label="Paid"
                     />
 
-                </Form>
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    <Button type='submit' variant="primary">Create</Button>
+
+                    </Form>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Close
-                </Button>
-                <Button variant="primary" onClick={handleCreateItem}>
-                    Create
-                </Button>
-            </Modal.Footer>
         </>
     )
 }
