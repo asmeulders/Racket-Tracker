@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 
-import { Racket, RacketForm, RacketFilter } from '../../racket';
-import { Order, OrderForm, OrderFilter } from '../../order';
-import { String, StringForm, StringFilter } from '../../string';
-import { User, UserForm, UserFilter } from '../../user';
-import { Brand, BrandForm, BrandFilter } from '../../brand';
+import { Racket, RacketFilter } from '../../racket';
+import { Order, OrderFilter } from '../../order';
+import { String, StringFilter } from '../../string';
+import { User, UserFilter } from '../../user';
+import { Brand, BrandFilter } from '../../brand';
 import { Inquiry, InquiryFilter } from '../../inquiry';
 import { FilterSearch, TabContent } from '../index.js';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable, initDatabases } from '../../../utils/db_utils.js';
+import { NewItem } from './NewItem.jsx';
 import './StoreDashboard.css';
 
 export function StoreDashboard() {
@@ -39,11 +40,6 @@ export function StoreDashboard() {
         } catch (error) {
             console.error("Error connecting to server:" ,error)
         }
-    }
-
-    const handleInit = async () => {
-        await initDatabases();
-        fetchDashboardData();
     }
 
     const tabConfig = {
@@ -120,102 +116,78 @@ export function StoreDashboard() {
     const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
 
     return (
-        <div className='store-dashboard-page'>
-            <button onClick={handleInit} style={{ marginBottom: "20px" }}>
-                Initialize & Seed Databases
-            </button>
-            <div className='dashboard-container'>
-                <div className='filter-header'>
-                    Filters
-                </div>
-                <div className='tab-header'>
-                    <button 
-                        className={getTabClass('order')} 
-                        onClick={() => handleClick('order')}
-                    >
-                        Orders
-                    </button>
-                    <button 
-                        className={getTabClass('racket')} 
-                        onClick={() => handleClick('racket')}
-                    >
-                        Rackets
-                    </button>
-                    <button 
-                        className={getTabClass('string')} 
-                        onClick={() => handleClick('string')}
-                    >
-                        Strings
-                    </button>
-                    <button 
-                        className={getTabClass('user')} 
-                        onClick={() => handleClick('user')}
-                    >
-                        Users
-                    </button>
-                    <button 
-                        className={getTabClass('brand')} 
-                        onClick={() => handleClick('brand')}
-                    >
-                        Brands
-                    </button>
-                    <button 
-                        className={getTabClass('inquiry')} 
-                        onClick={() => handleClick('inquiry')}
-                    >
-                        Inquiries
-                    </button>
-                </div>
-                <div className='filter-content'>
-                    <FilterSearch renderFilter={currentTabConfig.renderFilter} onFilterChange={setFilters} />
-                </div>
-                <div className='content-box'>
-                    <TabContent
-                        items={pageData.items}
-                        renderItem={currentTabConfig.renderItem}
-                        onDataDeleted={() => searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })}
-                        activeTab={activeTab}
-                    />
-                    <div className='query-info-container'>
-                        <p className='query-info'>
-                            Queried {activeTab} - showing
-                            <select name="numResults" id="num-results" value={pageData.perPage} onChange={handleSelect}>
-                                {/* <option value="1">1</option> */}
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select> 
-                            per page.
-                            <button className='arrow-btn' onClick={goLeft}>&laquo;</button>
-                            {pageData.currentPage}
-                            <button className='arrow-btn' onClick={goRight}>&raquo;</button>
-                            of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
-                        </p>
-                    </div>              
-                </div>
-            </div>  
-            <OrderForm onOrderCreated={() => {
-                fetchOrders({onComplete: setOrders});
-                if (activeTab == "order") { fetchDashboardData(); }
-            }} rackets={rackets} strings={strings} brands={brands} users={users}/>
-            <RacketForm onRacketCreated={() => {
-                fetchRackets({onComplete: setRackets});
-                if (activeTab == "racket") { fetchDashboardData(); }
-            }} brands={brands}/>
-            <StringForm onStringCreated={() => {
-                fetchStrings({onComplete: setStrings});
-                if (activeTab == "string") { fetchDashboardData(); }
-            }} brands={brands}/>
-            <UserForm onUserCreated={() => {
-                fetchUsers({onComplete: setUsers}); 
-                if (activeTab == "user") { fetchDashboardData(); }
-            }} />   
-            <BrandForm onBrandCreated={() => {
-                fetchBrands({onComplete: setBrands});
-                if (activeTab == "brand") { fetchDashboardData(); }
-            }}/>
-        </div>
+        <div className='dashboard-container'>
+            <div className='filter-header'>
+                Filters
+            </div>
+            <div className='tab-header'>
+                <button 
+                    className={getTabClass('order')} 
+                    onClick={() => handleClick('order')}
+                >
+                    Orders
+                </button>
+                <button 
+                    className={getTabClass('racket')} 
+                    onClick={() => handleClick('racket')}
+                >
+                    Rackets
+                </button>
+                <button 
+                    className={getTabClass('string')} 
+                    onClick={() => handleClick('string')}
+                >
+                    Strings
+                </button>
+                <button 
+                    className={getTabClass('user')} 
+                    onClick={() => handleClick('user')}
+                >
+                    Users
+                </button>
+                <button 
+                    className={getTabClass('brand')} 
+                    onClick={() => handleClick('brand')}
+                >
+                    Brands
+                </button>
+                <button 
+                    className={getTabClass('inquiry')} 
+                    onClick={() => handleClick('inquiry')}
+                >
+                    Inquiries
+                </button>
+            </div>
+            <div className='filter-content'>
+                <FilterSearch renderFilter={currentTabConfig.renderFilter} onFilterChange={setFilters} />
+            </div>
+            <div className='content-box'>
+                <TabContent
+                    items={pageData.items}
+                    renderItem={currentTabConfig.renderItem}
+                    onDataDeleted={() => searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })}
+                    activeTab={activeTab}
+                />
+                <div className='query-info-container'>
+                    <p className='query-info'>
+                        Queried {activeTab} - showing
+                        <select name="numResults" id="num-results" value={pageData.perPage} onChange={handleSelect}>
+                            {/* <option value="1">1</option> */}
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select> 
+                        per page.
+                        <button className='arrow-btn' onClick={goLeft}>&laquo;</button>
+                        {pageData.currentPage}
+                        <button className='arrow-btn' onClick={goRight}>&raquo;</button>
+                        of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
+                    </p>
+                </div>              
+            </div>
+            <NewItem />
+        </div>  
     )
 }
