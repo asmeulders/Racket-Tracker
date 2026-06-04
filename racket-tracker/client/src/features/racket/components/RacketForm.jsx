@@ -5,17 +5,25 @@ import { useRacket } from '../useRacket';
 
 export const RacketForm = ({ onRacketCreated, brands }) => {
     const { createRacket } = useRacket();
-    const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
-    const [brandId, setBrandId] = useState('');
+    const [fields, setFields] = useState({
+        name: '',
+        price: '',
+        brandId: ''
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createRacket({ name, price, brandId });
+        await createRacket({ 
+            name: fields.name,
+            price: fields.price, 
+            brandId: fields.brandId
+        });
         
-        setName('');
-        setPrice('');
-        setBrandId('');
+        setFields({
+            name: '',
+            price: '',
+            brandId: ''
+        })
         onRacketCreated();
     }
 
@@ -23,13 +31,13 @@ export const RacketForm = ({ onRacketCreated, brands }) => {
         <div>
             <h2>Create a racket</h2>
             <form onSubmit={handleSubmit}>
-                <BrandSelect value={brandId} brands={brands} onBrandChange={setBrandId} />
+                <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} />
 
                 <label htmlFor="name">Racket Name:</label>
-                <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
+                <input type="text" id="name" value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value}))} /><br />
 
                 <label htmlFor="price">Price:</label>
-                <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} /><br />
+                <input type="number" id="price" value={fields.price} onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value}))} /><br />
 
                 <input type="submit" value="Submit" />
             </form>

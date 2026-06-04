@@ -1,0 +1,16 @@
+/* New Item Button */
+.new-item-btn {
+  position: absolute;
+  display: flex;
+  bottom: 100px;
+  right: 50px;
+  width: 25pt;
+  height: 25pt;
+  border-radius: 5pt;
+  padding-bottom: 6px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: var(--primary);
+  font-size: 25px;
+}

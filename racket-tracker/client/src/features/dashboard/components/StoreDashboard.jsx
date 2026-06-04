@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
-import { Racket, RacketFilter } from '../../racket';
-import { Order, OrderFilter } from '../../order';
-import { String, StringFilter } from '../../string';
-import { User, UserFilter } from '../../user';
-import { Brand, BrandFilter } from '../../brand';
-import { Inquiry, InquiryFilter } from '../../inquiry';
+import { Racket, RacketFilter, RacketForm } from '../../racket';
+import { Order, OrderFilter, OrderForm } from '../../order';
+import { String, StringFilter, StringForm } from '../../string';
+import { User, UserFilter, UserForm } from '../../user';
+import { Brand, BrandFilter, BrandForm } from '../../brand';
+import { Inquiry, InquiryFilter, InquiryForm } from '../../inquiry';
 import { FilterSearch, TabContent } from '../index.js';
 import { fetchOrders, fetchRackets, fetchStrings, fetchBrands, fetchUsers, searchTable, initDatabases } from '../../../utils/db_utils.js';
 import { NewItem } from './NewItem.jsx';
@@ -28,6 +31,20 @@ export function StoreDashboard() {
         'hasNext': false
     })
 
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const assertFormComplete = () => {
+
+    }
+
+    const handleCreateItem = async () => {
+        handleClose();
+        await fetchDashboardData();
+    }
+
     const fetchDashboardData = async () => {
         try {
             await searchTable({ 
@@ -45,27 +62,33 @@ export function StoreDashboard() {
     const tabConfig = {
         order: {
             renderItem: (item) => <Order order={item} />,
-            renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <OrderForm onOrderCreated={handleCreateItem} handleClose={handleClose} rackets={rackets} strings={strings} users={users} />
         },
         racket: {
             renderItem: (item) => <Racket racket={item} />,
-            renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <RacketForm onRacketCreated={handleCreateItem} brands={brands} />
         },
         string: {
             renderItem: (item) => <String string={item} />,
-            renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <StringForm onStringCreated={handleCreateItem} brands={brands} />
         },
         user: {
             renderItem: (item) => <User user={item} />,
-            renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <UserForm onUserCreated={handleCreateItem} />
         },
         brand: {
             renderItem: (item) => <Brand brand={item} />,
-            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <BrandForm onBrandCreated={handleCreateItem} />
         },
         inquiry: {
             renderItem: (item) => <Inquiry inquiry={item} />,
-            renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />
+            renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <></>
         }
     };
 
@@ -161,7 +184,8 @@ export function StoreDashboard() {
             <div className='filter-content'>
                 <FilterSearch renderFilter={currentTabConfig.renderFilter} onFilterChange={setFilters} />
             </div>
-            <div className='content-box'>
+            <div className='content-box'> 
+                {/* TODO: make sure the buttons on the order thing works */}
                 <TabContent
                     items={pageData.items}
                     renderItem={currentTabConfig.renderItem}
@@ -185,9 +209,13 @@ export function StoreDashboard() {
                         <button className='arrow-btn' onClick={goRight}>&raquo;</button>
                         of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
                     </p>
-                </div>              
+                </div>  
             </div>
-            <NewItem />
+            <NewItem className={"new-item-btn"} onClick={handleShow} /> 
+            <Modal show={show} onHide={handleClose}>
+                {currentTabConfig.renderModal()}
+                
+                </Modal>
         </div>  
     )
 }

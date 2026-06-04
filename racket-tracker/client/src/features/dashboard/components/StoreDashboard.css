@@ -38,6 +38,7 @@
 }
 
 .dashboard-container {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 4fr;
   grid-template-rows: 50px auto;
@@ -86,11 +87,13 @@
 
 /* Main Content */
 .content-box {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
   box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto; 
   width: 100%;
   background-color: white;
@@ -111,6 +114,8 @@
 
 /* Dashboard footer */
 .query-info-container {
+  position: sticky;
+  bottom: 0;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--secondary);

@@ -1,7 +1,7 @@
 export const BrandSelect = ({ onBrandChange, value, brands }) => {
     const handleSelect = (event) => {
         const brandId = event.target.value;
-        onBrandChange(brandId);
+        onBrandChange(prev => ({ ...prev, brandId: brandId}));
     }
     
     return (

@@ -1,67 +1,121 @@
 import { useState } from 'react';
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import { useOrder } from '../useOrder';
 import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 
-export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
+export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users }) => {
     const { createOrder } = useOrder();
-    
-    const [racketId, setRacketId] = useState("");
-    const [userId, setUserId] = useState('');
-    const [stringId, setStringId] = useState("");
-    const [tension, setTension] = useState('');
-    const [sameForCrosses, setSameForCrosses] = useState(true);
-    const [crossesId, setCrossesId] = useState("");
-    const [crossesTension, setCrossesTension] = useState('');
-    const [paid, setPaid] = useState(false)
+
+    const [fields, setFields] = useState({
+        racketId: '',
+        userId: '',
+        mainsId: '',
+        mainsTension: '',
+        crossesId: '',
+        crossessTension: '',
+        sameForCrosses: true,
+        paid: false
+    });
+
+    const [show, setShow] = useState(false);
+    const [validated, setValidated] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const handleSubmit = async (e) => {
+        console.log("submitted");
         e.preventDefault();
-        await createOrder({ racketId, userId, stringId, tension, crossesId, crossesTension, sameForCrosses, paid });
+        const form = e.currentTarget;
+        const newErrors = validate();
 
-        setRacketId("");
-        setUserId('');
-        setStringId("");
-        setTension('');
-        setCrossesId("");
-        setCrossesTension('');
-        setSameForCrosses(true);
-        setPaid(false);
-        onOrderCreated();
-    }
+        if (form.checkValidity() === false || Object.keys(errors).length > 0) {
+            e.stopPropagation();
+            setErrors(newErrors);
+            console.log("Please fill in all required fields");
+        } else {
+            setErrors({});
+            await createOrder({ 
+                racketId: fields.racketId, 
+                userId: fields.userId, 
+                stringId: fields.stringId,
+                tension: fields.mainsTension, 
+                crossesId: fields.crossessTension, 
+                crossesTension: fields.crossessTension, 
+                sameForCrosses: fields.sameForCrosses, 
+                paid: fields.paid 
+            });
+
+            onOrderCreated();
+        }        
+    };
+
+    const validate = () => { // TODO: fill in validation
+        return {};
+    };
 
     return(
-        <div>
-            <h2>Create an order</h2>
-            <form onSubmit={handleSubmit}>
-                <UserSelect onUserChange={setUserId} value={userId} users={users} />
+        <>
+            <Modal.Header closeButton>
+                <Modal.Title>Create an Order</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                
+                   <UserSelect onUserChange={setFields} value={fields.userId} users={users} />
 
-                <RacketSelect onRacketChange={setRacketId} value={racketId} rackets={rackets}/>
+                   <RacketSelect onRacketChange={setFields} value={fields.racketId} rackets={rackets}/>
                 
-                <StringSelect onStringChange={setStringId} value={stringId} strings={strings} />
+                   <StringSelect onStringChange={setFields} value={fields.stringId} strings={strings} />
                 
-                <label htmlFor="tension">Tension:</label>
-                <input type="number" id="tension" value={tension} onChange={(e) => setTension(e.target.value)} /><br />
+                    <Form.Group>
+                        <Form.Label>
+                            Mains Tension:
+                        </Form.Label>
+                        <Form.Control type='number' id='tension' value={fields.mainsTension} onChange={(e) => setFields(prev => ({ ...prev, mainsTension: e.target.value }))} >
 
-                <label htmlFor="sameForCrosses">{sameForCrosses ? 'Same for crosses' : 'Different for crosses'}</label>
-                <input type="checkbox" id="sameForCrosses" onChange={(e) => setSameForCrosses(e.target.checked)} checked={sameForCrosses}/><br />
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Check 
+                        type='checkbox'
+                        id="sameForCrosses"
+                        onChange={(e) => setFields(prev => ({ ...prev, sameForCrosses: e.target.checked}))}
+                        checked={fields.sameForCrosses}
+                        label={fields.sameForCrosses ? 'Same for crosses' : 'Different for crosses'}
+                    />
                 
-                {!sameForCrosses && 
-                <div>
-                    <StringSelect onStringChange={setCrossesId} value={crossesId} strings={strings} />
+                    {!fields.sameForCrosses && 
+                    <div>
+                        <StringSelect onStringChange={setFields} value={fields.crossesId} strings={strings} />
                     
-                    <label htmlFor="crossesTension">crossesTension:</label>
-                    <input type="number" id="crossesTension" value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} /><br />
-                </div>
-                }
+                        <Form.Group>
+                            <Form.Label>
+                                Crosses Tension:
+                            </Form.Label>
+                            <Form.Control type='number' id='crossesTension' value={fields.crossesTension} onChange={(e) => setFields(prev => ({ ...prev, crossessTension: e.target.value }))} >
 
-                <label htmlFor="paid">Paid</label>
-                <input type="checkbox" id='paid' onChange={(e) => setPaid(e.target.value)} checked={paid}/>
+                            </Form.Control>
+                        </Form.Group>
+                    </div>
+                    }
 
-                <input type="submit" value="Submit" />
-            </form>
-        </div>
+                    <Form.Check 
+                        type='checkbox'
+                        id="paid"
+                        onChange={(e) => setFields(prev => ({ ...prev, paid: e.target.checked }))}
+                        checked={fields.paid}
+                        label="Paid"
+                    />
+
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    <Button type='submit' variant="primary">Create</Button>
+
+                    </Form>
+            </Modal.Body>
+        </>
     )
 }
