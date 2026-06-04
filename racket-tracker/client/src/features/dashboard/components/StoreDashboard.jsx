@@ -41,7 +41,13 @@ export function StoreDashboard() {
     }
 
     const handleCreateItem = async () => {
-        
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        setValidated(true);
         handleClose();
         await fetchDashboardData();
     }
@@ -64,7 +70,7 @@ export function StoreDashboard() {
         order: {
             renderItem: (item) => <Order order={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <OrderForm onOrderCreated={handleCreateItem} rackets={rackets} strings={strings} users={users} />
+            renderModal: () => <OrderForm onOrderCreated={handleCreateItem} handleClose={handleClose} rackets={rackets} strings={strings} users={users} />
         },
         racket: {
             renderItem: (item) => <Racket racket={item} />,
@@ -214,14 +220,7 @@ export function StoreDashboard() {
             <NewItem className={"new-item-btn"} onClick={handleShow} /> 
             <Modal show={show} onHide={handleClose}>
                 {currentTabConfig.renderModal()}
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleCreateItem}>
-                        Create
-                    </Button>
-                </Modal.Footer>
+                
                 </Modal>
         </div>  
     )

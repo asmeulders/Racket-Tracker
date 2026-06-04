@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 export const UserSelect = ({ onUserChange, value, users }) => {
     const handleSelect = (event) => {
         const userId = parseInt(event.target.value);
-        onUserChange(userId);
+        onUserChange(prev => ({...prev, userId: userId}));
     }
 
     return (

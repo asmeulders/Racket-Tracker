@@ -4,18 +4,26 @@ import { BrandSelect } from '../../brand';
 import { useString } from '../index';
 
 export const StringForm = ({ onStringCreated, brands }) => {
-    const { createString } = useString();
-    const [name, setName] = useState('');
-    const [brandId, setBrandId] = useState('');
-    const [pricePerRacket, setPricePerRacket] = useState('');
+    const { createString } = useString(); // TODO: use nmbers for defaults and not all empty strings??
+    const [fields, setFields] = useState({
+        name: '',
+        pricePerRacket: '',
+        brandId: ''
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createString({ name, pricePerRacket, brandId });
+        await createRacket({ 
+            name: fields.name,
+            pricePerRacket: fields.pricePerRacket, 
+            brandId: fields.brandId
+        });
         
-        setName('');
-        setPricePerRacket('');
-        setBrandId('');
+        setFields({
+            name: '',
+            pricePerRacket: '',
+            brandId: ''
+        })
         onStringCreated();
     }
 
@@ -23,13 +31,13 @@ export const StringForm = ({ onStringCreated, brands }) => {
         <div>
             <h2>Create a string</h2>
             <form onSubmit={handleSubmit}>
-                <BrandSelect value={brandId} brands={brands} onBrandChange={setBrandId} />
+                <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} />
 
                 <label htmlFor="name">String Name:</label>
-                <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
+                <input type="text" id="name" value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value}))} /><br />
 
                 <label htmlFor="price">Price per racket:</label>
-                <input type="number" id="price" value={pricePerRacket} onChange={(e) => setPricePerRacket(e.target.value)} /><br />
+                <input type="number" id="price" value={fields.pricePerRacket} onChange={(e) => setFields(prev => ({ ...prev, pricePerRacket: e.target.value}))} /><br />
 
                 
                 <input type="submit" value="Submit" />

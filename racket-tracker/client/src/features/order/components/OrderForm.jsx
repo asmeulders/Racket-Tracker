@@ -8,32 +8,52 @@ import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 
-export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
+export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users }) => {
     const { createOrder } = useOrder();
-    
-    const [racketId, setRacketId] = useState("");
-    const [userId, setUserId] = useState('');
-    const [stringId, setStringId] = useState("");
-    const [tension, setTension] = useState('');
-    const [sameForCrosses, setSameForCrosses] = useState(true);
-    const [crossesId, setCrossesId] = useState("");
-    const [crossesTension, setCrossesTension] = useState('');
-    const [paid, setPaid] = useState(false)
 
-    const handleSubmit = async (e) => {
+    const [fields, setFields] = useState({
+        racketId: '',
+        userId: '',
+        mainsId: '',
+        mainsTension: '',
+        crossesId: '',
+        crossessTension: '',
+        sameForCrosses: true,
+        paid: false
+    });
+
+    const [show, setShow] = useState(false);
+    const [validated, setValidated] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const handleCreateItem = async (e) => {
         e.preventDefault();
-        await createOrder({ racketId, userId, stringId, tension, crossesId, crossesTension, sameForCrosses, paid });
+        const form = e.currentTarget;
+        const newErors = validate();
 
-        setRacketId("");
-        setUserId('');
-        setStringId("");
-        setTension('');
-        setCrossesId("");
-        setCrossesTension('');
-        setSameForCrosses(true);
-        setPaid(false);
-        onOrderCreated();
-    }
+        if (form.checkValidity() === false || Object.keys(errors).length > 0) {
+            e.stopPropagation();
+            setErrors(newErrors);
+        } else {
+            setErrors({});
+            await createOrder({ 
+                racketId: fields.racketId, 
+                userId: fields.userId, 
+                stringId: fields.stringId,
+                tension: fields.mainsTension, 
+                crossesId: fields.crossessTension, 
+                crossesTension: fields.crossessTension, 
+                sameForCrosses: fields.sameForCrosses, 
+                paid: fields.paid 
+            });
+
+            onOrderCreated();
+        }        
+    };
+
+    const validate = () => {
+        
+    };
 
     return(
         <>
@@ -41,19 +61,19 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
                 <Modal.Title>Create an Order</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form onSubmit={handleSubmit}>
+                <Form onSubmit={handleCreateItem}>
                 
-                   <UserSelect onUserChange={setUserId} value={userId} users={users} />
+                   <UserSelect onUserChange={setFields} value={fields.userId} users={users} />
 
-                   <RacketSelect onRacketChange={setRacketId} value={racketId} rackets={rackets}/>
+                   <RacketSelect onRacketChange={setFields} value={fields.racketId} rackets={rackets}/>
                 
-                   <StringSelect onStringChange={setStringId} value={stringId} strings={strings} />
+                   <StringSelect onStringChange={setFields} value={fields.stringId} strings={strings} />
                 
                     <Form.Group>
                         <Form.Label>
                             Mains Tension:
                         </Form.Label>
-                        <Form.Control type='number' id='tension' value={tension} onChange={(e) => setTension(e.target.value)} >
+                        <Form.Control type='number' id='tension' value={fields.mainsTension} onChange={(e) => setFields(prev => ({ ...prev, mainsTension: e.target.value }))} >
 
                         </Form.Control>
                     </Form.Group>
@@ -61,20 +81,20 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
                     <Form.Check 
                         type='checkbox'
                         id="sameForCrosses"
-                        onChange={(e) => setSameForCrosses(e.target.checked)}
-                        checked={sameForCrosses}
-                        label={sameForCrosses ? 'Same for crosses' : 'Different for crosses'}
+                        onChange={(e) => setFields(prev => ({ ...prev, sameForCrosses: e.target.checked}))}
+                        checked={fields.sameForCrosses}
+                        label={fields.sameForCrosses ? 'Same for crosses' : 'Different for crosses'}
                     />
                 
-                    {!sameForCrosses && 
+                    {!fields.sameForCrosses && 
                     <div>
-                        <StringSelect onStringChange={setCrossesId} value={crossesId} strings={strings} />
+                        <StringSelect onStringChange={setFields} value={fields.crossesId} strings={strings} />
                     
                         <Form.Group>
                             <Form.Label>
                                 Crosses Tension:
                             </Form.Label>
-                            <Form.Control type='number' id='crossesTension' value={crossesTension} onChange={(e) => setCrossesTension(e.target.value)} >
+                            <Form.Control type='number' id='crossesTension' value={fields.crossesTension} onChange={(e) => setFields(prev => ({ ...prev, crossessTension: e.target.value }))} >
 
                             </Form.Control>
                         </Form.Group>
@@ -84,13 +104,21 @@ export const OrderForm = ({ onOrderCreated, rackets, strings, users }) => {
                     <Form.Check 
                         type='checkbox'
                         id="paid"
-                        onChange={(e) => setPaid(e.target.checked)}
-                        checked={paid}
+                        onChange={(e) => setFields(prev => ({ ...prev, paid: e.target.checked }))}
+                        checked={fields.paid}
                         label="Paid"
                     />
 
-                </form>
+                </Form>
             </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button variant="primary" onClick={handleCreateItem}>
+                    Create
+                </Button>
+            </Modal.Footer>
         </>
     )
 }

@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 export const StringSelect = ({ onStringChange, value, strings }) => {
   const handleSelect = (event) => {
     const stringId = event.target.value;
-    onStringChange(stringId);
+    onStringChange(prev => ({ ...prev, stringId: stringId}));
   }
   
   return (

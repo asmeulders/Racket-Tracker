@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 export const RacketSelect = ({ onRacketChange, value, rackets }) => {
   const handleSelect = (event) => {
     const racketId = event.target.value;
-    onRacketChange(racketId);
+    onRacketChange(prev => ({ ...prev, racketId: racketId }));
   }
   
   return (
