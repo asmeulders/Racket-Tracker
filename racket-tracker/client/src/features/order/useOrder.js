@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export function useOrder() {
-    const createOrder = async ({ racketId, userId, stringId, tension, crossesId, crossesTension, sameForCrosses, paid }) => {
+    const createOrder = async ({ racketId, userId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, paid }) => {
         try {
             await axios.post("http://localhost:5000/create-order", {
                 "racket_id": racketId,
                 "user_id": userId,
-                "string_id": stringId,
-                tension,
+                "mains_id": mainsId,
+                "mains_tension": mainsTension,
                 "crosses_id": !sameForCrosses ? crossesId : null,
                 "crosses_tension": !sameForCrosses ? crossesTension : null,
                 "same_for_crosses": sameForCrosses,
