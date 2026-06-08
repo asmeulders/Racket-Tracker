@@ -17,7 +17,7 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
         mainsId: '',
         mainsTension: '',
         crossesId: '',
-        crossessTension: '',
+        crossesTension: '',
         sameForCrosses: true,
         paid: false
     });
@@ -32,10 +32,11 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
         const form = e.currentTarget;
         const newErrors = validate();
 
-        if (form.checkValidity() === false || Object.keys(errors).length > 0) {
+        if (form.checkValidity() === false || Object.keys(newErrors).length > 0) {
             e.stopPropagation();
             setErrors(newErrors);
             console.log("Please fill in all required fields");
+            console.dir(errors)
         } else {
             setErrors({});
             await createOrder({ 
@@ -53,8 +54,15 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
         }        
     };
 
-    const validate = () => { // TODO: fill in validation
-        return {};
+    const validate = () => {
+        const customErrors = {};
+        if (fields.mainsTension < 0 || fields.mainsTension > 80) {
+            customErrors.mainsTension = 'Tension must be positive and below 80lbs.';
+        }
+        if (fields.crossesTension < 0 || fields.crossesTension > 80) {
+            customErrors.crossesTension = 'Tension must be positive and below 80lbs.';
+        }
+        return customErrors;
     };
 
     return(
