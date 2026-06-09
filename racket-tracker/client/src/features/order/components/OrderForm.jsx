@@ -50,7 +50,8 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
             });
 
             onOrderCreated();
-        }        
+        }     
+        setValidated(true);   
     };
 
     const validate = () => {

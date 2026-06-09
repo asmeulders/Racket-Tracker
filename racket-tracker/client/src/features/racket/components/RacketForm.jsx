@@ -8,7 +8,6 @@ import { useRacket } from '../useRacket';
 
 export const RacketForm = ({ onRacketCreated, handleClose, brands }) => {
     const { createRacket } = useRacket();
-
     const [fields, setFields] = useState({
         name: '',
         price: '',
@@ -43,11 +42,16 @@ export const RacketForm = ({ onRacketCreated, handleClose, brands }) => {
             })
             onRacketCreated();
         }
-
-        
-        
-        
+        setValidated(true);
     }
+
+    const validate = () => {
+        const customErrors = {};
+        if (fields.price < 0) {
+            customErrors.price = 'Price must be a positive number.';
+        }
+        return customErrors;
+    };
 
     return(
         <>

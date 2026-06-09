@@ -1,29 +1,47 @@
 import { useState } from 'react';
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import { useBrand } from '../useBrand';
 
-export const BrandForm = ({ onBrandCreated }) => {
+export const BrandForm = ({ onBrandCreated, handleClose }) => {
     const { createBrand } = useBrand()
     const [name, setName] = useState('');
 
+    const [show, setShow] = useState(false);
+    const [validated, setValidated] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createBrand({ name });
+        const form = e.currentTarget;
 
-        setName('');
-        onBrandCreated();
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+            console.log("Please fill in all required fields");
+        } else {
+            await createBrand({ name });
+            setName('');
+            onBrandCreated();
+        }
+        setValidated(true); // triggers visual feedback
     }
 
     return(
-        <div>
-            <h2>Create a brand</h2>
-            <form onSubmit={handleSubmit}>
-
-                <label htmlFor="name">Brand Name:</label>
-                <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br />
-                
-                <input type="submit" value="Submit" />
-            </form>
-        </div>
+        <>
+            <Modal.Header closeButton>
+                <Modal.Title>Create a Brand</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Form.Group>
+                        <Form.Label>Brand Name:</Form.Label>
+                        <Form.Control type='text' id='name' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
+                    </Form.Group>
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    <Button type='submit' variant="primary">Create</Button>
+                </Form>
+            </Modal.Body>
+        </>
     )
 }
