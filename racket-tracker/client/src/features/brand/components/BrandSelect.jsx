@@ -7,17 +7,23 @@ export const BrandSelect = ({ onBrandChange, value, brands }) => {
     }
     
     return (
-        <Form.Group>
-            <Form.Label>
-                Brand: 
-            </Form.Label>
-            <Form.Select name="brands" id="brand" value={value} required onChange={handleSelect} >
-                <option value="">--Please choose a brand--</option>
-                {brands?.map(brand => (
-                    <option key={brand.id} value={brand.id}>{brand.name}</option>
-                ))}
-            </Form.Select>
-        </Form.Group>
+        <>
+            <Form.Group>
+                <div className='select-header'>
+                    <Form.Label>
+                        Brand: 
+                    </Form.Label>
+                    <button className='new-brand-btn' onClick={() => {console.log("New brand.")}}>New Brand +</button>
+                </div>
+                <Form.Select name="brands" id="brand" value={value} required onChange={handleSelect} >
+                    <option value="">--Please choose a brand--</option>
+                    {brands?.map(brand => (
+                        <option key={brand.id} value={brand.id}>{brand.name}</option>
+                    ))}
+                </Form.Select>
+            </Form.Group>
+        </>
+        
     )
 }
 

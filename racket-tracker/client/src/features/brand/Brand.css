@@ -6,3 +6,17 @@
     border-bottom: 1px solid grey;
     text-align: left;
 } */
+
+.select-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.new-brand-btn {
+    background-color: var(--secondary);
+    border-radius: 5pt;
+    margin: 2pt;
+    padding: 4pt;
+    color: white
+}
