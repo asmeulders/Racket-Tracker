@@ -27,7 +27,6 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
     const [errors, setErrors] = useState({});
 
     const handleSubmit = async (e) => {
-        console.log("submitted");
         e.preventDefault();
         const form = e.currentTarget;
         const newErrors = validate();
