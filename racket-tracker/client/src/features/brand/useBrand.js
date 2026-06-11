@@ -7,6 +7,7 @@ export function useBrand() {
             await axios.post("http://localhost:5000/create-brand", {
                 "name": name
             })
+            console.log("Brand created.");
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
