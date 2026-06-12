@@ -104,7 +104,7 @@ export function StoreDashboard() {
     }
 
     const handleDelete = (targetId) => {
-        setVisibleItems(visibleItems.filter(item => item.id !== targetId));
+        setVisibleItems(prev => prev.filter(item => item.id !== targetId));
         setData(prev => ({
             ...prev,
             [activeTab]: prev[activeTab].filter(item => item.id !== targetId)
