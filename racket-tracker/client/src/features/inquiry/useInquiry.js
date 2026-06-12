@@ -3,9 +3,10 @@ import axios from 'axios';
 export function useInquiry() {
   const createInquiry = async ({ name, phone, email, message }) => {
     try {
-      await axios.post("http://localhost:5000/create-inquiry", {
+      const res = await axios.post("http://localhost:5000/create-inquiry", {
         name, phone, email, message
       });
+      return res;
     } catch (error) {
       if (error.response) {
         console.error(error.response.data.error);

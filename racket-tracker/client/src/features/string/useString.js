@@ -4,11 +4,12 @@ export function useString() {
 
     const createString = async ({ name, pricePerRacket, brandId }) => {
         try {
-            await axios.post("http://localhost:5000/create-string", {
+            const res = await axios.post("http://localhost:5000/create-string", {
                 name,
                 "price_per_racket": pricePerRacket,
                 "brand_id": brandId
-            })
+            });
+            return res;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);

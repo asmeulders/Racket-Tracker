@@ -13,7 +13,7 @@ export const fetchData = async ({table, limit = null}) => {
     try {
         console.log(`Fetching data for ${table} - Limit of ${limit ? limit : "(none)"}`);
         const response = await axios.get(`http://127.0.0.1:5000/${table}/${limit ? limit : ""}`);
-        console.log(response.data);
+        console.log("Fetched data:\n", response.data);
         return response.data;
     } catch (error) {
         console.error(`Error fetching ${table}:`, error);

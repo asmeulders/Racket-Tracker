@@ -37,7 +37,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
             } else {
                 console.error("Unknown tab");
             }
-            onDataDeleted();
+            onDataDeleted(item);
         }
     };
 

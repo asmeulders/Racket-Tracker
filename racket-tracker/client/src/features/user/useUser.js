@@ -4,9 +4,10 @@ export function useUser() {
 
     const createUser = async ({ username }) => {
         try {
-            await axios.post("http://localhost:5000/create-user", {
+            const res = await axios.post("http://localhost:5000/create-user", {
                 "username": username
-            })
+            });
+            return res;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
