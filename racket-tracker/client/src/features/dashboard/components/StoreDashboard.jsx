@@ -93,7 +93,6 @@ export function StoreDashboard() {
     const handleClick = (selectedTab) => {
         setActiveTab(selectedTab);
         setFilters({});
-        paginate(data[selectedTab], pageData.currentPage, pageData.perPage);
     }
 
     const handleCreateItem = async () => {
@@ -134,6 +133,12 @@ export function StoreDashboard() {
         fetchDashboardData();
         paginate(data[activeTab], pageData.currentPage, pageData.perPage);
     }, []);
+
+    useEffect(() => {
+        if (data[activeTab]) {
+            paginate(data[activeTab], pageData.currentPage, pageData.perPage);
+        }
+    }, [data, activeTab])
 
     const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
     const totalPages = Math.ceil(data[activeTab].length / pageData.perPage);
