@@ -22,22 +22,22 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
         const confirmed = window.confirm("Are you sure you want to delete this item?");
 
         if (confirmed) {
-            if (activeTab === "order") {
+            if (activeTab === "orders") {
                 await deleteOrder(item.id);
-            } else if (activeTab === "racket") {
+            } else if (activeTab === "rackets") {
                 await deleteRacket(item.id);
-            } else if (activeTab === "string") {
+            } else if (activeTab === "strings") {
                 await deleteString(item.id);
-            } else if (activeTab === "user") {
+            } else if (activeTab === "users") {
                 await deleteUser(item.id);
-            } else if (activeTab === "brand") {
+            } else if (activeTab === "brands") {
                 await deleteBrand(item.id);
-            } else if (activeTab === "inquiry") {
+            } else if (activeTab === "inquiries") {
                 await deleteInquiry(item.id);
             } else {
-                console.error("Unknown tab");
+                console.error("Unknown tab.");
             }
-            onDataDeleted();
+            onDataDeleted(item.id);
         }
     };
 
@@ -51,8 +51,11 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                         <li key={item.id} className="data-item">
                             <div className="item-content">
                                 {renderItem(item, onDataDeleted)}
-                                <Dropdown onDelete={() => handleDelete(item)} onEdit={() => navigate(`/edit-order/${item.id}`)}></Dropdown>                        
-                            </div>                        
+                            </div>
+                            <div className='item-actions'>
+                                <button type='button' onClick={() => handleDelete(item)}>Delete</button>
+                                <button type='button' onClick={() => navigate(`/edit-order/${item.id}`)}>Edit</button>      
+                            </div>          
                         </li>
                     ))}
                 </ul>

@@ -39,7 +39,7 @@ export const RacketForm = ({ onRacketCreated, handleClose, brands }) => {
                 name: '',
                 price: '',
                 brandId: ''
-            })
+            });
             onRacketCreated();
         }
         setValidated(true);

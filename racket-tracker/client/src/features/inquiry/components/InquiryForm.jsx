@@ -4,19 +4,27 @@ import { useInquiry } from '../useInquiry';
 
 export const InquiryForm = () => {
     const { createInquiry } = useInquiry();
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
+    const [fields, setFields] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        message: ''
+    })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createInquiry({ name, phone, email, message });
-        
-        setName('');
-        setPhone('');
-        setEmail('');
-        setMessage('');
+        await createInquiry({
+            name: fields.name, 
+            phone: fields.phone, 
+            email: fields.email, 
+            message: fields.message 
+        });
+        setFields({
+            name: '',
+            phone: '',
+            email: '',
+            message: ''
+        });
         // onInquiryCreated();
     }
 
@@ -25,16 +33,16 @@ export const InquiryForm = () => {
             <div className='form-header'><h2>Need a racket strung? Contact Me!</h2></div>
             <form action="submit" className='contact-form' onSubmit={handleSubmit}>
                 {/* Name */}
-                <div className='form-input-item'><input type="text" id='name' className='form-input-field' placeholder='Enter Your Name' value={name} onChange={(e) => setName(e.target.value)} required/>
+                <div className='form-input-item'><input type="text" id='name' className='form-input-field' placeholder='Enter Your Name' value={fields.name} onChange={(e) => setFields(prev => ({...prev, name: e.target.value}))} required/>
                 </div>
                 {/* Phone */}
-                <div className='form-input-item'><input type="tel" id='phone' className='form-input-field' placeholder='Enter Your Phone Number' value={phone} onChange={(e) => setPhone(e.target.value)}/>
+                <div className='form-input-item'><input type="tel" id='phone' className='form-input-field' placeholder='Enter Your Phone Number' value={fields.phone} onChange={(e) => setFields(prev => ({...prev, phone: e.target.value}))} />
                 </div>
                 {/* Email */}
-                <div className='form-input-item'><input type="email" id='email' className='form-input-field' placeholder='Enter Your Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                <div className='form-input-item'><input type="email" id='email' className='form-input-field' placeholder='Enter Your Email' value={fields.email} onChange={(e) => setFields(prev => ({...prev, email: e.target.value}))} required/>
                 </div>
                 {/* Message */}
-                <div className='form-input-item'><textarea id="message" className='form-input-field' placeholder="Enter Your Message" maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
+                <div className='form-input-item'><textarea id="message" className='form-input-field' placeholder="Enter Your Message" maxLength={300} value={fields.message} onChange={(e) => setFields(prev => ({...prev, message: e.target.value}))} required></textarea>
                 </div>
 
                 <button type="submit" className='submit-btn'>Submit Request</button>

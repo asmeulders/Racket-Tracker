@@ -4,10 +4,10 @@ export function useBrand() {
 
     const createBrand = async ({ name }) => {
         try {
-            await axios.post("http://localhost:5000/create-brand", {
+            const res = await axios.post("http://localhost:5000/create-brand", {
                 "name": name
             })
-            console.log("Brand created.");
+            return res;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);

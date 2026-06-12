@@ -20,16 +20,16 @@ export function StoreDashboard() {
         users: [],
         rackets: [],
         strings: [],
-        brands: []
+        brands: [],
+        inquiries: []
     });   
     const [filters, setFilters] = useState({})
-    const tabs = ['order', 'racket', 'string', 'user', 'brand', 'inquiry'];
+    const tabs = ['orders', 'rackets', 'strings', 'users', 'brands', 'inquiries'];
+    const [visibleItems, setVisibleItems] = useState([]);
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const[pageData, setPageData] = useState({
         'currentPage': 1,
         'perPage': 25,
-        'totalPages': 1,
-        'items': [],
         'hasNext': false
     })
 
@@ -38,58 +38,41 @@ export function StoreDashboard() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const handleCreateItem = async () => {
-        handleClose();
-        await fetchDashboardData();
-    }
-
     const fetchDashboardData = async () => {
+        const newData = {};
         for (let i = 0; i < tabs.length; i++) {
-            const fetchedData = await fetchData({ table: tabs[i] });
-            setData(prev => ({...prev, [tabs[i]]: fetchedData }));
+            newData[tabs[i]] = await fetchData({ table: tabs[i] });
         }
-        console.log(data);
-
-        // try {
-        //     await searchTable({ 
-        //         table: activeTab, 
-        //         page: pageData.currentPage, 
-        //         perPage: pageData.perPage, 
-        //         filters: filters,
-        //         onComplete: setPageData
-        //     })
-        // } catch (error) {
-        //     console.error("Error connecting to server:", error)
-        // }
+        setData(prev => ({ ...prev, ...newData }));
     }
 
     const tabConfig = {
-        order: {
+        orders: {
             renderItem: (item) => <Order order={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
             renderModal: () => <OrderForm onOrderCreated={handleCreateItem} handleClose={handleClose} rackets={data.rackets} strings={data.strings} users={data.users} />
         },
-        racket: {
+        rackets: {
             renderItem: (item) => <Racket racket={item} />,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
             renderModal: () => <RacketForm onRacketCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
         },
-        string: {
+        strings: {
             renderItem: (item) => <String string={item} />,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
             renderModal: () => <StringForm onStringCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
         },
-        user: {
+        users: {
             renderItem: (item) => <User user={item} />,
             renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
             renderModal: () => <UserForm onUserCreated={handleCreateItem} handleClose={handleClose} />
         },
-        brand: {
+        brands: {
             renderItem: (item) => <Brand brand={item} />,
             renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
             renderModal: () => <BrandForm onBrandCreated={handleCreateItem} handleClose={handleClose} />
         },
-        inquiry: {
+        inquiries: {
             renderItem: (item) => <Inquiry inquiry={item} />,
             renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />,
             renderModal: () => <></>
@@ -110,7 +93,26 @@ export function StoreDashboard() {
     const handleClick = (selectedTab) => {
         setActiveTab(selectedTab);
         setFilters({});
-        searchTable({ table: selectedTab, page: 1, perPage: pageData.perPage, onComplete: setPageData })
+    }
+
+    const handleCreateItem = async () => {
+        const freshData = await fetchData({ table: activeTab });
+        setData(prev => ({...prev, [activeTab]: freshData}));
+        paginate(freshData, pageData.currentPage, pageData.perPage);
+        handleClose();
+    }
+
+    const handleDelete = (targetId) => {
+        setVisibleItems(prev => prev.filter(item => item.id !== targetId));
+        setData(prev => ({
+            ...prev,
+            [activeTab]: prev[activeTab].filter(item => item.id !== targetId)
+        }));
+    }
+
+    const paginate = (items, currentPage, perPage) => {
+        const start = (currentPage - 1) * perPage;
+        setVisibleItems(items.slice(start, start + perPage));
     }
 
     const goLeft = () => {
@@ -129,13 +131,17 @@ export function StoreDashboard() {
 
     useEffect(() => {
         fetchDashboardData();
+        paginate(data[activeTab], pageData.currentPage, pageData.perPage);
     }, []);
 
-    // useEffect(() => { // this will cause me to send more than needed on start up
-    //     fetchDashboardData();
-    // }, [pageData.currentPage, pageData.perPage, filters, activeTab]);
+    useEffect(() => {
+        if (data[activeTab]) {
+            paginate(data[activeTab], pageData.currentPage, pageData.perPage);
+        }
+    }, [data, activeTab])
 
     const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
+    const totalPages = Math.ceil(data[activeTab].length / pageData.perPage);
 
     return (
         <div className='dashboard-container'>
@@ -186,9 +192,9 @@ export function StoreDashboard() {
             <div className='content-box'> 
                 {/* TODO: make sure the buttons on the order thing works */}
                 <TabContent
-                    items={pageData.items}
+                    items={visibleItems}
                     renderItem={currentTabConfig.renderItem}
-                    onDataDeleted={() => searchTable({ table: activeTab, page: pageData.currentPage, perPage: pageData.perPage, onComplete: setPageData })}
+                    onDataDeleted={handleDelete}
                     activeTab={activeTab}
                 />
                 <div className='query-info-container'>
@@ -213,8 +219,7 @@ export function StoreDashboard() {
             <NewItem className={"new-item-btn"} onClick={handleShow} /> 
             <Modal show={show} onHide={handleClose}>
                 {currentTabConfig.renderModal()}
-                
-                </Modal>
+            </Modal>
         </div>  
     )
 }

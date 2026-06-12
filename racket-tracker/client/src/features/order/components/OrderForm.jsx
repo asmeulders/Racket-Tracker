@@ -48,7 +48,6 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
                 sameForCrosses: fields.sameForCrosses, 
                 paid: fields.paid 
             });
-
             onOrderCreated();
         }     
         setValidated(true);   

@@ -20,12 +20,12 @@ db.init_app(app)
 CORS(app)
 
 MODEL_MAP = {
-    "brand": Brand,
-    "racket": Racket,
-    "string": String,
-    "user": User,
-    "inquiry": Inquiry,
-    "order": Order
+    "brands": Brand,
+    "rackets": Racket,
+    "strings": String,
+    "users": User,
+    "inquiries": Inquiry,
+    "orders": Order
 }
 
 # =======================================================================================================================
