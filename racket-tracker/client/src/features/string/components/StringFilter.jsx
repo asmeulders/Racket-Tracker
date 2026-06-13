@@ -16,10 +16,10 @@ export const StringFilter = ({onFilterChange}) => {
   // Whenever these are changed by the user update the search
   useEffect(() => {
     onFilterChange({
-      'brand_name': brandName,
-      'string_name': stringName,
-      'price_min': priceMin,
-      'price_max': priceMax
+      'brandName': brandName,
+      'stringName': stringName,
+      'priceMin': priceMin,
+      'priceMax': priceMax
     })
   }, [brandName, stringName, priceMin, priceMax])
 

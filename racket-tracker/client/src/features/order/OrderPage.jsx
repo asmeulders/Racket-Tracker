@@ -5,7 +5,7 @@ import { useOrder } from './index';
 import { UserSelect } from '../user';
 import { RacketSelect } from '../racket';
 import { StringSelect } from '../string';
-
+import { fetchData } from '../../utils/db_utils';
 
 // TODO: update this page with new changes
 
@@ -20,10 +20,12 @@ export const OrderPage = () => {
     const [ isComplete, setIsComplete ] = useState(false);
     const [ isPaid, setIsPaid ] = useState(false);
 
-    const [ users, setUsers ] = useState(null);
-    const [ rackets, setRackets ] = useState(null);
-    const [ strings, setStrings ] = useState(null);
-    const [ orders, setOrders ] = useState(null);
+    const [editData, setEditData] = useState({
+        orders: [],
+        users: [],
+        rackets: [],
+        strings: []
+    });  
 
     const [ isEditing, setIsEditing ] = useState({
         customer: false,
@@ -50,7 +52,7 @@ export const OrderPage = () => {
 
     const isLate = order && order.due && !order.complete && new Date(order.due) < new Date();
 
-    const jobDetails = Array.isArray(order.job_details) ? order.job_details : [order.job_details];
+    const jobDetails = Array.isArray(order.jobDetails) ? order.jobDetails : [order.jobDetails];
 
     const mains = jobDetails.find(j => j.direction === "mains") ?? jobDetails.find(j => j.direction === null);
     const crosses = jobDetails.find(j => j.direction === "crosses");
@@ -76,22 +78,17 @@ export const OrderPage = () => {
         setIsPaid(res);
     }
 
-    const handleEdit = async (field) => { // TODO: update this here
+    const handleEdit = async (field) => {
         setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
+        const tableMap = {
+            customer: 'users',
+            racket:   'rackets',
+            string:   'strings',
+        };
 
-        switch (field) {
-            case "customer":
-                await fetchUsers({ onComplete: setUsers });
-                break;
-            case "racket":
-                await fetchRackets({ onComplete: setRackets });
-                break;
-            case "string":
-                await fetchStrings({ onComplete: setStrings });
-                break;
-            case "price":
-                await fetchOrders({ onComplete: setOrders });
-                break;
+        if (tableMap[field]) {
+            const data = await fetchData({ table: tableMap[field] });
+            setEditData(prev => ({ ...prev, [tableMap[field]]: data }));
         }
     }
 
@@ -99,18 +96,6 @@ export const OrderPage = () => {
         console.log("Order saved: ", order);
         // update the order
         setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
-    }
-
-    const handleUserChange = (userId) => {
-        setOrder(prev => ({ ...prev, user_id: userId }));
-    }
-
-    const handleRacketChange = (racketId) => {
-        setOrder(prev => ({ ...prev, racket_id: racketId }))
-    }
-
-    const handleStringChange = (stringId) => {
-        console.log("String ID: ", stringId);
     }
 
     return(
@@ -129,7 +114,7 @@ export const OrderPage = () => {
                         <div className="racket-photo">
                             <img src={order.racket.photo} alt="Racket" />
                         </div>
-                        <span>Ordered: {order.order_date}</span>
+                        <span>Ordered: {order.orderDate}</span>
                     </div> */}
 
                     <div className="order-details">
@@ -138,8 +123,8 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing["customer"] ? 
-                                <UserSelect onUserChange={handleUserChange} value={order?.user_id} users={users} /> : 
-                                <span>{order.user_name}</span>
+                                <UserSelect onUserChange={setOrder} value={order?.userId} users={editData.users} /> : 
+                                <span>{order.userName}</span>
                             }
                         </div>
                         <div>
@@ -155,8 +140,8 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing["racket"] ? 
-                                <RacketSelect onRacketChange={handleRacketChange} value={order?.racket_id} rackets={rackets} /> : 
-                                <span>{order.racket_brand} {order.racket_name}</span>
+                                <RacketSelect onRacketChange={setOrder} value={order?.racketId} rackets={editData.rackets} /> : 
+                                <span>{order.racketBrand} {order.racketName}</span>
                             }
                         </div>
                         <div>
@@ -172,16 +157,17 @@ export const OrderPage = () => {
                         <div>
                             {isEditing["string"] ? 
                                 <div>
-                                    <StringSelect onStringChange={handleStringChange} value={order?.job_details[0].string_id} strings={strings} />
-                                    <input type="checkbox" onChange={(e) => setOrder(prev => ({ ...prev, same_for_crosses: e.target.checked}))} checked={order.same_for_crosses} />
-                                    {!order?.same_for_crosses ?
-                                        <StringSelect onStringChange={handleStringChange} value={order?.job_details[1].string_id} strings={strings} /> : null
-                                    }
+                                    <StringSelect onStringChange={setOrder} value={order?.jobDetails[0].stringId} strings={editData.strings} />
+                                    <input type="checkbox" onChange={(e) => setOrder(prev => ({ ...prev, sameForCrosses: e.target.checked}))} checked={order.sameForCrosses} />
+                                    {!order?.sameForCrosses ?
+                                        <StringSelect onStringChange={setOrder} value={order?.jobDetails[1].stringId} strings={editData.strings} /> : null
+                                    } 
+                                    {/* TODO: This above is suspicious */}
                                 </div> : 
                                 <div className='string-directions'>
-                                    <span>(Mains) {mains?.string_brand} {mains?.string_name} @ {mains?.tension}lbs</span>
+                                    <span>(Mains) {mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span>
                                     {crosses 
-                                        ? <span> (Crosses) {crosses.string_brand} {crosses.string_name} @ {crosses.tension}lbs</span>
+                                        ? <span> (Crosses) {crosses.stringBrand} {crosses.stringName} @ {crosses.tension}lbs</span>
                                         : <span> (Same for crosses)</span>
                                     }
                                 </div> 

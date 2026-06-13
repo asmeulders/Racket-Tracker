@@ -27,7 +27,7 @@ export const StringSelect = ({ onStringChange, value, strings, direction }) => {
       <Form.Select name="strings" id="string" value={value} required onChange={handleSelect} >
         <option value="">--Please choose a string--</option>
           {strings?.map(string => (
-            <option key={string.id} value={string.id}>{string.brand_name} {string.name}</option>
+            <option key={string.id} value={string.id}>{string.brandName} {string.name}</option>
           ))}
       </Form.Select>
     </Form.Group>

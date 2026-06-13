@@ -4,13 +4,13 @@ export function useOrder() {
     const createOrder = async ({ racketId, userId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, paid }) => {
         try {
             const res = await axios.post("http://localhost:5000/create-order", {
-                "racket_id": racketId,
-                "user_id": userId,
-                "mains_id": mainsId,
-                "mains_tension": mainsTension,
-                "crosses_id": !sameForCrosses ? crossesId : null,
-                "crosses_tension": !sameForCrosses ? crossesTension : null,
-                "same_for_crosses": sameForCrosses,
+                "racketId": racketId,
+                "userId": userId,
+                "mainsId": mainsId,
+                "mainsTension": mainsTension,
+                "crossesId": !sameForCrosses ? crossesId : null,
+                "crossesTension": !sameForCrosses ? crossesTension : null,
+                "sameForCrosses": sameForCrosses,
                 "paid": paid
             });
             return res;

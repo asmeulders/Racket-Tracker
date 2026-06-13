@@ -92,8 +92,8 @@ def init_db():
         order2 = db.session.execute(db.select(Order).filter_by(user=bob)).scalar_one()
 
         if not String.query.first():
-            db.session.add(String(name="ALU Power", price_per_racket=22, brand=luxilon))
-            db.session.add(String(name="Hyper G", price_per_racket=20, brand=solinco))
+            db.session.add(String(name="ALU Power", pricePerRacket=22, brand=luxilon))
+            db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
             db.session.commit()
 
         alu_power = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
@@ -144,23 +144,23 @@ def search_table():
     if filters and table == Order:
         if filters:
             username = filters.get('username')
-            order_date = filters.get('order_date')
-            due_date = filters.get('due_date')
+            orderDate = filters.get('orderDate')
+            dueDate = filters.get('dueDate')
             completed = filters.get('completed')
             paid = filters.get('paid')
-            racket_brand = filters.get('racket_brand')
-            racket_name = filters.get('racket_name')
-            string_brand = filters.get('string_brand')
-            string_name = filters.get('string_name')
+            racketBrand = filters.get('racketBrand')
+            racketName = filters.get('racketName')
+            stringBrand = filters.get('stringBrand')
+            stringName = filters.get('stringName')
 
             if username:
                 stmt = stmt.where(table.user.has(User.username.ilike(f"%{username}%")))
             
-            if order_date:
-                stmt = stmt.where(table.orderDate == order_date)
+            if orderDate:
+                stmt = stmt.where(table.orderDate == orderDate)
 
-            if due_date:
-                stmt = stmt.where(table.due == due_date)
+            if dueDate:
+                stmt = stmt.where(table.due == dueDate)
 
             if completed:
                 if completed == 'completed':
@@ -174,60 +174,60 @@ def search_table():
                 elif paid == 'unpaid':
                     stmt = stmt.where(table.paid == False)                
 
-            if racket_brand:
-                stmt = stmt.where(table.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racket_brand}%"))))
+            if racketBrand:
+                stmt = stmt.where(table.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racketBrand}%"))))
 
-            if racket_name:
-                stmt = stmt.where(table.racket.has(Racket.name.ilike(f"%{racket_name}%")))
+            if racketName:
+                stmt = stmt.where(table.racket.has(Racket.name.ilike(f"%{racketName}%")))
         
-            if string_brand:
-                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{string_brand}%")))))
+            if stringBrand:
+                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{stringBrand}%")))))
 
-            if string_name:
-                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.name.ilike(f"%{string_name}%"))))
+            if stringName:
+                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.name.ilike(f"%{stringName}%"))))
 
         # Default Ordering
         stmt = stmt.order_by(table.due.desc()).order_by(table.id.asc())
     # Racket Filtering
     elif table == Racket:
         if filters:
-            brand_name = filters.get('brand_name')
-            racket_name = filters.get('racket_name')
-            price_min = filters.get('price_min')
-            price_max = filters.get('price_max')
+            brandName = filters.get('brandName')
+            racketName = filters.get('racketName')
+            priceMin = filters.get('priceMin')
+            priceMax = filters.get('priceMax')
 
-            if brand_name:
-                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%")))
+            if brandName:
+                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brandName}%")))
 
-            if racket_name:
-                stmt = stmt.where(table.name.ilike(f"%{racket_name}%"))
+            if racketName:
+                stmt = stmt.where(table.name.ilike(f"%{racketName}%"))
             
-            if price_min:
-                stmt = stmt.where(table.price >= float(price_min))
+            if priceMin:
+                stmt = stmt.where(table.price >= float(priceMin))
 
-            if price_max:
-                stmt = stmt.where(table.price <= float(price_max))
+            if priceMax:
+                stmt = stmt.where(table.price <= float(priceMax))
 
         stmt = stmt.order_by(db.func.lower(table.name).asc())
     # String Filtering
     elif table == String:
         if filters:
-            brand_name = filters.get('brand_name')
-            string_name = filters.get('string_name')
-            price_min = filters.get('price_min')
-            price_max = filters.get('price_max')
+            brandName = filters.get('brandName')
+            stringName = filters.get('stringName')
+            priceMin = filters.get('priceMin')
+            priceMax = filters.get('priceMax')
 
-            if brand_name:
-                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%")))
+            if brandName:
+                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brandName}%")))
 
-            if string_name:
-                stmt = stmt.where(table.name.ilike(f"%{string_name}%"))
+            if stringName:
+                stmt = stmt.where(table.name.ilike(f"%{stringName}%"))
             
-            if price_min:
-                stmt = stmt.where(table.price_per_racket >= float(price_min))
+            if priceMin:
+                stmt = stmt.where(table.pricePerRacket >= float(priceMin))
 
-            if price_max:
-                stmt = stmt.where(table.price_per_racket <= float(price_max))
+            if priceMax:
+                stmt = stmt.where(table.pricePerRacket <= float(priceMax))
 
         stmt = stmt.order_by(db.func.lower(table.name).asc())
     # User Filtering
@@ -242,10 +242,10 @@ def search_table():
     # Brand Filtering
     elif table == Brand:
         if filters:
-            brand_name = filters.get('brand_name')
+            brandName = filters.get('brandName')
 
-            if brand_name:
-                stmt = stmt.where(table.name.ilike(f"%{brand_name}%"))
+            if brandName:
+                stmt = stmt.where(table.name.ilike(f"%{brandName}%"))
 
         stmt = stmt.order_by(db.func.lower(table.name).asc())
     # Inquiry Filtering
@@ -496,31 +496,31 @@ def create_string():
     Expected JSON Format:
     {
         'name': name,
-        'price_per_racket': price_per_racket,
+        'pricePerRacket': pricePerRacket,
         'brand_id': brand_id
     }
     """
     data = request.get_json()
 
-    if not data or "name" not in data or "price_per_racket" not in data or "brand_id" not in data:
-        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', 'brand_id', or 'data'"}), 400
+    if not data or "name" not in data or "pricePerRacket" not in data or "brand_id" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'pricePerRacket', 'brand_id', or 'data'"}), 400
     
     name = data.get('name')
-    price_per_racket = data.get('price_per_racket')
+    pricePerRacket = data.get('pricePerRacket')
     brand_id = data.get('brand_id')
 
     # Looks for brand
-    string_brand = db.session.get(Brand, brand_id)
-    if not string_brand:
+    stringBrand = db.session.get(Brand, brand_id)
+    if not stringBrand:
         return jsonify({"error": "Brand does not exist"}), 404
 
     # Checks for an existing string
-    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket, brand=string_brand)).first()
+    existing_string = db.session.execute(db.select(String).filter_by(name=name, pricePerRacket=pricePerRacket, brand=stringBrand)).first()
     if existing_string:
         return jsonify({"error": "This string already exists"}), 409
 
     try:
-        string = String(name=name, price_per_racket=price_per_racket, brand=string_brand)
+        string = String(name=name, pricePerRacket=pricePerRacket, brand=stringBrand)
         db.session.add(string)
         db.session.commit()
 
@@ -666,7 +666,7 @@ def create_order():
     try:
         if same_for_crosses:
             # Single string setup
-            price = labor_cost + mains.price_per_racket
+            price = labor_cost + mains.pricePerRacket
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
             
@@ -677,7 +677,7 @@ def create_order():
             db.session.commit()
         else:
             # Hybrid setup
-            price = labor_cost + (mains.price_per_racket + crosses.price_per_racket)/2
+            price = labor_cost + (mains.pricePerRacket + crosses.pricePerRacket)/2
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
 
@@ -756,7 +756,7 @@ def update_order():
     try:
         if same_for_crosses:
             # Single string setup
-            price = labor_cost + mains.price_per_racket
+            price = labor_cost + mains.pricePerRacket
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
             
@@ -767,7 +767,7 @@ def update_order():
             db.session.commit()
         else:
             # Hybrid setup
-            price = labor_cost + (mains.price_per_racket + crosses.price_per_racket)/2
+            price = labor_cost + (mains.pricePerRacket + crosses.pricePerRacket)/2
 
             order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
 

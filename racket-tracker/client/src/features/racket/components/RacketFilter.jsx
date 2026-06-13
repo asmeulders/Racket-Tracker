@@ -16,10 +16,10 @@ export const RacketFilter = ({onFilterChange}) => {
   // Whenever these are changed by the user update the search
   useEffect(() => {
     onFilterChange({
-      'brand_name': brandName,
-      'racket_name': racketName,
-      'price_min': priceMin,
-      'price_max': priceMax
+      'brandName': brandName,
+      'racketName': racketName,
+      'priceMin': priceMin,
+      'priceMax': priceMax
     })
   }, [brandName, racketName, priceMin, priceMax])
 
