@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 
-import { BrandButton } from './BrandButton';
 import { useBrand } from '../useBrand';
 import { create } from 'axios';
+import { fetchData } from '../../../utils/db_utils';
 
-export const BrandSelect = ({ onBrandChange, value, brands }) => {
+export const BrandSelect = ({ onBrandChange, onDataCreated, value, brands }) => {
     const { createBrand } = useBrand();
     const [other, setOther] = useState('');
 
@@ -14,10 +14,13 @@ export const BrandSelect = ({ onBrandChange, value, brands }) => {
         onBrandChange(prev => ({ ...prev, brandId: brandId}));
     }
 
-    const handleClick = () => {
+    const handleClick = async () => {
         try {
-            createBrand({ name: other });
+            const res = await createBrand({ name: other });
+            console.log(res);
             setOther('');
+            onBrandChange(prev => ({...prev, brandId: res.data.brand.id}));
+            onDataCreated('brands', false);
         } catch (error) {
             console.error(error);
         }
@@ -26,12 +29,9 @@ export const BrandSelect = ({ onBrandChange, value, brands }) => {
     return (
         <>
             <Form.Group>
-                <div className='select-header'>
-                    <Form.Label>
-                        Brand: 
-                    </Form.Label>
-                    <BrandButton />
-                </div>
+                <Form.Label>
+                    Brand: 
+                </Form.Label>
                 <Form.Select name="brands" id="brand" value={value} required onChange={handleSelect} >
                     <option value="">--Please choose a brand--</option>
                     {brands?.map(brand => (
@@ -41,7 +41,7 @@ export const BrandSelect = ({ onBrandChange, value, brands }) => {
                 </Form.Select>
                 {value === 'other' && 
                     <div className='other-brand-input'>
-                        <Form.Control name='other-input' id='other-input' type='text' placeholder='Other Brand' onChange={(e) => {setOther(e.target.value)}}></Form.Control>
+                        <Form.Control name='other-input' id='other-input' type='text' value={other} placeholder='Other Brand' onChange={(e) => {setOther(e.target.value)}}></Form.Control>
                         <button type='button' onClick={handleClick} >Save Brand</button>
                     </div>
                 }

@@ -50,27 +50,27 @@ export function StoreDashboard() {
         orders: {
             renderItem: (item) => <Order order={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <OrderForm onOrderCreated={handleCreateItem} handleClose={handleClose} rackets={data.rackets} strings={data.strings} users={data.users} />
+            renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={data.rackets} strings={data.strings} users={data.users} />
         },
         rackets: {
             renderItem: (item) => <Racket racket={item} />,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <RacketForm onRacketCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
+            renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
         },
         strings: {
             renderItem: (item) => <String string={item} />,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <StringForm onStringCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
+            renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
         },
         users: {
             renderItem: (item) => <User user={item} />,
             renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <UserForm onUserCreated={handleCreateItem} handleClose={handleClose} />
+            renderModal: () => <UserForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         brands: {
             renderItem: (item) => <Brand brand={item} />,
             renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <BrandForm onBrandCreated={handleCreateItem} handleClose={handleClose} />
+            renderModal: () => <BrandForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         inquiries: {
             renderItem: (item) => <Inquiry inquiry={item} />,
@@ -95,11 +95,13 @@ export function StoreDashboard() {
         setFilters({});
     }
 
-    const handleCreateItem = async () => {
-        const freshData = await fetchData({ table: activeTab });
-        setData(prev => ({...prev, [activeTab]: freshData}));
+    const handleCreateItem = async (tabName, close) => {
+        const freshData = await fetchData({ table: tabName });
+        setData(prev => ({...prev, [tabName]: freshData}));
         paginate(freshData, pageData.currentPage, pageData.perPage);
-        handleClose();
+        if (close) {
+            handleClose();
+        }
     }
 
     const handleDelete = (targetId) => {

@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import { useUser } from '../useUser';
 
-export const UserForm = ({ onUserCreated, handleClose }) => {
+export const UserForm = ({ onDataCreated, handleClose }) => {
     const { createUser } = useUser();
     const [username, setUsername] = useState('');
 
@@ -22,7 +22,7 @@ export const UserForm = ({ onUserCreated, handleClose }) => {
         } else {
             await createUser({ username });
             setUsername('');
-            onUserCreated();
+            onDataCreated('users', true);
         }
         setValidated(true); // triggers visual feedback
     }

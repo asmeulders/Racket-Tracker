@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BrandSelect } from '../../brand/';
 import { useRacket } from '../useRacket';
 
-export const RacketForm = ({ onRacketCreated, handleClose, brands }) => {
+export const RacketForm = ({ onDataCreated, handleClose, brands }) => {
     const { createRacket } = useRacket();
     const [fields, setFields] = useState({
         name: '',
@@ -40,7 +40,7 @@ export const RacketForm = ({ onRacketCreated, handleClose, brands }) => {
                 price: '',
                 brandId: ''
             });
-            onRacketCreated();
+            onDataCreated('rackets', true);
         }
         setValidated(true);
     }
@@ -61,7 +61,7 @@ export const RacketForm = ({ onRacketCreated, handleClose, brands }) => {
             <Modal.Body>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 
-                    <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} />
+                    <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated} />
                 
                     <Form.Group>
                         <Form.Label>

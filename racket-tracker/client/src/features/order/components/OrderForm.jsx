@@ -8,7 +8,7 @@ import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 
-export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users }) => {
+export const OrderForm = ({ onDataCreated, handleClose, rackets, strings, users }) => {
     const { createOrder } = useOrder();
 
     const [fields, setFields] = useState({
@@ -48,7 +48,7 @@ export const OrderForm = ({ onOrderCreated, handleClose, rackets, strings, users
                 sameForCrosses: fields.sameForCrosses, 
                 paid: fields.paid 
             });
-            onOrderCreated();
+            onDataCreated('orders', true);
         }     
         setValidated(true);   
     };
