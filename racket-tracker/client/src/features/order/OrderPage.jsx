@@ -12,7 +12,7 @@ import { fetchData } from '../../utils/db_utils';
 
 export const OrderPage = () => {
     const navigate = useNavigate()
-    const { getOrderById, deleteOrder, completeOrder, orderPaid } = useOrder();
+    const { getOrderById, deleteOrder, completeOrder, orderPaid, updatedOrder } = useOrder();
     const { orderId } = useParams();
 
     const [ loading, setLoading ] = useState(true);
@@ -41,6 +41,7 @@ export const OrderPage = () => {
             setIsComplete(order.complete);
             setIsPaid(order.paid);
         }
+        console.log(order);
     }, [order]);
 
     if (loading) return <div>Loading...</div>;
@@ -88,7 +89,7 @@ export const OrderPage = () => {
         console.log("Order saved: ", order);
         // update the order
         
-        setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
+        setIsEditing(false);
     }
 
     return(
@@ -140,7 +141,7 @@ export const OrderPage = () => {
                                     <StringSelect onStringChange={setOrder} value={order?.jobDetails[0].stringId} strings={editData.strings} />
                                     <input type="checkbox" onChange={(e) => setOrder(prev => ({ ...prev, sameForCrosses: e.target.checked}))} checked={order.sameForCrosses} />
                                     {!order?.sameForCrosses ?
-                                        <StringSelect onStringChange={setOrder} value={order?.jobDetails[1].stringId} strings={editData.strings} /> : null
+                                        <StringSelect onStringChange={setOrder} value={order?.jobDetails[1]?.stringId} strings={editData.strings} /> : null
                                     } 
                                     {/* TODO: This above is suspicious */}
                                 </div> : 

@@ -137,6 +137,7 @@ class Order(db.Model):
             "id": self.id, 
             "orderDate": self.orderDate.strftime('%Y-%m-%d') if self.orderDate else None, 
             "due": self.due.strftime('%Y-%m-%d') if self.due else None,
+            "sameForCrosses": len(self.strungWithRecords) == 1,
             "price": self.price,
             "complete": self.complete,
             "paid": self.paid,
@@ -146,7 +147,7 @@ class Order(db.Model):
             "racketBrand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racketName": self.racket.name if self.racket else None,
             # =========================================
-            # Make stringName a snapshop
+            # Make stringName a snapshot
             # =========================================
             "jobDetails": [
                 {

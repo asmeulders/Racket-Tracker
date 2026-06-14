@@ -42,7 +42,7 @@ export function useOrder() {
 
     const updateOrder = async (id) => {
         try {
-            const res = await axios.post("http://localhost:5000/create-order", {
+            const res = await axios.post("http://localhost:5000/update-order", {
                 "racketId": racketId,
                 "userId": userId,
                 "mainsId": mainsId,

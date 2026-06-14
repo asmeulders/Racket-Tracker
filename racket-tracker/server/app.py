@@ -705,18 +705,22 @@ def update_order():
     {
         'userId': userId,
         'racketId': racketId,
-        'stringId': stringId,
-        'tension': tension,
-        'sameForCrosses': sameForCrosses,
-        'paid': paid
+        'mainsId': mainsId,
+        'mainsTension': mainsTension,
+        'crossesId': crossesId,
+        'crossesTension': crossesTension,
+        'sameForCrosses': sameForCrosses
     }
     """
+
+    ### TODO: need to query the order anyways so dont send paid and complete with the json, just update the fields
+
     laborDays = 4
     laborCost = 25
     data = request.get_json()
 
-    if not data or "racketId" not in data or "userId" not in data or "stringId" not in data or "tension" not in data or "sameForCrosses" not in data or 'paid' not in data:
-        return jsonify({"error": "Missing required fields 'racket', 'userId', 'string', 'sameForCrosses', 'paid', or 'tension'"}), 400
+    if not data or "racketId" not in data or "userId" not in data or "mainsId" not in data or "mainsTension" not in data or "crossesId" not in data or "crossesTension" not in data or "sameForCrosses" not in data:
+        return jsonify({"error": "Missing required fields 'racket', 'userId', 'mainsId', 'mainsTension', 'crossesId', 'crossesTension', or 'sameForCrosses'"}), 400
     
     sameForCrosses = data.get('sameForCrosses')
 
@@ -725,9 +729,8 @@ def update_order():
     
     racketId = data.get('racketId')
     userId = data.get('userId')
-    stringId = data.get('stringId')
-    tension = data.get('tension')
-    paid = data.get('paid')
+    mainsId = data.get('mainsId')
+    mainsTension = data.get('mainsTension')
 
     # Dates
     orderDate = date.today()
@@ -741,7 +744,7 @@ def update_order():
     if not racket:
         return jsonify({"error": "Racket does not exist"}), 404
     
-    mains = db.session.get(String, stringId)
+    mains = db.session.get(String, mainsId)
     if not mains:
         return jsonify({"error": "String does not exist"}), 404
     
@@ -753,7 +756,7 @@ def update_order():
         if not crosses:
             return jsonify({"error": "String does not exist"}), 404
         
-        sameForCrosses = crosses.id == mains.id and crossesTension == tension
+        sameForCrosses = crosses.id == mains.id and crossesTension == mainsTension
     
     try:
         if sameForCrosses:
@@ -762,7 +765,7 @@ def update_order():
 
             order = Order(orderDate=orderDate, due=fourDaysLater, price=price, complete=False, paid=paid, racket=racket, user=user)
             
-            racketStrungWith = StrungWith(tension=tension, direction=None, string=mains)
+            racketStrungWith = StrungWith(tension=mainsTension, direction=None, string=mains)
             order.strungWithRecords.append(racketStrungWith)
             
             db.session.add(order)
