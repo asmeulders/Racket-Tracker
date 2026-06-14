@@ -28,14 +28,14 @@ export function Order({order}) {
   return (
     <div className='order-container'>
       <div className='order-item-header'>
-        <p className='order-title'>{order.user_name}'s {order.racket_brand} {order.racket_name}</p> 
+        <p className='order-title'>{order.username}'s {order.racketBrand} {order.racketName}</p> 
         <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
       </div>
       <ul className='job-details-container'>
-        {order.job_details?.map((job, index) => (
+        {order.jobDetails?.map((job, index) => (
           <li key={index} className='job-details'>
             {job.direction ? `${job.direction === 'mains' ? 'Mains' : 'Crosses'}: ` : ''}
-            {job.string_brand} {job.string_name} at {job.tension}lbs 
+            {job.stringBrand} {job.stringName} at {job.tension}lbs 
           </li>
         ))}
       </ul>
