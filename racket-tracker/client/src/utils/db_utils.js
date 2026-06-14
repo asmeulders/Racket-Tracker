@@ -57,5 +57,4 @@ export const searchTable = async ({table, page, perPage, filters, onComplete}) =
     } catch (error) {
         console.error(`Error fetching ${table}:`, error);
     }
-    
 };

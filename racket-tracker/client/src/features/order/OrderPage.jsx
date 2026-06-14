@@ -16,7 +16,8 @@ export const OrderPage = () => {
     const { orderId } = useParams();
 
     const [ loading, setLoading ] = useState(true);
-    const [ order, setOrder ] = useState(null);
+    const [ order, setOrder ] = useState({});
+    const [ updatedOrder, setUpdatedOrder ] = useState({});
     const [ isComplete, setIsComplete ] = useState(false);
     const [ isPaid, setIsPaid ] = useState(false);
 
@@ -27,12 +28,7 @@ export const OrderPage = () => {
         strings: []
     });  
 
-    const [ isEditing, setIsEditing ] = useState({
-        customer: false,
-        racket: false,
-        string: false,
-        price: false
-    })
+    const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
         getOrderById(orderId)
@@ -79,22 +75,19 @@ export const OrderPage = () => {
     }
 
     const handleEdit = async (field) => {
-        setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
-        const tableMap = {
-            customer: 'users',
-            racket:   'rackets',
-            string:   'strings',
-        };
+        const tables = ['users', 'rackets', 'strings'];
 
-        if (tableMap[field]) {
-            const data = await fetchData({ table: tableMap[field] });
-            setEditData(prev => ({ ...prev, [tableMap[field]]: data }));
+        for (let i = 0; i < tables.length; i++) {
+            const data = await fetchData({ table: tables[i] });
+            setEditData(prev => ({ ...prev, [tables[i]]: data }));
         }
+        setIsEditing(true);
     }
 
     const handleSave = async (field) => {
         console.log("Order saved: ", order);
         // update the order
+        
         setIsEditing(prev => ({ ...prev, [field]: !prev[field] }));
     }
 
@@ -122,32 +115,19 @@ export const OrderPage = () => {
                             <label>Customer:</label>
                         </div>
                         <div>
-                            {isEditing["customer"] ? 
+                            {isEditing ? 
                                 <UserSelect onUserChange={setOrder} value={order?.userId} users={editData.users} /> : 
-                                <span>{order.userName}</span>
+                                <span>{order.username}</span>
                             }
-                        </div>
-                        <div>
-                            {isEditing["customer"] ? 
-                                <button onClick={() => handleSave("customer")}>Save</button> :
-                                <button onClick={async () => await handleEdit("customer")}>Edit</button>
-                            }
-                        </div>
-                        
+                        </div>                      
 
                         <div className='field-label'>
                             <label>Racket:</label>
                         </div>
                         <div>
-                            {isEditing["racket"] ? 
+                            {isEditing ? 
                                 <RacketSelect onRacketChange={setOrder} value={order?.racketId} rackets={editData.rackets} /> : 
                                 <span>{order.racketBrand} {order.racketName}</span>
-                            }
-                        </div>
-                        <div>
-                            {isEditing["racket"] ? 
-                                <button onClick={() => handleSave("racket")}>Save</button> :
-                                <button onClick={() => handleEdit("racket")}>Edit</button>
                             }
                         </div>
 
@@ -155,7 +135,7 @@ export const OrderPage = () => {
                             <label>Stringing:</label>
                         </div>
                         <div>
-                            {isEditing["string"] ? 
+                            {isEditing ? 
                                 <div>
                                     <StringSelect onStringChange={setOrder} value={order?.jobDetails[0].stringId} strings={editData.strings} />
                                     <input type="checkbox" onChange={(e) => setOrder(prev => ({ ...prev, sameForCrosses: e.target.checked}))} checked={order.sameForCrosses} />
@@ -173,28 +153,22 @@ export const OrderPage = () => {
                                 </div> 
                             }
                         </div>
-                        <div>
-                            {isEditing["string"] ? 
-                                <button onClick={() => handleSave("string")}>Save</button> :
-                                <button onClick={() => handleEdit("string")}>Edit</button>
-                            }
-                        </div>
 
                         <div className='field-label'>
                             <label>Price:</label>   
                         </div>
                         <div>
-                            {isEditing["price"] ? 
+                            {isEditing ? 
                                 <input type="number" placeholder='Price' value={order.price} onChange={(e) => setOrder(prev => ({ ...prev, price: e.target.value }))}/> :
                                 <span>${order.price}</span>
                             }
                         </div>
-                        <div>
-                            {isEditing["price"] ? 
-                                <button onClick={() => handleSave("price")}>Save</button> :
-                                <button onClick={() => handleEdit("price")}>Edit</button>
-                            }
-                        </div>
+                    </div>
+                    <div className='order-edit-btn'>
+                        {isEditing ? 
+                            <button onClick={() => handleSave("customer")}>Save</button> :
+                            <button onClick={async () => await handleEdit("customer")}>Edit</button>
+                        }
                     </div>
                 </div>
 

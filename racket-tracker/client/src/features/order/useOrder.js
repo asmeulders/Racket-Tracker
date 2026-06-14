@@ -40,6 +40,28 @@ export function useOrder() {
         await axios.delete(`http://localhost:5000/delete-order/${id}`);
     };
 
+    const updateOrder = async (id) => {
+        try {
+            const res = await axios.post("http://localhost:5000/create-order", {
+                "racketId": racketId,
+                "userId": userId,
+                "mainsId": mainsId,
+                "mainsTension": mainsTension,
+                "crossesId": !sameForCrosses ? crossesId : null,
+                "crossesTension": !sameForCrosses ? crossesTension : null,
+                "sameForCrosses": sameForCrosses,
+                "paid": paid
+            });
+            return res;
+        } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else{
+                console.error("Could not connect to server.");
+            }
+        }
+    }
+
     const completeOrder = async (order) => {
         try{
             console.log("Completing order: ", order.id);

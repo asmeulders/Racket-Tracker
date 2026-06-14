@@ -98,21 +98,26 @@
     justify-content: space-around;
 }
 
-.order-details {
+.order-card {
+    position: relative;
     border-radius: 5pt;
     background-color: lightgrey;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
     column-gap: 10px;
     align-items: center;
+    width: 500px;
     margin: 25pt;
     padding: 10pt 25pt;
     justify-content: space-between;
 }
 
+.order-details {
+    width: 80%;
+    display: grid;
+    grid-column: 1fr 2fr;
+}
+
 .order-details label {
     text-align: right;
-    width: fit-content;
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
     color: black;
@@ -121,6 +126,7 @@
 .field-label {
     display: flex;
     justify-self: right;
+    width: fit-content;
     background-color: var(--primary);
     border-radius: 5pt;
     padding: 5pt;
@@ -130,14 +136,14 @@
     font-size: large;
 }
 
-.order-details button {
+.order-card button {
     border-radius: 5pt;
     padding: 2pt 5pt;
     margin: 10pt;
     background-color: var(--primary);
 }
 
-.order-details button:hover {
+.order-card button:hover {
     background-color: var(--primary-transparent);
 }
 
@@ -166,3 +172,8 @@
     background-color: var(--primary-transparent);
 }
 
+.order-edit-btn {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+}
