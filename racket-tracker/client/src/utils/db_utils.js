@@ -44,7 +44,7 @@ export const fetchData = async ({table, limit = null}) => {
 //     await fetchData({onComplete: onComplete, table: "inquiries", limit: limit});
 // };
 
-export const searchTable = async ({table, page, perPage, filters, onComplete}) => {
+export const searchTable = async ({table, page, perPage, filters}) => {
     try {
         console.log(`Searching for data from ${table} on page ${page}`);
         const response = await axios.post(`http://127.0.0.1:5000/search-table/`,{
@@ -53,7 +53,7 @@ export const searchTable = async ({table, page, perPage, filters, onComplete}) =
             'perPage': perPage,
             'filters': filters
         });
-        onComplete(response.data);
+        return response.data;
     } catch (error) {
         console.error(`Error fetching ${table}:`, error);
     }

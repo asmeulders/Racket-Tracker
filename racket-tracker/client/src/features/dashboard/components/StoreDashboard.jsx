@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -14,6 +14,9 @@ import { fetchData, searchTable, initDatabases } from '../../../utils/db_utils.j
 import { NewItem } from './NewItem.jsx';
 import './StoreDashboard.css';
 
+// TODO: Filters dont work. make sure that the other forms work because string didnt close and update correctly
+// other items edit
+
 export function StoreDashboard() {
     const [data, setData] = useState({
         orders: [],
@@ -25,13 +28,21 @@ export function StoreDashboard() {
     });   
     const [filters, setFilters] = useState({})
     const tabs = ['orders', 'rackets', 'strings', 'users', 'brands', 'inquiries'];
-    const [visibleItems, setVisibleItems] = useState([]);
+    // const [visibleItems, setVisibleItems] = useState([]);
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const[pageData, setPageData] = useState({
-        'currentPage': 1,
+        'currentPage': {
+                        orders: 1,
+                        users: 1,
+                        rackets: 1,
+                        strings: 1,
+                        brands: 1,
+                        inquiries: 1
+                        },
         'perPage': 25,
         'hasNext': false
-    })
+    });
+    const isFirstRender = useRef(true);
 
     const [show, setShow] = useState(false);
 
@@ -41,7 +52,8 @@ export function StoreDashboard() {
     const fetchDashboardData = async () => {
         const newData = {};
         for (let i = 0; i < tabs.length; i++) {
-            newData[tabs[i]] = await fetchData({ table: tabs[i] });
+            const pagination = await searchTable({ table: tabs[i], page: pageData.currentPage[activeTab], perPage: pageData.perPage, filters: filters });
+            newData[tabs[i]] = pagination.items;
         }
         setData(prev => ({ ...prev, ...newData }));
     }
@@ -96,51 +108,67 @@ export function StoreDashboard() {
     }
 
     const handleCreateItem = async (tabName, close) => {
-        const freshData = await fetchData({ table: tabName });
-        setData(prev => ({...prev, [tabName]: freshData}));
-        paginate(freshData, pageData.currentPage, pageData.perPage);
+        await searchPage(tabName);
+        // paginate(freshData, pageData.currentPage, pageData.perPage);
         if (close) {
             handleClose();
         }
     }
 
     const handleDelete = (targetId) => {
-        setVisibleItems(prev => prev.filter(item => item.id !== targetId));
+        // setVisibleItems(prev => prev.filter(item => item.id !== targetId));
         setData(prev => ({
             ...prev,
             [activeTab]: prev[activeTab].filter(item => item.id !== targetId)
         }));
     }
 
-    const paginate = (items, currentPage, perPage) => {
-        const start = (currentPage - 1) * perPage;
-        setVisibleItems(items.slice(start, start + perPage));
-    }
+    // const paginate = (items, currentPage, perPage) => {
+    //     const start = (currentPage - 1) * perPage;
+    //     // setVisibleItems(items.slice(start, start + perPage));
+    // }
 
     const goLeft = () => {
         setPageData(prev => ({
             ...prev,
-            'currentPage': Math.max(prev.currentPage-1, 1)
+            'currentPage': Math.max(prev.currentPage[activeTab] - 1, 1)
         }));
     };
 
     const goRight = () => {
         setPageData(prev => ({
             ...prev,
-            'currentPage': Math.min(prev.totalPages, prev.currentPage + 1)
+            'currentPage': Math.min(prev.totalPages, prev.currentPage[activeTab] + 1)
         }));
     };
 
+    const searchPage = async (tabName) => {
+        const pagination = await searchTable({ table: tabName, page: pageData.currentPage[activeTab], perPage: pageData.perPage, filters: filters });
+        setData(prev => ({...prev, [tabName]: pagination.items}));
+    }
+
     useEffect(() => {
         fetchDashboardData();
-        paginate(data[activeTab], pageData.currentPage, pageData.perPage);
+        // paginate(data[activeTab], pageData.currentPage, pageData.perPage);
     }, []);
 
     useEffect(() => {
-        if (data[activeTab]) {
-            paginate(data[activeTab], pageData.currentPage, pageData.perPage);
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
         }
-    }, [data, activeTab])
+        searchPage(activeTab);
+    }, [pageData.currentPage[activeTab]])
+
+    useEffect(() => {
+        searchPage(activeTab);
+    }, [filters])
+
+    // useEffect(() => {
+    //     if (data[activeTab]) {
+    //         paginate(data[activeTab], pageData.currentPage, pageData.perPage);
+    //     }
+    // }, [data, activeTab])
 
     const currentTabConfig = tabConfig[activeTab] || tabConfig.order;
     const totalPages = Math.ceil(data[activeTab].length / pageData.perPage);
@@ -194,7 +222,7 @@ export function StoreDashboard() {
             <div className='content-box'> 
                 {/* TODO: make sure the buttons on the order thing works */}
                 <TabContent
-                    items={visibleItems}
+                    items={data[activeTab]}
                     renderItem={currentTabConfig.renderItem}
                     onDataDeleted={handleDelete}
                     activeTab={activeTab}
@@ -212,7 +240,7 @@ export function StoreDashboard() {
                         </select> 
                         per page.
                         <button className='arrow-btn' onClick={goLeft}>&laquo;</button>
-                        {pageData.currentPage}
+                        {pageData.currentPage[activeTab]}
                         <button className='arrow-btn' onClick={goRight}>&raquo;</button>
                         of {pageData.totalPages !== 0 ? pageData.totalPages : 1}.
                     </p>
