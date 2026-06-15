@@ -40,17 +40,19 @@ export function useOrder() {
         await axios.delete(`http://localhost:5000/delete-order/${id}`);
     };
 
-    const updateOrder = async (id) => {
+    const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, orderDue, price }) => {
         try {
             const res = await axios.post("http://localhost:5000/update-order", {
-                "racketId": racketId,
-                "userId": userId,
-                "mainsId": mainsId,
-                "mainsTension": mainsTension,
-                "crossesId": !sameForCrosses ? crossesId : null,
-                "crossesTension": !sameForCrosses ? crossesTension : null,
-                "sameForCrosses": sameForCrosses,
-                "paid": paid
+                'orderId': orderId,
+                'userId': userId,
+                'racketId': racketId,
+                'mainsId': mainsId,
+                'mainsTension': mainsTension,
+                'crossesId': crossesId,
+                'crossesTension': crossesTension,
+                'sameForCrosses': sameForCrosses,
+                'orderDue': orderDue,
+                'price': price
             });
             return res;
         } catch (error) {
@@ -90,5 +92,5 @@ export function useOrder() {
         }
     }
 
-    return { createOrder, getOrderById, deleteOrder, completeOrder, orderPaid };
+    return { createOrder, getOrderById, deleteOrder, updateOrder, completeOrder, orderPaid };
 }

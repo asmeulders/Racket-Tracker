@@ -703,86 +703,118 @@ def update_order():
 
     Expected JSON Format:
     {
+        'orderId': orderId,
         'userId': userId,
         'racketId': racketId,
         'mainsId': mainsId,
         'mainsTension': mainsTension,
         'crossesId': crossesId,
         'crossesTension': crossesTension,
-        'sameForCrosses': sameForCrosses
+        'sameForCrosses': sameForCrosses,
+        'orderDue': orderDue,
+        'price: price
     }
     """
 
-    ### TODO: need to query the order anyways so dont send paid and complete with the json, just update the fields
-
-    laborDays = 4
-    laborCost = 25
     data = request.get_json()
 
-    if not data or "racketId" not in data or "userId" not in data or "mainsId" not in data or "mainsTension" not in data or "crossesId" not in data or "crossesTension" not in data or "sameForCrosses" not in data:
-        return jsonify({"error": "Missing required fields 'racket', 'userId', 'mainsId', 'mainsTension', 'crossesId', 'crossesTension', or 'sameForCrosses'"}), 400
+    if not data or "orderId" not in data or "sameForCrosses" not in data:
+        return jsonify({"error": "Missing required field 'orderId' or 'sameForCrosses'"}), 400
     
     sameForCrosses = data.get('sameForCrosses')
 
     if not sameForCrosses and "crossesId" not in data and 'crossesTension' in data or "crossesId" in data and 'crossesTension' not in data:
         return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
     
-    racketId = data.get('racketId')
-    userId = data.get('userId')
-    mainsId = data.get('mainsId')
-    mainsTension = data.get('mainsTension')
-
-    # Dates
-    orderDate = date.today()
-    fourDaysLater = date.today() + timedelta(days=laborDays)
-
-    user = db.session.get(User, userId)
-    if not user:
-        return jsonify({"error": "User does not exist"}), 404
-    
-    racket = db.session.get(Racket, racketId)
-    if not racket:
-        return jsonify({"error": "Racket does not exist"}), 404
-    
-    mains = db.session.get(String, mainsId)
-    if not mains:
-        return jsonify({"error": "String does not exist"}), 404
-    
-
-    if not sameForCrosses:
+    # change to all fields being required??
+    orderId = data.get('orderId')
+    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = orderDue = price = None
+    if 'racketId' in data:
+        racketId = data.get('racketId')
+    if 'userId' in data:
+        userId = data.get('userId')
+    if 'mainsId' in data:
+        mainsId = data.get('mainsId')
+    if 'mainsTension' in data: 
+        mainsTension = data.get('mainsTension')
+    if 'crossesId' in data: 
         crossesId = data.get('crossesId')
+    if 'crossesTension' in data:
         crossesTension = data.get('crossesTension')
-        crosses = db.session.get(String, crossesId)
-        if not crosses:
-            return jsonify({"error": "String does not exist"}), 404
-        
-        sameForCrosses = crosses.id == mains.id and crossesTension == mainsTension
-    
+    if 'orderDue' in data:
+        dateString = data.get('orderDue')
+        orderDue = datetime.strptime(dateString, '%Y-%m-%d').date()
+    if 'price' in data:
+        price = data.get('price')
+
     try:
+        order = db.session.get(Order, orderId)
+        if racketId:
+            order.racketId = racketId
+        if userId:
+            order.userId = userId
         if sameForCrosses:
-            # Single string setup
-            price = laborCost + mains.pricePerRacket
-
-            order = Order(orderDate=orderDate, due=fourDaysLater, price=price, complete=False, paid=paid, racket=racket, user=user)
-            
-            racketStrungWith = StrungWith(tension=mainsTension, direction=None, string=mains)
-            order.strungWithRecords.append(racketStrungWith)
-            
-            db.session.add(order)
-            db.session.commit()
+            for record in order.strungWithRecords:
+                if record.direction == None or record.direction == 'mains':
+                    record.direction = None
+                    if mainsId:
+                        string = db.session.get(String, mainsId)
+                        if not string:
+                            return jsonify({"error": "String does not exist"}), 404
+                        record.string = string
+                    if mainsTension:
+                        record.tension = mainsTension
+                else:
+                    order.strungWithRecords.remove(record)
         else:
-            # Hybrid setup
-            price = laborCost + (mains.pricePerRacket + crosses.pricePerRacket)/2
+            if len(order.strungWithRecords) == 2:
 
-            order = Order(orderDate=orderDate, due=fourDaysLater, price=price, complete=False, paid=paid, racket=racket, user=user)
+                for record in order.strungWithRecords:
+                    if record.direction == None or record.direction == 'mains':
+                        record.direction = 'mains'
+                        if mainsId:
+                            mains = db.session.get(String, mainsId)
+                            if not mains:
+                                return jsonify({"error": "String does not exist"}), 404
+                            record.string = mains
+                        if mainsTension:
+                            record.tension = mainsTension
+                    else:
+                        if crossesId:
+                            crosses = db.session.get(String, crossesId)
+                            if not crosses:
+                                return jsonify({"error": "String does not exist"}), 404
+                            record.string = crosses
+                        if crossesTension:
+                            record.tension = crossesTension
+            else:
+                mainsStrungWith = order.strungWithRecords[0]
+                if mainsId:
+                    mains = db.session.get(String, mainsId)
+                    if not mains:
+                        return jsonify({"error": "String does not exist"}), 404
+                    mainsStrungWith.string = mains
+                if mainsTension:
+                    mainsStrungWith.tension = mainsTension
+                
+                crossesStrungWith = None
+                if crossesId and crossesTension:
+                    crosses = db.session.get(String, crossesId)
+                    if not crosses:
+                        return jsonify({"error": "String does not exist"}), 404
+                    try:
+                        crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
+                        order.strungWithRecords.append(crossesStrungWith)
+                    except Exception as e:
+                        return jsonify({"error": "Error creating crosses job details."}), 500
+        
+        if orderDue:
+            order.due = orderDue
 
-            mainsStrungWith = StrungWith(tension=tension, direction="mains", string=mains)
-            crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
+        if price:
+            order.price = price
 
-            order.strungWithRecords.extend([mainsStrungWith, crossesStrungWith])
-            db.session.add(order)
-            db.session.commit()
-
+        db.session.commit()
         return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
     
     except Exception as e:

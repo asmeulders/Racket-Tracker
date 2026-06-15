@@ -12,7 +12,7 @@ import { fetchData } from '../../utils/db_utils';
 
 export const OrderPage = () => {
     const navigate = useNavigate()
-    const { getOrderById, deleteOrder, completeOrder, orderPaid, updatedOrder } = useOrder();
+    const { getOrderById, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
     const { orderId } = useParams();
 
     const [ loading, setLoading ] = useState(true);
@@ -82,13 +82,38 @@ export const OrderPage = () => {
             const data = await fetchData({ table: tables[i] });
             setEditData(prev => ({ ...prev, [tables[i]]: data }));
         }
+        if (order.sameForCrosses) {
+            setUpdatedOrder({...order, mainsId: order.jobDetails[0].stringId, mainsTension: order.jobDetails[0].tension});
+        } else {
+            setUpdatedOrder({
+                ...order, 
+                mainsId: order.jobDetails[0].stringId, 
+                mainsTension: order.jobDetails[0].tension,
+                crossesId: order.jobDetails[1].stringId, 
+                crossesTension: order.jobDetails[1].tension,
+            });
+        }
+        
         setIsEditing(true);
     }
 
     const handleSave = async (field) => {
         console.log("Order saved: ", order);
         // update the order
-        
+        const res = await updateOrder({
+            orderId: orderId,
+            userId: updatedOrder.userId,
+            racketId: updatedOrder.racketId,
+            mainsId: updatedOrder.mainsId,
+            mainsTension: updatedOrder.mainsTension,
+            crossesId: updatedOrder.crossesId,
+            crossesTension: updatedOrder.crossesTension,
+            sameForCrosses: updatedOrder.sameForCrosses,
+            orderDue: updatedOrder.orderDue,
+            price: updatedOrder.price
+        });
+        setOrder(res.data.order);
+        setUpdatedOrder({});
         setIsEditing(false);
     }
 
@@ -117,7 +142,7 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing ? 
-                                <UserSelect onUserChange={setOrder} value={order?.userId} users={editData.users} /> : 
+                                <UserSelect onUserChange={setUpdatedOrder} value={updatedOrder?.userId} users={editData.users} /> : 
                                 <span>{order.username}</span>
                             }
                         </div>                      
@@ -127,7 +152,7 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing ? 
-                                <RacketSelect onRacketChange={setOrder} value={order?.racketId} rackets={editData.rackets} /> : 
+                                <RacketSelect onRacketChange={setUpdatedOrder} value={updatedOrder?.racketId} rackets={editData.rackets} /> : 
                                 <span>{order.racketBrand} {order.racketName}</span>
                             }
                         </div>
@@ -138,10 +163,17 @@ export const OrderPage = () => {
                         <div>
                             {isEditing ? 
                                 <div>
-                                    <StringSelect onStringChange={setOrder} value={order?.jobDetails[0].stringId} strings={editData.strings} />
-                                    <input type="checkbox" onChange={(e) => setOrder(prev => ({ ...prev, sameForCrosses: e.target.checked}))} checked={order.sameForCrosses} />
-                                    {!order?.sameForCrosses ?
-                                        <StringSelect onStringChange={setOrder} value={order?.jobDetails[1]?.stringId} strings={editData.strings} /> : null
+                                    <div>
+                                        <StringSelect onStringChange={setUpdatedOrder} value={updatedOrder?.mainsId} strings={editData.strings} direction={'mains'} />
+                                        <input type="number" value={updatedOrder?.mainsTension} placeholder='Mains Tension' onChange={(e) => setUpdatedOrder(prev => ({...prev, mainsTension: e.target.value}))} />
+                                    </div>
+                                    
+                                    <input type="checkbox" onChange={(e) => setUpdatedOrder(prev => ({ ...prev, sameForCrosses: e.target.checked}))} checked={updatedOrder.sameForCrosses} />
+                                    {!updatedOrder?.sameForCrosses ?
+                                        <div>
+                                            <StringSelect onStringChange={setUpdatedOrder} value={updatedOrder?.crossesId} strings={editData.strings} direction={'crosses'} />
+                                            <input type="number" value={updatedOrder?.crossesTension} placeholder='Crosses Tension' onChange={(e) => setUpdatedOrder(prev => ({...prev, crossesTension: e.target.value}))} />
+                                        </div> : null
                                     } 
                                     {/* TODO: This above is suspicious */}
                                 </div> : 
@@ -160,8 +192,18 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing ? 
-                                <input type="number" placeholder='Price' value={order.price} onChange={(e) => setOrder(prev => ({ ...prev, price: e.target.value }))}/> :
+                                <input type="number" placeholder='Price' value={updatedOrder.price} onChange={(e) => setUpdatedOrder(prev => ({ ...prev, price: e.target.value }))}/> :
                                 <span>${order.price}</span>
+                            }
+                        </div>
+
+                        <div className='field-label'>
+                            <label>Due Date:</label>
+                        </div>
+                        <div>
+                            {isEditing ? 
+                                <input type='date' onChange={(e) => setUpdatedOrder(prev => ({...prev, orderDue: e.target.value}))} />
+                                : <span>{order.due}</span>
                             }
                         </div>
                     </div>
