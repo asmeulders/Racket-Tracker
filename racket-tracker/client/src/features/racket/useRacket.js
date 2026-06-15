@@ -4,7 +4,7 @@ export function useRacket() {
   const createRacket = async ({ name, price, brandId }) => {
     try {
       const res = await axios.post("http://localhost:5000/create-racket", {
-        name, price, brand_id: brandId
+        name, price, brandId: brandId
       });
       return res;
     } catch (error) {

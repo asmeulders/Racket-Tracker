@@ -10,7 +10,7 @@ export function User({user}) {
         Owns:
         <ul className='owns-racket'>
           {user.rackets?.map(owns => (
-            <li key={owns.racket_id}> {owns.racket_brand} {owns.racket_name} ({owns.quantity})</li>
+            <li key={owns.racketId}> {owns.racketBrand} {owns.racketName} ({owns.quantity})</li>
           ))}
         </ul>
       </div>
@@ -18,7 +18,7 @@ export function User({user}) {
         Orders:
         <ul className='user-order'>
           {user.orders?.map(o => (
-            <li key={o.id}>{format(new Date(o.order_date), 'MM/dd/yyyy')}: {o.racket_brand} {o.racket_name}</li>
+            <li key={o.id}>{format(new Date(o.orderDate), 'MM/dd/yyyy')}: {o.racketBrand} {o.racketName}</li>
           ))}
         </ul>
       </div>

@@ -28,14 +28,14 @@ export const OrderFilter = ({onFilterChange}) => {
     useEffect(() => {
         onFilterChange({
         'username': username,
-        'order_date': orderDate,
-        'due_date': dueDate,
+        'orderDate': orderDate,
+        'dueDate': dueDate,
         'completed': completed,
         'paid': paid,
-        'racket_brand': racketBrand,
-        'racket_name': racketName,
-        'string_brand': stringBrand,
-        'string_name': stringName
+        'racketBrand': racketBrand,
+        'racketName': racketName,
+        'stringNrand': stringBrand,
+        'stringName': stringName
         })
     }, [username, orderDate, dueDate, completed, paid, racketBrand, racketName, stringBrand, stringName])
 

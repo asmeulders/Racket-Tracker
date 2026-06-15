@@ -5,9 +5,9 @@ export function useString() {
     const createString = async ({ name, pricePerRacket, brandId }) => {
         try {
             const res = await axios.post("http://localhost:5000/create-string", {
-                name,
-                "price_per_racket": pricePerRacket,
-                "brand_id": brandId
+                'name': name,
+                "pricePerRacket": pricePerRacket,
+                "brandId": brandId
             });
             return res;
         } catch (error) {

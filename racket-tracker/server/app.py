@@ -92,8 +92,8 @@ def init_db():
         order2 = db.session.execute(db.select(Order).filter_by(user=bob)).scalar_one()
 
         if not String.query.first():
-            db.session.add(String(name="ALU Power", price_per_racket=22, brand=luxilon))
-            db.session.add(String(name="Hyper G", price_per_racket=20, brand=solinco))
+            db.session.add(String(name="ALU Power", pricePerRacket=22, brand=luxilon))
+            db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
             db.session.commit()
 
         alu_power = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
@@ -126,14 +126,14 @@ def search_table():
     """
     data = request.get_json()
 
-    if not data or 'table_name' not in data or 'page' not in data or 'per_page' not in data:
-        return jsonify({"error": "Missing required fields 'page' or 'per_page'"}), 400
+    if not data or 'table_name' not in data or 'page' not in data or 'perPage' not in data:
+        return jsonify({"error": "Missing required fields 'page' or 'perPage'"}), 400
     
     table_name = data.get('table_name')
     table = MODEL_MAP[table_name]
 
     page = data.get('page')
-    per_page = data.get('per_page')
+    perPage = data.get('perPage')
     filters = data.get('filters')
 
     # Basic query
@@ -144,23 +144,23 @@ def search_table():
     if filters and table == Order:
         if filters:
             username = filters.get('username')
-            order_date = filters.get('order_date')
-            due_date = filters.get('due_date')
+            orderDate = filters.get('orderDate')
+            dueDate = filters.get('dueDate')
             completed = filters.get('completed')
             paid = filters.get('paid')
-            racket_brand = filters.get('racket_brand')
-            racket_name = filters.get('racket_name')
-            string_brand = filters.get('string_brand')
-            string_name = filters.get('string_name')
+            racketBrand = filters.get('racketBrand')
+            racketName = filters.get('racketName')
+            stringBrand = filters.get('stringBrand')
+            stringName = filters.get('stringName')
 
             if username:
                 stmt = stmt.where(table.user.has(User.username.ilike(f"%{username}%")))
             
-            if order_date:
-                stmt = stmt.where(table.orderDate == order_date)
+            if orderDate:
+                stmt = stmt.where(table.orderDate == orderDate)
 
-            if due_date:
-                stmt = stmt.where(table.due == due_date)
+            if dueDate:
+                stmt = stmt.where(table.due == dueDate)
 
             if completed:
                 if completed == 'completed':
@@ -174,60 +174,60 @@ def search_table():
                 elif paid == 'unpaid':
                     stmt = stmt.where(table.paid == False)                
 
-            if racket_brand:
-                stmt = stmt.where(table.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racket_brand}%"))))
+            if racketBrand:
+                stmt = stmt.where(table.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racketBrand}%"))))
 
-            if racket_name:
-                stmt = stmt.where(table.racket.has(Racket.name.ilike(f"%{racket_name}%")))
+            if racketName:
+                stmt = stmt.where(table.racket.has(Racket.name.ilike(f"%{racketName}%")))
         
-            if string_brand:
-                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{string_brand}%")))))
+            if stringBrand:
+                stmt = stmt.where(table.strungWithRecords.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{stringBrand}%")))))
 
-            if string_name:
-                stmt = stmt.where(table.strung_with_records.any(StrungWith.string.has(String.name.ilike(f"%{string_name}%"))))
+            if stringName:
+                stmt = stmt.where(table.strungWithRecords.any(StrungWith.string.has(String.name.ilike(f"%{stringName}%"))))
 
         # Default Ordering
         stmt = stmt.order_by(table.due.desc()).order_by(table.id.asc())
     # Racket Filtering
     elif table == Racket:
         if filters:
-            brand_name = filters.get('brand_name')
-            racket_name = filters.get('racket_name')
-            price_min = filters.get('price_min')
-            price_max = filters.get('price_max')
+            brandName = filters.get('brandName')
+            racketName = filters.get('racketName')
+            priceMin = filters.get('priceMin')
+            priceMax = filters.get('priceMax')
 
-            if brand_name:
-                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%")))
+            if brandName:
+                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brandName}%")))
 
-            if racket_name:
-                stmt = stmt.where(table.name.ilike(f"%{racket_name}%"))
+            if racketName:
+                stmt = stmt.where(table.name.ilike(f"%{racketName}%"))
             
-            if price_min:
-                stmt = stmt.where(table.price >= float(price_min))
+            if priceMin:
+                stmt = stmt.where(table.price >= float(priceMin))
 
-            if price_max:
-                stmt = stmt.where(table.price <= float(price_max))
+            if priceMax:
+                stmt = stmt.where(table.price <= float(priceMax))
 
         stmt = stmt.order_by(db.func.lower(table.name).asc())
     # String Filtering
     elif table == String:
         if filters:
-            brand_name = filters.get('brand_name')
-            string_name = filters.get('string_name')
-            price_min = filters.get('price_min')
-            price_max = filters.get('price_max')
+            brandName = filters.get('brandName')
+            stringName = filters.get('stringName')
+            priceMin = filters.get('priceMin')
+            priceMax = filters.get('priceMax')
 
-            if brand_name:
-                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brand_name}%")))
+            if brandName:
+                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brandName}%")))
 
-            if string_name:
-                stmt = stmt.where(table.name.ilike(f"%{string_name}%"))
+            if stringName:
+                stmt = stmt.where(table.name.ilike(f"%{stringName}%"))
             
-            if price_min:
-                stmt = stmt.where(table.price_per_racket >= float(price_min))
+            if priceMin:
+                stmt = stmt.where(table.pricePerRacket >= float(priceMin))
 
-            if price_max:
-                stmt = stmt.where(table.price_per_racket <= float(price_max))
+            if priceMax:
+                stmt = stmt.where(table.pricePerRacket <= float(priceMax))
 
         stmt = stmt.order_by(db.func.lower(table.name).asc())
     # User Filtering
@@ -242,34 +242,34 @@ def search_table():
     # Brand Filtering
     elif table == Brand:
         if filters:
-            brand_name = filters.get('brand_name')
+            brandName = filters.get('brandName')
 
-            if brand_name:
-                stmt = stmt.where(table.name.ilike(f"%{brand_name}%"))
+            if brandName:
+                stmt = stmt.where(table.name.ilike(f"%{brandName}%"))
 
         stmt = stmt.order_by(db.func.lower(table.name).asc())
     # Inquiry Filtering
     elif table == Inquiry:
         if filters:
             username = filters.get('username')
-            inq_date = filters.get('inq_date')
+            inqDate = filters.get('inqDate')
 
             if username:
                 stmt = stmt.where(table.name.ilike(f"%{username}%"))
             
-            if inq_date:
-                stmt = stmt.where(table.date == inq_date)
+            if inqDate:
+                stmt = stmt.where(table.date == inqDate)
         
         stmt = stmt.order_by(table.date.desc()).order_by(db.func.lower(table.name).asc())   
     
-    pagination = db.paginate(select=stmt, page=page, per_page=per_page)
+    pagination = db.paginate(select=stmt, page=page, perPage=perPage)
 
     return {
         "items": [p.to_json() for p in pagination.items],
         "totalPages": pagination.pages,
         "currentPage": pagination.page,
         "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
+        "perPage": pagination.perPage
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
@@ -334,16 +334,16 @@ def create_user():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
-@app.route('/delete-user/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id: int):
+@app.route('/delete-user/<int:userId>', methods=['DELETE'])
+def delete_user(userId: int):
     """    
     Delete a user from the database
 
     Parameters:
-        - user_id (int): identifies the user
+        - userId (int): identifies the user
     """
     
-    user = db.session.get(User, user_id)
+    user = db.session.get(User, userId)
     if not user:
         return jsonify({"error": "User not found"}), 404
 
@@ -383,15 +383,15 @@ def get_rackets(limit: int):
     except OperationalError:
         return jsonify([])
     
-@app.route('/get-racket-by-id/<int:racket_id>', methods=['GET'])
-def get_racket_by_id(racket_id: int):
+@app.route('/get-racket-by-id/<int:racketId>', methods=['GET'])
+def get_racket_by_id(racketId: int):
     """    
     Fetches a single racket from the database by its id
 
     Parameter:
-        - racket_id (int): identifies the racket
+        - racketId (int): identifies the racket
     """
-    racket = db.session.get(Racket, racket_id)
+    racket = db.session.get(Racket, racketId)
     if racket: 
         return jsonify(racket.to_json())
     return jsonify({"error": "Racket not found"}), 404
@@ -406,20 +406,20 @@ def create_racket():
     {
         'name': name,
         'price': price,
-        'brand_id': brand_id
+        'brandId': brandId
     }
     """
     data = request.get_json()
 
-    if not data or "name" not in data or "price" not in data or "brand_id" not in data:
-        return jsonify({"error": "Missing required fields 'name', 'price', 'brand_id' or 'data'"}), 400
+    if not data or "name" not in data or "price" not in data or "brandId" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'price', 'brandId' or 'data'"}), 400
     
     name = data.get('name')
     price = data.get('price')
-    brand_id = data.get('brand_id')
+    brandId = data.get('brandId')
 
     # Looks for brand first
-    brand = db.session.get(Brand, brand_id)
+    brand = db.session.get(Brand, brandId)
     if not brand:
         return jsonify({"error": "Brand does not exist"}), 404
 
@@ -440,15 +440,15 @@ def create_racket():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
-@app.route('/delete-racket/<int:racket_id>', methods=['DELETE'])
-def delete_racket(racket_id: int):
+@app.route('/delete-racket/<int:racketId>', methods=['DELETE'])
+def delete_racket(racketId: int):
     """    
     Deletes a single racket from the database by its id
 
     Parameter:
-        - racket_id (int): identifies the racket
+        - racketId (int): identifies the racket
     """
-    racket = db.session.get(Racket, racket_id)
+    racket = db.session.get(Racket, racketId)
     if not racket:
         return jsonify({"error": "Racket not found"}), 404
 
@@ -496,31 +496,31 @@ def create_string():
     Expected JSON Format:
     {
         'name': name,
-        'price_per_racket': price_per_racket,
-        'brand_id': brand_id
+        'pricePerRacket': pricePerRacket,
+        'brandId': brandId
     }
     """
     data = request.get_json()
 
-    if not data or "name" not in data or "price_per_racket" not in data or "brand_id" not in data:
-        return jsonify({"error": "Missing required fields 'name', 'price_per_racket', 'brand_id', or 'data'"}), 400
+    if not data or "name" not in data or "pricePerRacket" not in data or "brandId" not in data:
+        return jsonify({"error": "Missing required fields 'name', 'pricePerRacket', 'brandId', or 'data'"}), 400
     
     name = data.get('name')
-    price_per_racket = data.get('price_per_racket')
-    brand_id = data.get('brand_id')
+    pricePerRacket = data.get('pricePerRacket')
+    brandId = data.get('brandId')
 
     # Looks for brand
-    string_brand = db.session.get(Brand, brand_id)
-    if not string_brand:
+    stringBrand = db.session.get(Brand, brandId)
+    if not stringBrand:
         return jsonify({"error": "Brand does not exist"}), 404
 
     # Checks for an existing string
-    existing_string = db.session.execute(db.select(String).filter_by(name=name, price_per_racket=price_per_racket, brand=string_brand)).first()
+    existing_string = db.session.execute(db.select(String).filter_by(name=name, pricePerRacket=pricePerRacket, brand=stringBrand)).first()
     if existing_string:
         return jsonify({"error": "This string already exists"}), 409
 
     try:
-        string = String(name=name, price_per_racket=price_per_racket, brand=string_brand)
+        string = String(name=name, pricePerRacket=pricePerRacket, brand=stringBrand)
         db.session.add(string)
         db.session.commit()
 
@@ -532,15 +532,15 @@ def create_string():
         return jsonify({"error": "An internal error has occurred."}), 500
 
 
-@app.route('/delete-string/<int:string_id>', methods=['DELETE'])
-def delete_string(string_id: int):
+@app.route('/delete-string/<int:stringId>', methods=['DELETE'])
+def delete_string(stringId: int):
     """    
     Deletes a string from the database by its id
 
     Parameter:
-        - string_id (int): identifies the string
+        - stringId (int): identifies the string
     """
-    string = db.session.get(String, string_id)
+    string = db.session.get(String, stringId)
     if not string:
         return jsonify({"error": "String not found"}), 404
 
@@ -581,15 +581,15 @@ def get_orders(limit: int):
         return jsonify([])
     
 
-@app.route('/get-order/<int:order_id>', methods=['GET'])
-def get_order_by_id(order_id: int):
+@app.route('/get-order/<int:orderId>', methods=['GET'])
+def get_order_by_id(orderId: int):
     """    
     Fetches a single racket from the database by its id
 
     Parameter:
-        - racket_id (int): identifies the racket
+        - racketId (int): identifies the racket
     """
-    racket = db.session.get(Order, order_id)
+    racket = db.session.get(Order, orderId)
     if racket: 
         return jsonify(racket.to_json())
     return jsonify({"error": "Racket not found"}), 404
@@ -599,92 +599,92 @@ def get_order_by_id(order_id: int):
 def create_order():
     """    
     Creates an order. Automatically calculates the price based on the strings plus the default labor cost.
-    The variable same_for_crosses will is false for a hybrid setup. Change the labor_cost and labor_days 
+    The variable sameForCrosses will is false for a hybrid setup. Change the laborCost and laborDays 
     variables to adjust the final price and the due date.
 
     Expected JSON Format:
     {
-        'user_id': user_id,
-        'racket_id': racket_id,
-        'string_id': string_id,
+        'userId': userId,
+        'racketId': racketId,
+        'stringId': stringId,
         'tension': tension,
-        'same_for_crosses': same_for_crosses,
+        'sameForCrosses': sameForCrosses,
         'paid': paid
     }
 
-    Default Labor Cost: $25 per racket -> labor_cost
-    Default Labor Days: 4 days per racket -> labor_days
+    Default Labor Cost: $25 per racket -> laborCost
+    Default Labor Days: 4 days per racket -> laborDays
 
     ================================================================================
     TODO: include logic to add the racket to their list of rackets if it does not exist?
     ================================================================================
     """
-    labor_cost = 25
-    labor_days = 4
+    laborCost = 25
+    laborDays = 4
     data = request.get_json()
 
-    if not data or "racket_id" not in data or "user_id" not in data or "mains_id" not in data or "mains_tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
-        return jsonify({"error": "Missing required fields 'racket_id', 'user_id', 'mains_id', 'mains_tension', 'same_for_crosses', or 'paid'"}), 400
+    if not data or "racketId" not in data or "userId" not in data or "mainsId" not in data or "mainsTension" not in data or "sameForCrosses" not in data or 'paid' not in data:
+        return jsonify({"error": "Missing required fields 'racketId', 'userId', 'mainsId', 'mainsTension', 'sameForCrosses', or 'paid'"}), 400
     
-    same_for_crosses = data.get('same_for_crosses')
+    sameForCrosses = data.get('sameForCrosses')
 
-    if not same_for_crosses and "crosses_id" not in data and 'crosses_tension' in data or "crosses_id" in data and 'crosses_tension' not in data:
-        return jsonify({"error": "Missing required fields 'crosses_id' or 'crosses_tension'"}), 400
+    if not sameForCrosses and "crossesId" not in data and 'crossesTension' in data or "crossesId" in data and 'crossesTension' not in data:
+        return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
     
-    racket_id = data.get('racket_id')
-    user_id = data.get('user_id')
-    mains_id = data.get('mains_id')
-    mains_tension = data.get('mains_tension')
+    racketId = data.get('racketId')
+    userId = data.get('userId')
+    mainsId = data.get('mainsId')
+    mainsTension = data.get('mainsTension')
     paid = data.get('paid')
 
     # Dates
     orderDate = date.today()
-    four_days_later = date.today() + timedelta(days=labor_days)
+    fourDaysLater = date.today() + timedelta(days=laborDays)
 
-    user = db.session.get(User, user_id)
+    user = db.session.get(User, userId)
     if not user:
         return jsonify({"error": "User does not exist"}), 404
     
-    racket = db.session.get(Racket, racket_id)
+    racket = db.session.get(Racket, racketId)
     if not racket:
         return jsonify({"error": "Racket does not exist"}), 404
     
-    mains = db.session.get(String, mains_id)
+    mains = db.session.get(String, mainsId)
     if not mains:
         return jsonify({"error": "String does not exist"}), 404
     
 
-    if not same_for_crosses:
-        crosses_id = data.get('crosses_id')
-        crosses_tension = data.get('crosses_tension')
-        crosses = db.session.get(String, crosses_id)
+    if not sameForCrosses:
+        crossesId = data.get('crossesId')
+        crossesTension = data.get('crossesTension')
+        crosses = db.session.get(String, crossesId)
         if not crosses:
             return jsonify({"error": "String does not exist"}), 404
         
-        same_for_crosses = crosses.id == mains.id and crosses_tension == mains_tension
+        sameForCrosses = crosses.id == mains.id and crossesTension == mainsTension
     
     try:
-        if same_for_crosses:
+        if sameForCrosses:
             # Single string setup
-            price = labor_cost + mains.price_per_racket
+            price = laborCost + mains.pricePerRacket
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=fourDaysLater, price=price, complete=False, paid=paid, racket=racket, user=user)
             
-            racketStrungWith = StrungWith(tension=mains_tension, direction=None, string=mains)
-            order.strung_with_records.append(racketStrungWith)
+            racketStrungWith = StrungWith(tension=mainsTension, direction=None, string=mains)
+            order.strungWithRecords.append(racketStrungWith)
             
             db.session.add(order)
             db.session.commit()
         else:
             # Hybrid setup
-            price = labor_cost + (mains.price_per_racket + crosses.price_per_racket)/2
+            price = laborCost + (mains.pricePerRacket + crosses.pricePerRacket)/2
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=fourDaysLater, price=price, complete=False, paid=paid, racket=racket, user=user)
 
-            mainsStrungWith = StrungWith(tension=mains_tension, direction="mains", string=mains)
-            crossesStrungWith = StrungWith(tension=crosses_tension, direction="crosses", string=crosses)
+            mainsStrungWith = StrungWith(tension=mainsTension, direction="mains", string=mains)
+            crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
 
-            order.strung_with_records.extend([mainsStrungWith, crossesStrungWith])
+            order.strungWithRecords.extend([mainsStrungWith, crossesStrungWith])
             db.session.add(order)
             db.session.commit()
 
@@ -703,81 +703,118 @@ def update_order():
 
     Expected JSON Format:
     {
-        'user_id': user_id,
-        'racket_id': racket_id,
-        'string_id': string_id,
-        'tension': tension,
-        'same_for_crosses': same_for_crosses,
-        'paid': paid
+        'orderId': orderId,
+        'userId': userId,
+        'racketId': racketId,
+        'mainsId': mainsId,
+        'mainsTension': mainsTension,
+        'crossesId': crossesId,
+        'crossesTension': crossesTension,
+        'sameForCrosses': sameForCrosses,
+        'orderDue': orderDue,
+        'price: price
     }
     """
+
     data = request.get_json()
 
-    if not data or "racket_id" not in data or "user_id" not in data or "string_id" not in data or "tension" not in data or "same_for_crosses" not in data or 'paid' not in data:
-        return jsonify({"error": "Missing required fields 'racket', 'user_id', 'string', 'same_for_crosses', 'paid', or 'tension'"}), 400
+    if not data or "orderId" not in data or "sameForCrosses" not in data:
+        return jsonify({"error": "Missing required field 'orderId' or 'sameForCrosses'"}), 400
     
-    same_for_crosses = data.get('same_for_crosses')
+    sameForCrosses = data.get('sameForCrosses')
 
-    if not same_for_crosses and "crosses_id" not in data and 'crosses_tension' in data or "crosses_id" in data and 'crosses_tension' not in data:
-        return jsonify({"error": "Missing required fields 'crosses_id' or 'crosses_tension'"}), 400
+    if not sameForCrosses and "crossesId" not in data and 'crossesTension' in data or "crossesId" in data and 'crossesTension' not in data:
+        return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
     
-    racket_id = data.get('racket_id')
-    user_id = data.get('user_id')
-    string_id = data.get('string_id')
-    tension = data.get('tension')
-    paid = data.get('paid')
+    # change to all fields being required??
+    orderId = data.get('orderId')
+    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = orderDue = price = None
+    if 'racketId' in data:
+        racketId = data.get('racketId')
+    if 'userId' in data:
+        userId = data.get('userId')
+    if 'mainsId' in data:
+        mainsId = data.get('mainsId')
+    if 'mainsTension' in data: 
+        mainsTension = data.get('mainsTension')
+    if 'crossesId' in data: 
+        crossesId = data.get('crossesId')
+    if 'crossesTension' in data:
+        crossesTension = data.get('crossesTension')
+    if 'orderDue' in data:
+        dateString = data.get('orderDue')
+        orderDue = datetime.strptime(dateString, '%Y-%m-%d').date()
+    if 'price' in data:
+        price = data.get('price')
 
-    # Dates
-    orderDate = date.today()
-    four_days_later = date.today() + timedelta(days=labor_days)
-
-    user = db.session.get(User, user_id)
-    if not user:
-        return jsonify({"error": "User does not exist"}), 404
-    
-    racket = db.session.get(Racket, racket_id)
-    if not racket:
-        return jsonify({"error": "Racket does not exist"}), 404
-    
-    mains = db.session.get(String, string_id)
-    if not mains:
-        return jsonify({"error": "String does not exist"}), 404
-    
-
-    if not same_for_crosses:
-        crosses_id = data.get('crosses_id')
-        crosses_tension = data.get('crosses_tension')
-        crosses = db.session.get(String, crosses_id)
-        if not crosses:
-            return jsonify({"error": "String does not exist"}), 404
-        
-        same_for_crosses = crosses.id == mains.id and crosses_tension == tension
-    
     try:
-        if same_for_crosses:
-            # Single string setup
-            price = labor_cost + mains.price_per_racket
-
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
-            
-            racketStrungWith = StrungWith(tension=tension, direction=None, string=mains)
-            order.strung_with_records.append(racketStrungWith)
-            
-            db.session.add(order)
-            db.session.commit()
+        order = db.session.get(Order, orderId)
+        if racketId:
+            order.racketId = racketId
+        if userId:
+            order.userId = userId
+        if sameForCrosses:
+            for record in order.strungWithRecords:
+                if record.direction == None or record.direction == 'mains':
+                    record.direction = None
+                    if mainsId:
+                        string = db.session.get(String, mainsId)
+                        if not string:
+                            return jsonify({"error": "String does not exist"}), 404
+                        record.string = string
+                    if mainsTension:
+                        record.tension = mainsTension
+                else:
+                    order.strungWithRecords.remove(record)
         else:
-            # Hybrid setup
-            price = labor_cost + (mains.price_per_racket + crosses.price_per_racket)/2
+            if len(order.strungWithRecords) == 2:
 
-            order = Order(orderDate=orderDate, due=four_days_later, price=price, complete=False, paid=paid, racket=racket, user=user)
+                for record in order.strungWithRecords:
+                    if record.direction == None or record.direction == 'mains':
+                        record.direction = 'mains'
+                        if mainsId:
+                            mains = db.session.get(String, mainsId)
+                            if not mains:
+                                return jsonify({"error": "String does not exist"}), 404
+                            record.string = mains
+                        if mainsTension:
+                            record.tension = mainsTension
+                    else:
+                        if crossesId:
+                            crosses = db.session.get(String, crossesId)
+                            if not crosses:
+                                return jsonify({"error": "String does not exist"}), 404
+                            record.string = crosses
+                        if crossesTension:
+                            record.tension = crossesTension
+            else:
+                mainsStrungWith = order.strungWithRecords[0]
+                if mainsId:
+                    mains = db.session.get(String, mainsId)
+                    if not mains:
+                        return jsonify({"error": "String does not exist"}), 404
+                    mainsStrungWith.string = mains
+                if mainsTension:
+                    mainsStrungWith.tension = mainsTension
+                
+                crossesStrungWith = None
+                if crossesId and crossesTension:
+                    crosses = db.session.get(String, crossesId)
+                    if not crosses:
+                        return jsonify({"error": "String does not exist"}), 404
+                    try:
+                        crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
+                        order.strungWithRecords.append(crossesStrungWith)
+                    except Exception as e:
+                        return jsonify({"error": "Error creating crosses job details."}), 500
+        
+        if orderDue:
+            order.due = orderDue
 
-            mainsStrungWith = StrungWith(tension=tension, direction="mains", string=mains)
-            crossesStrungWith = StrungWith(tension=crosses_tension, direction="crosses", string=crosses)
+        if price:
+            order.price = price
 
-            order.strung_with_records.extend([mainsStrungWith, crossesStrungWith])
-            db.session.add(order)
-            db.session.commit()
-
+        db.session.commit()
         return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
     
     except Exception as e:
@@ -786,13 +823,13 @@ def update_order():
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
-@app.route('/complete-order/<int:order_id>', methods=['PATCH'])
-def complete_order(order_id: int):
+@app.route('/complete-order/<int:orderId>', methods=['PATCH'])
+def complete_order(orderId: int):
     """
     Marks an order as completed.
     """
     try:
-        order = db.session.get(Order, order_id)
+        order = db.session.get(Order, orderId)
         
         if not order:
             return jsonify({"error": "Order not found"}), 404
@@ -818,13 +855,13 @@ def complete_order(order_id: int):
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
-@app.route('/toggle-complete/<int:order_id>', methods=['PATCH'])
-def toggle_complete(order_id: int):
+@app.route('/toggle-complete/<int:orderId>', methods=['PATCH'])
+def toggle_complete(orderId: int):
     """
     Marks and order as completed/uncompleted. Is toggled from the store dashboard.
     """
     try:
-        order = db.session.get(Order, order_id)
+        order = db.session.get(Order, orderId)
         
         if not order:
             return jsonify({"error": "Order not found"}), 404
@@ -844,13 +881,13 @@ def toggle_complete(order_id: int):
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
-@app.route('/pay-for-order/<int:order_id>', methods=['PATCH'])
-def pay_for_order(order_id: int):
+@app.route('/pay-for-order/<int:orderId>', methods=['PATCH'])
+def pay_for_order(orderId: int):
     """
     Marks and order as paid/unpaid. Is toggled from the store dashboard.
     """    
     try:
-        order = db.session.get(Order, order_id)
+        order = db.session.get(Order, orderId)
         
         if not order:
             return jsonify({"error": "Order not found"}), 404
@@ -868,16 +905,16 @@ def pay_for_order(order_id: int):
         return jsonify({"error": "An internal error has occurred."}), 500
     
     
-@app.route('/delete-order/<int:order_id>', methods=['DELETE'])
-def delete_order(order_id: int):
+@app.route('/delete-order/<int:orderId>', methods=['DELETE'])
+def delete_order(orderId: int):
     """    
     Deletes an order from the database by its id
 
     Parameter:
-        - order_id (int): identifies the order
+        - orderId (int): identifies the order
     """
     
-    order = db.session.get(Order, order_id)
+    order = db.session.get(Order, orderId)
     if not order:
         return jsonify({"error": "Order not found"}), 404
 
@@ -952,16 +989,16 @@ def create_brand():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
-@app.route('/delete-brand/<int:brand_id>', methods=['DELETE'])
-def delete_brand(brand_id: int):
+@app.route('/delete-brand/<int:brandId>', methods=['DELETE'])
+def delete_brand(brandId: int):
     """    
     Deletes a brand from the database by its id
 
     Parameter:
-        - brand_id (int): identifies the brand
+        - brandId (int): identifies the brand
     """
     
-    brand = db.session.get(Brand, brand_id)
+    brand = db.session.get(Brand, brandId)
     if not brand:
         return jsonify({"error": "Brand not found"}), 404
 

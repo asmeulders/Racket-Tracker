@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import { useBrand } from '../useBrand';
 
-export const BrandForm = ({ onBrandCreated, handleClose }) => {
+export const BrandForm = ({ onDataCreated, handleClose }) => {
     const { createBrand } = useBrand()
     const [name, setName] = useState('');
 
@@ -22,7 +22,7 @@ export const BrandForm = ({ onBrandCreated, handleClose }) => {
         } else {
             await createBrand({ name });
             setName('');
-            onBrandCreated();
+            onDataCreated('brands', true);
         }
         setValidated(true); // triggers visual feedback
     }

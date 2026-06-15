@@ -4,13 +4,13 @@ export function useOrder() {
     const createOrder = async ({ racketId, userId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, paid }) => {
         try {
             const res = await axios.post("http://localhost:5000/create-order", {
-                "racket_id": racketId,
-                "user_id": userId,
-                "mains_id": mainsId,
-                "mains_tension": mainsTension,
-                "crosses_id": !sameForCrosses ? crossesId : null,
-                "crosses_tension": !sameForCrosses ? crossesTension : null,
-                "same_for_crosses": sameForCrosses,
+                "racketId": racketId,
+                "userId": userId,
+                "mainsId": mainsId,
+                "mainsTension": mainsTension,
+                "crossesId": !sameForCrosses ? crossesId : null,
+                "crossesTension": !sameForCrosses ? crossesTension : null,
+                "sameForCrosses": sameForCrosses,
                 "paid": paid
             });
             return res;
@@ -40,6 +40,30 @@ export function useOrder() {
         await axios.delete(`http://localhost:5000/delete-order/${id}`);
     };
 
+    const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, orderDue, price }) => {
+        try {
+            const res = await axios.post("http://localhost:5000/update-order", {
+                'orderId': orderId,
+                'userId': userId,
+                'racketId': racketId,
+                'mainsId': mainsId,
+                'mainsTension': mainsTension,
+                'crossesId': crossesId,
+                'crossesTension': crossesTension,
+                'sameForCrosses': sameForCrosses,
+                'orderDue': orderDue,
+                'price': price
+            });
+            return res;
+        } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else{
+                console.error("Could not connect to server.");
+            }
+        }
+    }
+
     const completeOrder = async (order) => {
         try{
             console.log("Completing order: ", order.id);
@@ -68,5 +92,5 @@ export function useOrder() {
         }
     }
 
-    return { createOrder, getOrderById, deleteOrder, completeOrder, orderPaid };
+    return { createOrder, getOrderById, deleteOrder, updateOrder, completeOrder, orderPaid };
 }

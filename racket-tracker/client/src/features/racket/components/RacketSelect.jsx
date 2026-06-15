@@ -14,7 +14,7 @@ export const RacketSelect = ({ onRacketChange, value, rackets }) => {
       <Form.Select name="rackets" id="racket" value={value} required onChange={handleSelect} >
         <option value="">--Please choose a racket--</option>
           {rackets?.map(racket => (
-            <option key={racket.id} value={racket.id}>{racket.brand_name} {racket.name}</option>
+            <option key={racket.id} value={racket.id}>{racket.brandName} {racket.name}</option>
           ))}
       </Form.Select>
     </Form.Group>
