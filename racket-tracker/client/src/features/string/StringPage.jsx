@@ -6,7 +6,7 @@ import { BrandSelect } from '../brand';
 import { fetchData } from '../../utils/db_utils';
 
 export function StringPage() {
-    const { getStringById, deleteString, updatestring } = useString();
+    const { getStringById, deleteString, updateString } = useString();
     const { stringId } = useParams();
 
     const [ string, setString ] = useState({});
@@ -26,12 +26,12 @@ export function StringPage() {
     }, [stringId])
 
     if (loading) return <div>Loading...</div>;
-    if (Object.keys(string).length === 0) return <div>string not found.</div>;
+    if (Object.keys(string).length === 0) return <div>String not found.</div>;
 
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this string?");
         if (confirmed) {
-            deletestring(stringId);
+            deleteString(stringId);
             navigate('/store-dashboard');
         }
     }
@@ -46,7 +46,7 @@ export function StringPage() {
     const handleSave = async () => {
         console.log("string saved: ", stringId);
 
-        const res = await updatestring({
+        const res = await updateString({
             stringId: stringId,
             brandId: updatedString.brandId,
             name: updatedString.name,

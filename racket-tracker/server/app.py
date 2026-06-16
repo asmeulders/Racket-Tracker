@@ -534,6 +534,20 @@ def get_strings(limit: int):
         return jsonify([s.to_json() for s in strings])
     except OperationalError:
         return jsonify([])
+    
+
+@app.route('/get-string-by-id/<int:stringId>', methods=['GET'])
+def get_string_by_id(stringId: int):
+    """    
+    Fetches a single string from the database by its id.
+
+    Parameter:
+        - stringId (int): identifies the string
+    """
+    string = db.session.get(String, stringId)
+    if string: 
+        return jsonify(string.to_json())
+    return jsonify({"error": "String not found"}), 404
 
     
 @app.route('/create-string', methods=['POST'])
