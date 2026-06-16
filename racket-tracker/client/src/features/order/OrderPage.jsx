@@ -45,7 +45,7 @@ export const OrderPage = () => {
     }, [order]);
 
     if (loading) return <div>Loading...</div>;
-    if (!order) return <div>Order not found.</div>;
+    if (Object.keys(order).length === 0) return <div>Order not found.</div>;
 
     const isLate = order && order.due && !order.complete && new Date(order.due) < new Date();
 
@@ -98,7 +98,7 @@ export const OrderPage = () => {
     }
 
     const handleSave = async (field) => {
-        console.log("Order saved: ", order);
+        console.log("Order saved: ", orderId);
         // update the order
         const res = await updateOrder({
             orderId: orderId,
@@ -116,6 +116,7 @@ export const OrderPage = () => {
         setUpdatedOrder({});
         setIsEditing(false);
     }
+    // TODO: make css general fo these?
 
     return(
         <div className="order-page">
@@ -192,7 +193,7 @@ export const OrderPage = () => {
                         </div>
                         <div>
                             {isEditing ? 
-                                <input type="number" placeholder='Price' value={updatedOrder.price} onChange={(e) => setUpdatedOrder(prev => ({ ...prev, price: e.target.value }))}/> :
+                                <input type="number" step='0.01' min='0' placeholder='Price' value={updatedOrder.price} onChange={(e) => setUpdatedOrder(prev => ({ ...prev, price: e.target.value }))}/> :
                                 <span>${order.price}</span>
                             }
                         </div>
@@ -209,8 +210,8 @@ export const OrderPage = () => {
                     </div>
                     <div className='order-edit-btn'>
                         {isEditing ? 
-                            <button onClick={() => handleSave("customer")}>Save</button> :
-                            <button onClick={async () => await handleEdit("customer")}>Edit</button>
+                            <button onClick={() => handleSave()}>Save</button> :
+                            <button onClick={async () => await handleEdit()}>Edit</button>
                         }
                     </div>
                 </div>

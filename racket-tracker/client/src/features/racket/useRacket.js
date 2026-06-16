@@ -16,9 +16,48 @@ export function useRacket() {
     }
   };
 
+  const getRacketById = async (id) => {
+    try {
+      const res = await axios.get(`http://localhost:5000/get-racket-by-id/${id}`);
+      return res.data;
+    } catch (error) {
+      if (error.response) {
+        console.error(error.response.data.error);
+      } else {
+        console.error("Could not connect to server");
+      }
+    } 
+  }
+
   const deleteRacket = async (id) => {
-    await axios.delete(`http://localhost:5000/delete-racket/${id}`);
+    try {
+      await axios.delete(`http://localhost:5000/delete-racket/${id}`);
+    } catch (error) {
+      if (error.response) {
+        console.error(error.response.data.error);
+      } else {
+        console.error("Could not connect to server.");
+      }
+    }
   };
 
-  return { createRacket, deleteRacket };
+  const updateRacket = async ({racketId, brandId, name, price}) => {
+    try {
+      const res = await axios.post("http://localhost:5000/update-racket", {
+        'racketId': racketId,
+        'brandId': brandId,
+        'name': name,
+        'price': price
+      });
+      return res;
+    } catch (error) {
+      if (error.response) {
+        console.error(error.response.data.error);
+      } else{
+        console.error("Could not connect to server.");
+      }
+    }
+  }
+
+  return { createRacket, getRacketById, deleteRacket, updateRacket };
 }

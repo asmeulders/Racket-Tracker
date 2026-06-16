@@ -96,13 +96,13 @@ def init_db():
             db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
             db.session.commit()
 
-        alu_power = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
-        hyper_g = db.session.execute(db.select(String).filter_by(name="Hyper G")).scalar_one()
+        aluPower = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
+        hyperG = db.session.execute(db.select(String).filter_by(name="Hyper G")).scalar_one()
 
         if not StrungWith.query.first():
-            db.session.add(StrungWith(order=order1, string=alu_power, tension=50))
-            db.session.add(StrungWith(order=order2, string=hyper_g, tension=52, direction="mains"))
-            db.session.add(StrungWith(order=order2, string=alu_power, tension=50, direction="crosses"))
+            db.session.add(StrungWith(order=order1, string=aluPower, tension=50))
+            db.session.add(StrungWith(order=order2, string=hyperG, tension=52, direction="mains"))
+            db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="crosses"))
             db.session.commit()
 
         if not Owns.query.first():
@@ -126,11 +126,11 @@ def search_table():
     """
     data = request.get_json()
 
-    if not data or 'table_name' not in data or 'page' not in data or 'perPage' not in data:
+    if not data or 'tableName' not in data or 'page' not in data or 'perPage' not in data:
         return jsonify({"error": "Missing required fields 'page' or 'perPage'"}), 400
     
-    table_name = data.get('table_name')
-    table = MODEL_MAP[table_name]
+    tableName = data.get('tableName')
+    table = MODEL_MAP[tableName]
 
     page = data.get('page')
     perPage = data.get('perPage')
@@ -262,14 +262,14 @@ def search_table():
         
         stmt = stmt.order_by(table.date.desc()).order_by(db.func.lower(table.name).asc())   
     
-    pagination = db.paginate(select=stmt, page=page, perPage=perPage)
+    pagination = db.paginate(select=stmt, page=page, per_page=perPage)
 
     return {
         "items": [p.to_json() for p in pagination.items],
         "totalPages": pagination.pages,
         "currentPage": pagination.page,
         "hasNext": pagination.has_next,
-        "perPage": pagination.perPage
+        "perPage": pagination.per_page
         # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
     }
 
@@ -318,8 +318,8 @@ def create_user():
     username = data.get('username')
 
     # Checks for an existing user
-    existing_user = db.session.execute(db.select(User).filter_by(username=username)).first()
-    if existing_user:
+    existingUser = db.session.execute(db.select(User).filter_by(username=username)).first()
+    if existingUser:
         return jsonify({"error": "This user already exists"}), 409
 
     try:
@@ -424,8 +424,8 @@ def create_racket():
         return jsonify({"error": "Brand does not exist"}), 404
 
     # Checks for an existing racket
-    existing_racket = db.session.execute(db.select(Racket).filter_by(name=name, price=price, brand=brand)).first()
-    if existing_racket:
+    existingRacket = db.session.execute(db.select(Racket).filter_by(name=name, price=price, brand=brand)).first()
+    if existingRacket:
         return jsonify({"error": "This racket already exists"}), 409
 
     try:
@@ -439,6 +439,54 @@ def create_racket():
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+@app.route('/update-racket', methods=['POST'])
+def update_racket():
+    """    
+    Updates a racket.
+
+    Expected JSON Format:
+    {
+        'racketId': racketId,
+        'brandId': brandId,
+        'name': name,
+        'price: price
+    }
+    """
+
+    data = request.get_json()
+
+    if not data or "racketId" not in data:
+        return jsonify({"error": "Missing required field 'racketId'"}), 400
+    
+    # change to all fields being required??
+    racketId = data.get('racketId')
+    brandId = name = price = None
+    if 'brandId' in data:
+        brandId = data.get('brandId')
+    if 'name' in data:
+        name = data.get('name')
+    if 'price' in data:
+        price = data.get('price')
+
+    try:
+        racket = db.session.get(Racket, racketId)
+        if brandId:
+            racket.brandId = brandId
+        if name:
+            racket.name = name
+        if price:
+            racket.price = price
+
+        db.session.commit()
+        return jsonify({"message": "Racket successfully updated", "racket": racket.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
     
 @app.route('/delete-racket/<int:racketId>', methods=['DELETE'])
 def delete_racket(racketId: int):
@@ -515,8 +563,8 @@ def create_string():
         return jsonify({"error": "Brand does not exist"}), 404
 
     # Checks for an existing string
-    existing_string = db.session.execute(db.select(String).filter_by(name=name, pricePerRacket=pricePerRacket, brand=stringBrand)).first()
-    if existing_string:
+    existingString = db.session.execute(db.select(String).filter_by(name=name, pricePerRacket=pricePerRacket, brand=stringBrand)).first()
+    if existingString:
         return jsonify({"error": "This string already exists"}), 409
 
     try:
@@ -581,7 +629,7 @@ def get_orders(limit: int):
         return jsonify([])
     
 
-@app.route('/get-order/<int:orderId>', methods=['GET'])
+@app.route('/get-order-by-id/<int:orderId>', methods=['GET'])
 def get_order_by_id(orderId: int):
     """    
     Fetches a single racket from the database by its id
@@ -749,7 +797,7 @@ def update_order():
 
     try:
         order = db.session.get(Order, orderId)
-        if racketId:
+        if racketId: # TODO: validate these ID's
             order.racketId = racketId
         if userId:
             order.userId = userId
@@ -815,7 +863,7 @@ def update_order():
             order.price = price
 
         db.session.commit()
-        return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
+        return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 201
     
     except Exception as e:
         db.session.rollback()
@@ -973,8 +1021,8 @@ def create_brand():
     name = data.get('name')
     
     # Checks for an existing brand
-    existing_brand = db.session.execute(db.select(Brand).filter_by(name=name)).first()
-    if existing_brand:
+    existingBrand = db.session.execute(db.select(Brand).filter_by(name=name)).first()
+    if existingBrand:
         return jsonify({"error": "This user already exists"}), 409
 
     try:
@@ -1075,16 +1123,16 @@ def create_inquiry():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
-@app.route('/delete-inquiry/<int:inquiry_id>', methods=['DELETE'])
-def delete_inquiry(inquiry_id: int):
+@app.route('/delete-inquiry/<int:inquiryId>', methods=['DELETE'])
+def delete_inquiry(inquiryId: int):
     """    
     Deletes an inquiry from the database by its id
 
     Parameter:
-        - inquiry_id (int): identifies the inquiry
+        - inquiryId (int): identifies the inquiry
     """
     
-    inquiry = db.session.get(Inquiry, inquiry_id)
+    inquiry = db.session.get(Inquiry, inquiryId)
     if not inquiry:
         return jsonify({"error": "Inquiry not found"}), 404
 

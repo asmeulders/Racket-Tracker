@@ -41,6 +41,24 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
         }
     };
 
+    const handleEdit = async (item) => {
+        if (activeTab === "orders") {
+            await navigate(`/edit-order/${item.id}`);
+        } else if (activeTab === "rackets") {
+            await navigate(`/edit-racket/${item.id}`);
+        } else if (activeTab === "strings") {
+            await navigate(`/edit-string/${item.id}`);
+        } else if (activeTab === "users") {
+            await navigate(`/edit-user/${item.id}`);
+        } else if (activeTab === "brands") {
+            await navigate(`/edit-brand/${item.id}`);
+        } else if (activeTab === "inquiries") {
+            await navigate(`/edit-inquiry/${item.id}`);
+        } else {
+            console.error("Unknown tab.");
+        }
+    };
+
     return (
         <div className="tab-content">
             {items.length === 0 ? (
@@ -54,7 +72,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                             </div>
                             <div className='item-actions'>
                                 <button type='button' onClick={() => handleDelete(item)}>Delete</button>
-                                <button type='button' onClick={() => navigate(`/edit-order/${item.id}`)}>Edit</button>      
+                                <button type='button' onClick={() => handleEdit(item)}>Edit</button>      
                             </div>          
                         </li>
                     ))}
