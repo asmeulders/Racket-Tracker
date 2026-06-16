@@ -578,6 +578,53 @@ def create_string():
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+@app.route('/update-string', methods=['POST'])
+def update_string():
+    """    
+    Updates a string.
+
+    Expected JSON Format:
+    {
+        'stringId': stringId,
+        'brandId': brandId,
+        'name': name,
+        'pricePerRacket': pricePerRacket
+    }
+    """
+
+    data = request.get_json()
+
+    if not data or "stringId" not in data:
+        return jsonify({"error": "Missing required field 'stringId'"}), 400
+    
+    # change to all fields being required??
+    stringId = data.get('stringId')
+    brandId = name = pricePerRacket = None
+    if 'brandId' in data:
+        brandId = data.get('brandId')
+    if 'name' in data:
+        name = data.get('name')
+    if 'pricePerRacket' in data:
+        pricePerRacket = data.get('pricePerRacket')
+
+    try:
+        string = db.session.get(String, stringId)
+        if brandId:
+            string.brandId = brandId
+        if name:
+            string.name = name
+        if pricePerRacket:
+            string.pricePerRacket = pricePerRacket
+
+        db.session.commit()
+        return jsonify({"message": "String successfully updated", "string": string.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 
 @app.route('/delete-string/<int:stringId>', methods=['DELETE'])

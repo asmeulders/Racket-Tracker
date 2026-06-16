@@ -20,9 +20,48 @@ export function useString() {
         
     };
 
+    const getStringById = async (id) => {
+        try {
+            const res = await axios.get(`http://localhost:5000/get-string-by-id/${id}`);
+            return res.data;
+        } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else {
+                console.error("Could not connect to server");
+            }
+        } 
+    }
+
     const deleteString = async (id) => {
-        await axios.delete(`http://localhost:5000/delete-string/${id}`);
+        try {
+            await axios.delete(`http://localhost:5000/delete-string/${id}`);
+        } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else {
+                console.error("Could not connect to server.");
+            }
+        }
     };
 
-    return { createString, deleteString };
+    const updateString = async ({stringId, brandId, name, pricePerRacket}) => {
+        try {
+            const res = await axios.post("http://localhost:5000/update-string", {
+                'stringId': stringId,
+                'brandId': brandId,
+                'name': name,
+                'pricePerRacket': pricePerRacket
+            });
+            return res;
+        } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else{
+                console.error("Could not connect to server.");
+            }
+        }
+    }
+
+    return { createString, getStringById, deleteString, updateString };
 }

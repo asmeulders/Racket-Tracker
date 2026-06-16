@@ -94,6 +94,7 @@ export function RacketPage() {
                     <span className='field-label'>Price:</span>
                     {isEditing ?
                         <input
+                            id='price'
                             type='number' 
                             step='0.01'
                             min='0'
