@@ -28,94 +28,99 @@ MODEL_MAP = {
     "orders": Order
 }
 
+def run_init_db():
+    with app.app_context():
+        _seed_db()
+
 # =======================================================================================================================
 # ----------------------------General Routes--------------------------------------------------------------------------------
 # =======================================================================================================================
 @app.route('/init_db', methods=['POST'])
-def init_db():
+def init_db_route():
+    _seed_db()
+    return jsonify({"message": "Database initialized!"})
+
+def _seed_db():
     """
     Generates basic data to test database interactions and front end
     """
-    with app.app_context():
-        db.create_all()
+    db.create_all()
+    
+    if not User.query.first():
+        db.session.add(User(username="a1", firstName='Alice', lastName='Marble', phone=None, email='a1@gmail.com'))
+        db.session.add(User(username="b2", firstName='Boris', lastName='Becker', phone='1231231234', email='b2@aol.com'))
+        db.session.commit()
+    
+    alice = db.session.execute(db.select(User).filter_by(username="a1")).scalar_one()
+    bob = db.session.execute(db.select(User).filter_by(username="b2")).scalar_one()
+
+    if not Brand.query.first():
+        db.session.add(Brand(name='Solinco'))
+        db.session.add(Brand(name='Luxilon'))
+        db.session.add(Brand(name='Wilson'))
+        db.session.add(Brand(name='Head'))
+        db.session.commit()
+
+    wilson = db.session.execute(db.select(Brand).filter_by(name="Wilson")).scalar_one()
+    solinco = db.session.execute(db.select(Brand).filter_by(name="Solinco")).scalar_one()
+    luxilon = db.session.execute(db.select(Brand).filter_by(name="Luxilon")).scalar_one()
+    head = db.session.execute(db.select(Brand).filter_by(name="Head")).scalar_one()
         
-        if not User.query.first():
-            db.session.add(User(username="Alice"))
-            db.session.add(User(username="Bob"))
-            db.session.commit()
-        
-        alice = db.session.execute(db.select(User).filter_by(username="Alice")).scalar_one()
-        bob = db.session.execute(db.select(User).filter_by(username="Bob")).scalar_one()
+    if not Racket.query.first():
+        db.session.add(Racket(name="Pro Staff", price=300, brand=wilson))
+        db.session.add(Racket(name="Speed", price=315, brand=head))
+        db.session.commit()
 
-        if not Brand.query.first():
-            db.session.add(Brand(name='Solinco'))
-            db.session.add(Brand(name='Luxilon'))
-            db.session.add(Brand(name='Wilson'))
-            db.session.add(Brand(name='Head'))
-            db.session.commit()
+    prostaff = db.session.execute(db.select(Racket).filter_by(name="Pro Staff")).scalar_one()
+    speed = db.session.execute(db.select(Racket).filter_by(name="Speed")).scalar_one()
 
-        wilson = db.session.execute(db.select(Brand).filter_by(name="Wilson")).scalar_one()
-        solinco = db.session.execute(db.select(Brand).filter_by(name="Solinco")).scalar_one()
-        luxilon = db.session.execute(db.select(Brand).filter_by(name="Luxilon")).scalar_one()
-        head = db.session.execute(db.select(Brand).filter_by(name="Head")).scalar_one()
-            
-        if not Racket.query.first():
-            db.session.add(Racket(name="Pro Staff", price=300, brand=wilson))
-            db.session.add(Racket(name="Speed", price=315, brand=head))
-            db.session.commit()
+    if not Order.query.first():
+        db.session.add(Order(
+            orderDate=date(2025, 12, 25), 
+            due=date(2025, 12, 27), 
+            price=100, 
+            complete=False,
+            paid=False,
+            racket=prostaff,
+            user=alice
+        ))
+        db.session.add(Order(
+            orderDate=date(2025, 11, 25), 
+            due=date(2025, 11, 27), 
+            price=120, 
+            complete=False,
+            paid=True,
+            racket=speed,
+            user=bob
+        ))
+        db.session.commit()
 
-        prostaff = db.session.execute(db.select(Racket).filter_by(name="Pro Staff")).scalar_one()
-        speed = db.session.execute(db.select(Racket).filter_by(name="Speed")).scalar_one()
+    order1 = db.session.execute(db.select(Order).filter_by(user=alice)).scalar_one()
+    order2 = db.session.execute(db.select(Order).filter_by(user=bob)).scalar_one()
 
-        if not Order.query.first():
-            db.session.add(Order(
-                orderDate=date(2025, 12, 25), 
-                due=date(2025, 12, 27), 
-                price=100, 
-                complete=False,
-                paid=False,
-                racket=prostaff,
-                user=alice
-            ))
-            db.session.add(Order(
-                orderDate=date(2025, 11, 25), 
-                due=date(2025, 11, 27), 
-                price=120, 
-                complete=False,
-                paid=True,
-                racket=speed,
-                user=bob
-            ))
-            db.session.commit()
+    if not String.query.first():
+        db.session.add(String(name="ALU Power", pricePerRacket=22, brand=luxilon))
+        db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
+        db.session.commit()
 
-        order1 = db.session.execute(db.select(Order).filter_by(user=alice)).scalar_one()
-        order2 = db.session.execute(db.select(Order).filter_by(user=bob)).scalar_one()
+    aluPower = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
+    hyperG = db.session.execute(db.select(String).filter_by(name="Hyper G")).scalar_one()
 
-        if not String.query.first():
-            db.session.add(String(name="ALU Power", pricePerRacket=22, brand=luxilon))
-            db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
-            db.session.commit()
+    if not StrungWith.query.first():
+        db.session.add(StrungWith(order=order1, string=aluPower, tension=50))
+        db.session.add(StrungWith(order=order2, string=hyperG, tension=52, direction="mains"))
+        db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="crosses"))
+        db.session.commit()
 
-        aluPower = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
-        hyperG = db.session.execute(db.select(String).filter_by(name="Hyper G")).scalar_one()
+    if not Owns.query.first():
+        db.session.add(Owns(user=alice, racket=prostaff, quantity=1))
+        db.session.add(Owns(user=bob, racket=speed, quantity=1))
+        db.session.commit()  
 
-        if not StrungWith.query.first():
-            db.session.add(StrungWith(order=order1, string=aluPower, tension=50))
-            db.session.add(StrungWith(order=order2, string=hyperG, tension=52, direction="mains"))
-            db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="crosses"))
-            db.session.commit()
-
-        if not Owns.query.first():
-            db.session.add(Owns(user=alice, racket=prostaff, quantity=1))
-            db.session.add(Owns(user=bob, racket=speed, quantity=1))
-            db.session.commit()  
-
-        if not Inquiry.query.first():
-            inquiryDate = date.today()
-            db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
-            db.session.commit()     
-        
-    return jsonify({"message": "Database initialized!"})
+    if not Inquiry.query.first():
+        inquiryDate = date.today()
+        db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
+        db.session.commit()     
 
 
 @app.route('/search-table/', methods=['POST'])
@@ -307,23 +312,33 @@ def create_user():
 
     Expected JSON Format:
     {
-        'username': username
+        'username': username,
+        'firstName': firstName,
+        'lastName': lastName,
+        'phone': phone,
+        'email': email
     }
     """
     data = request.get_json()
 
-    if not data or "username" not in data:
-        return jsonify({"error": "Missing required fields 'username' or 'data'"}), 400
+    if not data or "username" not in data or 'firstName' not in data or 'lastName' not in data or 'email' not in data:
+        return jsonify({"error": "Missing 'data' or required fields 'username', 'firstName', 'lastName', 'email'."}), 400
     
     username = data.get('username')
+    firstName = data.get('firstName')
+    lastName = data.get('lastName')
+    email = data.get('email')
+    phone = None
+    if 'phone' in data:
+        phone = data.get('phone')
 
     # Checks for an existing user
     existingUser = db.session.execute(db.select(User).filter_by(username=username)).first()
     if existingUser:
-        return jsonify({"error": "This user already exists"}), 409
+        return jsonify({"error": "A user with this username already exists"}), 409
 
     try:
-        user = User(username=username)
+        user = User(username=username, firstName=firstName, lastName=lastName, email=email, phone=phone)
         db.session.add(user)
         db.session.commit()
 
@@ -1215,4 +1230,5 @@ def delete_inquiry(inquiryId: int):
 # ================================================================
 
 if __name__ == '__main__':
+    run_init_db()
     app.run(debug=True, port=5000)

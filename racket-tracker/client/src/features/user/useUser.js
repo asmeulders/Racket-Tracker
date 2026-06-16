@@ -2,10 +2,14 @@ import axios from 'axios';
 
 export function useUser() {
 
-    const createUser = async ({ username }) => {
+    const createUser = async ({ username, firstName, lastName, phone, email }) => {
         try {
             const res = await axios.post("http://localhost:5000/create-user", {
-                "username": username
+                "username": username,
+                'firstName': firstName,
+                'lastName': lastName,
+                'phone': phone,
+                'email': email
             });
             return res;
         } catch (error) {

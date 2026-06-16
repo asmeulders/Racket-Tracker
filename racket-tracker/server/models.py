@@ -31,6 +31,10 @@ class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    firstName = db.Column(db.String(40), nullable=False)
+    lastName = db.Column(db.String(40), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(254), nullable=False)
     
     rackets = db.relationship('Owns', back_populates='user', cascade="all, delete-orphan")
     orders = db.relationship('Order', back_populates='user')
@@ -39,6 +43,10 @@ class User(db.Model):
         return {
             "id": self.id, 
             "username": self.username,
+            "firstName": self.firstName,
+            "lastName": self.lastName,
+            "phone": self.phone if self.phone else None,
+            "email": self.email,
             "rackets": [r.to_json() for r in self.rackets],
             "orders": [o.to_json() for o in self.orders] 
         }
