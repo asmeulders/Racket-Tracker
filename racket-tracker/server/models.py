@@ -91,6 +91,7 @@ class Racket(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
+            "brandId": self.brand.id if self.brand else None,
             "brandName": self.brand.name if self.brand else None,
             "name": self.name, 
             "price": self.price,
@@ -195,6 +196,7 @@ class String(db.Model):
             "id": self.id, 
             "name": self.name, 
             "pricePerRacket": self.pricePerRacket,
+            "brandId": self.brand.id if self.brand else None,
             "brandName": self.brand.name if self.brand else None
         }
 

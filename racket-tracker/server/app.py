@@ -440,6 +440,54 @@ def create_racket():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+
+@app.route('/update-racket', methods=['POST'])
+def update_racket():
+    """    
+    Updates a racket.
+
+    Expected JSON Format:
+    {
+        'racketId': racketId,
+        'brandId': brandId,
+        'name': name,
+        'price: price
+    }
+    """
+
+    data = request.get_json()
+
+    if not data or "racketId" not in data:
+        return jsonify({"error": "Missing required field 'racketId'"}), 400
+    
+    # change to all fields being required??
+    racketId = data.get('racketId')
+    brandId = name = price = None
+    if 'brandId' in data:
+        brandId = data.get('brandId')
+    if 'name' in data:
+        name = data.get('name')
+    if 'price' in data:
+        price = data.get('price')
+
+    try:
+        racket = db.session.get(Racket, racketId)
+        if brandId:
+            racket.brandId = brandId
+        if name:
+            racket.name = name
+        if price:
+            racket.price = price
+
+        db.session.commit()
+        return jsonify({"message": "Racket successfully updated", "racket": racket.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
+    
 @app.route('/delete-racket/<int:racketId>', methods=['DELETE'])
 def delete_racket(racketId: int):
     """    
@@ -581,7 +629,7 @@ def get_orders(limit: int):
         return jsonify([])
     
 
-@app.route('/get-order/<int:orderId>', methods=['GET'])
+@app.route('/get-order-by-id/<int:orderId>', methods=['GET'])
 def get_order_by_id(orderId: int):
     """    
     Fetches a single racket from the database by its id
@@ -749,7 +797,7 @@ def update_order():
 
     try:
         order = db.session.get(Order, orderId)
-        if racketId:
+        if racketId: # TODO: validate these ID's
             order.racketId = racketId
         if userId:
             order.userId = userId
@@ -815,7 +863,7 @@ def update_order():
             order.price = price
 
         db.session.commit()
-        return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
+        return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 201
     
     except Exception as e:
         db.session.rollback()

@@ -76,9 +76,14 @@ export const RacketForm = ({ onDataCreated, handleClose, brands }) => {
                         <Form.Label>
                             Price:
                         </Form.Label>
-                        <Form.Control type='number' id='price' value={fields.price} onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value }))} >
-
-                        </Form.Control>
+                        <Form.Control 
+                            id='price' 
+                            type='number' 
+                            step='0.01' 
+                            min='0'
+                            value={fields.price} 
+                            onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value }))} 
+                        />
                     </Form.Group>
 
                     <Button variant="secondary" onClick={handleClose}>Close</Button>
