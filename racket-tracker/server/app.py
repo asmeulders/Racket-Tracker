@@ -28,17 +28,9 @@ MODEL_MAP = {
     "orders": Order
 }
 
-def run_init_db():
-    with app.app_context():
-        _seed_db()
-
 # =======================================================================================================================
-# ----------------------------General Routes--------------------------------------------------------------------------------
+# ----------------------------Databse Funcitons--------------------------------------------------------------------------
 # =======================================================================================================================
-@app.route('/init_db', methods=['POST'])
-def init_db_route():
-    _seed_db()
-    return jsonify({"message": "Database initialized!"})
 
 def _seed_db():
     """
@@ -121,6 +113,20 @@ def _seed_db():
         inquiryDate = date.today()
         db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
         db.session.commit()     
+
+def run_init_db():
+    with app.app_context():
+        _seed_db()
+
+# =======================================================================================================================
+# ----------------------------General Routes-----------------------------------------------------------------------------
+# =======================================================================================================================
+
+
+@app.route('/init_db', methods=['POST'])
+def init_db_route():
+    _seed_db()
+    return jsonify({"message": "Database initialized!"})
 
 
 @app.route('/search-table/', methods=['POST'])
@@ -303,6 +309,20 @@ def get_users(limit: int):
         return jsonify([user.to_json() for user in users])
     except OperationalError:
         return jsonify([])
+    
+
+@app.route('/get-user-by-id/<int:userId>', methods=['GET'])
+def get_user_by_id(userId: int):
+    """    
+    Fetches a user from the database by its id.
+
+    Parameter:
+        - userId (int): identifies the user
+    """
+    user = db.session.get(User, userId)
+    if user: 
+        return jsonify(user.to_json())
+    return jsonify({"error": "User not found"}), 404
 
     
 @app.route('/create-user', methods=['POST'])
@@ -349,6 +369,64 @@ def create_user():
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
+
+@app.route('/update-user', methods=['POST'])
+def update_user():
+    """    
+    Updates a user.
+
+    Expected JSON Format:
+    {
+        'userId': userId,
+        'usernname': username,
+        'firstName': firstName,
+        'lastName: lastName,
+        'phone': phone,
+        'email': email
+    }
+    """
+
+    data = request.get_json()
+
+    if not data or "userId" not in data:
+        return jsonify({"error": "Missing data or required field 'userId'"}), 400
+    
+    # change to all fields being required??
+    userId = data.get('userId')
+    username = firstName = lastName = phone = email = None
+    if 'username' in data:
+        username = data.get('username')
+    if 'firstName' in data:
+        firstName = data.get('firstName')
+    if 'lastName' in data:
+        lastName = data.get('lastName')
+    if 'phone' in data:
+        phone = data.get('phone')
+    if 'email' in data:
+        email = data.get('email')
+
+    try:
+        user = db.session.get(User, userId)
+        if username:
+            user.username = username
+        if firstName:
+            user.firstName = firstName
+        if lastName:
+            user.lastName = lastName
+        if phone: 
+            user.phone = phone
+        if email:
+            user.email = email
+
+        db.session.commit()
+        return jsonify({"message": "User successfully updated", "user": user.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
+
 @app.route('/delete-user/<int:userId>', methods=['DELETE'])
 def delete_user(userId: int):
     """    
