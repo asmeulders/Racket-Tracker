@@ -151,7 +151,11 @@ class Order(db.Model):
             "complete": self.complete,
             "paid": self.paid,
             "userId": self.userId,
-            "username": self.user.username if self.user else None,
+            "user": {
+                "firstName": self.user.firstName,
+                "lastName": self.user.lastName,
+                "username": self.user.username
+            } if self.user else None,
             "racketId": self.racketId,
             "racketBrand": self.racket.brand.name if self.racket and self.racket.brand else None,
             "racketName": self.racket.name if self.racket else None,

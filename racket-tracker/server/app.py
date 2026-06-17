@@ -1160,6 +1160,20 @@ def get_brands(limit: int):
         return jsonify([])
 
 
+@app.route('/get-brand-by-id/<int:brandId>', methods=['GET'])
+def get_brand_by_id(brandId: int):
+    """    
+    Fetches a brand from the database by its id.
+
+    Parameter:
+        - brandId (int): identifies the brand
+    """
+    brand = db.session.get(Brand, brandId)
+    if brand: 
+        return jsonify(brand.to_json())
+    return jsonify({"error": "Brand not found"}), 404
+
+
 @app.route('/create-brand', methods=['POST'])
 def create_brand():
     """    
@@ -1193,6 +1207,44 @@ def create_brand():
         db.session.rollback()
         print(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+@app.route('/update-brand', methods=['POST'])
+def update_brand():
+    """    
+    Updates a brand.
+
+    Expected JSON Format:
+    {
+        'brandId': brandId,
+        'name': name
+    }
+    """
+
+    data = request.get_json()
+
+    if not data or "brandId" not in data:
+        return jsonify({"error": "Missing data or required field 'brandId'"}), 400
+    
+    # change to all fields being required??
+    brandId = data.get('brandId')
+    name = None
+    if 'name' in data:
+        name = data.get('name')
+
+    try:
+        brand = db.session.get(Brand, brandId)
+        if name:
+            brand.name = name
+    
+        db.session.commit()
+        return jsonify({"message": "Brand successfully updated", "brand": brand.to_json()}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+    
     
 @app.route('/delete-brand/<int:brandId>', methods=['DELETE'])
 def delete_brand(brandId: int):
