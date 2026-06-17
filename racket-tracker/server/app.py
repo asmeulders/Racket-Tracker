@@ -414,7 +414,10 @@ def update_user():
         if lastName:
             user.lastName = lastName
         if phone: 
-            user.phone = phone
+            if phone == "NONE":
+                user.phone = ""
+            else:
+                user.phone = phone
         if email:
             user.email = email
 

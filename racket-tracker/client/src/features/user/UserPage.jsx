@@ -44,12 +44,14 @@ export function UserPage() {
         console.log("User saved: ", userId);
         console.log(updatedUser);
 
+        const phone = updatedUser.phone !== "" ? updatedUser.phone : "NONE";
+
         const res = await updateUser({
             userId: userId,
             username: updatedUser.username,
             firstName: updatedUser.firstName,
             lastName: updatedUser.lastName,
-            phone: updatedUser.phone,
+            phone: phone,
             email: updatedUser.email
         });
         console.log(res);
