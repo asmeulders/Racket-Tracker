@@ -114,17 +114,17 @@ def _seed_db():
         db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
         db.session.commit()     
 
-def run_init_db():
+def init_db():
     with app.app_context():
-        _seed_db()
+        db.create_all()
 
 # =======================================================================================================================
 # ----------------------------General Routes-----------------------------------------------------------------------------
 # =======================================================================================================================
 
 
-@app.route('/init_db', methods=['POST'])
-def init_db_route():
+@app.route('/seed_db', methods=['POST'])
+def seed_db_route():
     _seed_db()
     return jsonify({"message": "Database initialized!"})
 
@@ -1294,6 +1294,20 @@ def get_inquiries(limit: int):
         return jsonify([b.to_json() for b in inquiries])
     except OperationalError:
         return jsonify([])
+    
+
+@app.route('/get-inquiry-by-id/<int:inquiryId>', methods=['GET'])
+def get_inquiry_by_id(inquiryId: int):
+    """    
+    Fetches an inquiry from the database by its id.
+
+    Parameter:
+        - inquiryId (int): identifies the inquiry
+    """
+    inquiry = db.session.get(Inquiry, inquiryId)
+    if inquiry: 
+        return jsonify(inquiry.to_json())
+    return jsonify({"error": "inquiry not found"}), 404
 
 
 @app.route('/create-inquiry', methods=['POST'])
@@ -1363,5 +1377,5 @@ def delete_inquiry(inquiryId: int):
 # ================================================================
 
 if __name__ == '__main__':
-    run_init_db()
+    init_db()
     app.run(debug=True, port=5000)

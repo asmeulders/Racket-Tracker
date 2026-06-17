@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { useBrand } from './useBrand';
-import { BrandSelect } from '../brand';
 
 export function BrandPage() {
     const { getBrandById, deleteBrand, updateBrand } = useBrand();
@@ -11,10 +10,6 @@ export function BrandPage() {
     const [ brand, setBrand ] = useState({});
     const [ updatedBrand, setUpdatedBrand ] = useState({});
     const [ loading, setLoading ] = useState(true);
-
-    const [editData, setEditData] = useState({
-        brands: []
-    }); 
 
     const [ isEditing, setIsEditing ] = useState(false);
 
