@@ -23,12 +23,12 @@ function App() {
           <Route path="/" element={<Layout />} >
             <Route index element={<Home />} />
             <Route path="/store-dashboard" element={<StoreDashboardPage />} />
-            <Route path="/edit-order/:orderId" element={<OrderPage />} />
-            <Route path="/edit-racket/:racketId" element={<RacketPage />} />
-            <Route path="/edit-string/:stringId" element={<StringPage />} />
-            <Route path="/edit-user/:userId" element={<UserPage />} />
-            <Route path="/edit-brand/:brandId" element={<BrandPage />} />
-            <Route path="/edit-inquiry/:inquiryId" element={<InquiryPage />} />
+            <Route path="/view-order/:orderId" element={<OrderPage />} />
+            <Route path="/view-racket/:racketId" element={<RacketPage />} />
+            <Route path="/view-string/:stringId" element={<StringPage />} />
+            <Route path="/view-user/:userId" element={<UserPage />} />
+            <Route path="/view-brand/:brandId" element={<BrandPage />} />
+            <Route path="/view-inquiry/:inquiryId" element={<InquiryPage />} />
           </Route>
         </Routes>
       </Router>

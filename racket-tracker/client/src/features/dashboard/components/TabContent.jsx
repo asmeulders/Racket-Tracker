@@ -43,17 +43,17 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
 
     const handleEdit = async (item) => {
         if (activeTab === "orders") {
-            await navigate(`/edit-order/${item.id}`);
+            await navigate(`/view-order/${item.id}`);
         } else if (activeTab === "rackets") {
-            await navigate(`/edit-racket/${item.id}`);
+            await navigate(`/view-racket/${item.id}`);
         } else if (activeTab === "strings") {
-            await navigate(`/edit-string/${item.id}`);
+            await navigate(`/view-string/${item.id}`);
         } else if (activeTab === "users") {
-            await navigate(`/edit-user/${item.id}`);
+            await navigate(`/view-user/${item.id}`);
         } else if (activeTab === "brands") {
-            await navigate(`/edit-brand/${item.id}`);
+            await navigate(`/view-brand/${item.id}`);
         } else if (activeTab === "inquiries") {
-            await navigate(`/edit-inquiry/${item.id}`);
+            await navigate(`/view-inquiry/${item.id}`);
         } else {
             console.error("Unknown tab.");
         }
