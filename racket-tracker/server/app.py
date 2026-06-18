@@ -126,402 +126,7 @@ def init_db():
 @app.route('/api/seed_db', methods=['POST'])
 def seed_db_route():
     _seed_db()
-    return jsonify({"message": "Database initialized!"})
-    
-
-@app.route('/api/update-user', methods=['POST'])
-def update_user():
-    """    
-    Updates a user.
-
-    Expected JSON Format:
-    {
-        'userId': userId,
-        'usernname': username,
-        'firstName': firstName,
-        'lastName: lastName,
-        'phone': phone,
-        'email': email
-    }
-    """
-
-    data = request.get_json()
-
-    if not data or "userId" not in data:
-        return jsonify({"error": "Missing data or required field 'userId'"}), 400
-    
-    # change to all fields being required??
-    userId = data.get('userId')
-    username = firstName = lastName = phone = email = None
-    if 'username' in data:
-        username = data.get('username')
-    if 'firstName' in data:
-        firstName = data.get('firstName')
-    if 'lastName' in data:
-        lastName = data.get('lastName')
-    if 'phone' in data:
-        phone = data.get('phone')
-    if 'email' in data:
-        email = data.get('email')
-
-    try:
-        user = db.session.get(User, userId)
-        if username:
-            user.username = username
-        if firstName:
-            user.firstName = firstName
-        if lastName:
-            user.lastName = lastName
-        if phone: 
-            if phone == "NONE":
-                user.phone = ""
-            else:
-                user.phone = phone
-        if email:
-            user.email = email
-
-        db.session.commit()
-        return jsonify({"message": "User successfully updated", "user": user.to_json()}), 201
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-
-@app.route('/api/delete-user/<int:userId>', methods=['DELETE'])
-def delete_user(userId: int):
-    """    
-    Delete a user from the database
-
-    Parameters:
-        - userId (int): identifies the user
-    """
-    
-    user = db.session.get(User, userId)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    try:
-        db.session.delete(user)
-        db.session.commit()
-
-        return jsonify({"message": "User successfully deleted"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-
-@app.route('/api/update-racket', methods=['POST'])
-def update_racket():
-    """    
-    Updates a racket.
-
-    Expected JSON Format:
-    {
-        'racketId': racketId,
-        'brandId': brandId,
-        'name': name,
-        'price: price
-    }
-    """
-
-    data = request.get_json()
-
-    if not data or "racketId" not in data:
-        return jsonify({"error": "Missing required field 'racketId'"}), 400
-    
-    # change to all fields being required??
-    racketId = data.get('racketId')
-    brandId = name = price = None
-    if 'brandId' in data:
-        brandId = data.get('brandId')
-    if 'name' in data:
-        name = data.get('name')
-    if 'price' in data:
-        price = data.get('price')
-
-    try:
-        racket = db.session.get(Racket, racketId)
-        if brandId:
-            racket.brandId = brandId
-        if name:
-            racket.name = name
-        if price:
-            racket.price = price
-
-        db.session.commit()
-        return jsonify({"message": "Racket successfully updated", "racket": racket.to_json()}), 201
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-    
-@app.route('/api/delete-racket/<int:racketId>', methods=['DELETE'])
-def delete_racket(racketId: int):
-    """    
-    Deletes a single racket from the database by its id
-
-    Parameter:
-        - racketId (int): identifies the racket
-    """
-    racket = db.session.get(Racket, racketId)
-    if not racket:
-        return jsonify({"error": "Racket not found"}), 404
-
-    try:
-        db.session.delete(racket)
-        db.session.commit()
-
-        return jsonify({"message": "Racket successfully deleted"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-# =======================================================================================================================
-# ----------------------------String Routes-----------------------------------------------------------------------------
-# =======================================================================================================================
-    
-
-@app.route('/api/update-string', methods=['POST'])
-def update_string():
-    """    
-    Updates a string.
-
-    Expected JSON Format:
-    {
-        'stringId': stringId,
-        'brandId': brandId,
-        'name': name,
-        'pricePerRacket': pricePerRacket
-    }
-    """
-
-    data = request.get_json()
-
-    if not data or "stringId" not in data:
-        return jsonify({"error": "Missing required field 'stringId'"}), 400
-    
-    # change to all fields being required??
-    stringId = data.get('stringId')
-    brandId = name = pricePerRacket = None
-    if 'brandId' in data:
-        brandId = data.get('brandId')
-    if 'name' in data:
-        name = data.get('name')
-    if 'pricePerRacket' in data:
-        pricePerRacket = data.get('pricePerRacket')
-
-    try:
-        string = db.session.get(String, stringId)
-        if brandId:
-            string.brandId = brandId
-        if name:
-            string.name = name
-        if pricePerRacket:
-            string.pricePerRacket = pricePerRacket
-
-        db.session.commit()
-        return jsonify({"message": "String successfully updated", "string": string.to_json()}), 201
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-
-
-@app.route('/api/delete-string/<int:stringId>', methods=['DELETE'])
-def delete_string(stringId: int):
-    """    
-    Deletes a string from the database by its id
-
-    Parameter:
-        - stringId (int): identifies the string
-    """
-    string = db.session.get(String, stringId)
-    if not string:
-        return jsonify({"error": "String not found"}), 404
-
-    try:
-        db.session.delete(string)
-        db.session.commit()
-
-        return jsonify({"message": "String successfully deleted"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-
-
-# =======================================================================================================================
-# ----------------------------Order Routes-------------------------------------------------------------------------------
-# =======================================================================================================================
-    
-
-@app.route('/api/update-order', methods=['POST'])
-def update_order():
-    """    
-    Updates an order.
-
-    Expected JSON Format:
-    {
-        'orderId': orderId,
-        'userId': userId,
-        'racketId': racketId,
-        'mainsId': mainsId,
-        'mainsTension': mainsTension,
-        'crossesId': crossesId,
-        'crossesTension': crossesTension,
-        'sameForCrosses': sameForCrosses,
-        'orderDue': orderDue,
-        'price: price
-    }
-    """
-
-    data = request.get_json()
-
-    if not data or "orderId" not in data or "sameForCrosses" not in data:
-        return jsonify({"error": "Missing required field 'orderId' or 'sameForCrosses'"}), 400
-    
-    sameForCrosses = data.get('sameForCrosses')
-
-    if not sameForCrosses and "crossesId" not in data and 'crossesTension' in data or "crossesId" in data and 'crossesTension' not in data:
-        return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
-    
-    # change to all fields being required??
-    orderId = data.get('orderId')
-    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = orderDue = price = None
-    if 'racketId' in data:
-        racketId = data.get('racketId')
-    if 'userId' in data:
-        userId = data.get('userId')
-    if 'mainsId' in data:
-        mainsId = data.get('mainsId')
-    if 'mainsTension' in data: 
-        mainsTension = data.get('mainsTension')
-    if 'crossesId' in data: 
-        crossesId = data.get('crossesId')
-    if 'crossesTension' in data:
-        crossesTension = data.get('crossesTension')
-    if 'orderDue' in data:
-        dateString = data.get('orderDue')
-        orderDue = datetime.strptime(dateString, '%Y-%m-%d').date()
-    if 'price' in data:
-        price = data.get('price')
-
-    try:
-        order = db.session.get(Order, orderId)
-        if racketId: # TODO: validate these ID's
-            order.racketId = racketId
-        if userId:
-            order.userId = userId
-        if sameForCrosses:
-            for record in order.strungWithRecords:
-                if record.direction == None or record.direction == 'mains':
-                    record.direction = None
-                    if mainsId:
-                        string = db.session.get(String, mainsId)
-                        if not string:
-                            return jsonify({"error": "String does not exist"}), 404
-                        record.string = string
-                    if mainsTension:
-                        record.tension = mainsTension
-                else:
-                    order.strungWithRecords.remove(record)
-        else:
-            if len(order.strungWithRecords) == 2:
-
-                for record in order.strungWithRecords:
-                    if record.direction == None or record.direction == 'mains':
-                        record.direction = 'mains'
-                        if mainsId:
-                            mains = db.session.get(String, mainsId)
-                            if not mains:
-                                return jsonify({"error": "String does not exist"}), 404
-                            record.string = mains
-                        if mainsTension:
-                            record.tension = mainsTension
-                    else:
-                        if crossesId:
-                            crosses = db.session.get(String, crossesId)
-                            if not crosses:
-                                return jsonify({"error": "String does not exist"}), 404
-                            record.string = crosses
-                        if crossesTension:
-                            record.tension = crossesTension
-            else:
-                mainsStrungWith = order.strungWithRecords[0]
-                if mainsId:
-                    mains = db.session.get(String, mainsId)
-                    if not mains:
-                        return jsonify({"error": "String does not exist"}), 404
-                    mainsStrungWith.string = mains
-                if mainsTension:
-                    mainsStrungWith.tension = mainsTension
-                
-                crossesStrungWith = None
-                if crossesId and crossesTension:
-                    crosses = db.session.get(String, crossesId)
-                    if not crosses:
-                        return jsonify({"error": "String does not exist"}), 404
-                    try:
-                        crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
-                        order.strungWithRecords.append(crossesStrungWith)
-                    except Exception as e:
-                        return jsonify({"error": "Error creating crosses job details."}), 500
-        
-        if orderDue:
-            order.due = orderDue
-
-        if price:
-            order.price = price
-
-        db.session.commit()
-        return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 201
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-
-@app.route('/api/complete-order/<int:orderId>', methods=['PATCH'])
-def complete_order(orderId: int):
-    """
-    Marks an order as completed.
-    """
-    try:
-        order = db.session.get(Order, orderId)
-        
-        if not order:
-            return jsonify({"error": "Order not found"}), 404
-        
-        if order.complete:
-            return jsonify({
-                "message": "Order was already completed", 
-                "order": order.to_json() 
-            }), 200
-        
-        order.complete = not order.complete
-
-        print("Is complete:", order.complete)
-
-        db.session.add(order)
-        db.session.commit()
-
-        return jsonify({"message": "Order successfully completed", "order": order.to_json()}), 200
-
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
+    return jsonify({"message": "Database initialized!"})    
     
 
 @app.route('/api/toggle-complete/<int:orderId>', methods=['PATCH'])
@@ -531,22 +136,19 @@ def toggle_complete(orderId: int):
     """
     try:
         order = db.session.get(Order, orderId)
-        
         if not order:
             return jsonify({"error": "Order not found"}), 404
         
         order.complete = not order.complete
-
-        print("Is complete:", order.complete)
 
         db.session.add(order)
         db.session.commit()
 
         return jsonify({"message": "Order complete field successfully toggled", "order": order.to_json()}), 200
 
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
-        print(f"Server error: {str(e)}")
+        app.logger.error(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
 
@@ -557,7 +159,6 @@ def pay_for_order(orderId: int):
     """    
     try:
         order = db.session.get(Order, orderId)
-        
         if not order:
             return jsonify({"error": "Order not found"}), 404
         
@@ -568,131 +169,11 @@ def pay_for_order(orderId: int):
 
         return jsonify({"message": "Order toggled paying for an order", "order": order.to_json()}), 200
 
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
-        print(f"Server error: {str(e)}")
+        app.logger.error(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
     
-    
-@app.route('/api/delete-order/<int:orderId>', methods=['DELETE'])
-def delete_order(orderId: int):
-    """    
-    Deletes an order from the database by its id
-
-    Parameter:
-        - orderId (int): identifies the order
-    """
-    
-    order = db.session.get(Order, orderId)
-    if not order:
-        return jsonify({"error": "Order not found"}), 404
-
-    try:
-        db.session.delete(order)
-        db.session.commit()
-
-        return jsonify({"message": "Order successfully deleted"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-
-
-# =======================================================================================================================
-# ----------------------------Brand Routes-------------------------------------------------------------------------------
-# =======================================================================================================================
-    
-
-@app.route('/api/update-brand', methods=['POST'])
-def update_brand():
-    """    
-    Updates a brand.
-
-    Expected JSON Format:
-    {
-        'brandId': brandId,
-        'name': name
-    }
-    """
-
-    data = request.get_json()
-
-    if not data or "brandId" not in data:
-        return jsonify({"error": "Missing data or required field 'brandId'"}), 400
-    
-    # change to all fields being required??
-    brandId = data.get('brandId')
-    name = None
-    if 'name' in data:
-        name = data.get('name')
-
-    try:
-        brand = db.session.get(Brand, brandId)
-        if name:
-            brand.name = name
-    
-        db.session.commit()
-        return jsonify({"message": "Brand successfully updated", "brand": brand.to_json()}), 201
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-    
-@app.route('/api/delete-brand/<int:brandId>', methods=['DELETE'])
-def delete_brand(brandId: int):
-    """    
-    Deletes a brand from the database by its id
-
-    Parameter:
-        - brandId (int): identifies the brand
-    """
-    
-    brand = db.session.get(Brand, brandId)
-    if not brand:
-        return jsonify({"error": "Brand not found"}), 404
-
-    try:
-        db.session.delete(brand)
-        db.session.commit()
-
-        return jsonify({"message": "Brand successfully deleted"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
-    
-
-# =======================================================================================================================
-# ----------------------------Inquiry Routes-------------------------------------------------------------------------------
-# =======================================================================================================================
-    
-@app.route('/api/delete-inquiry/<int:inquiryId>', methods=['DELETE'])
-def delete_inquiry(inquiryId: int):
-    """    
-    Deletes an inquiry from the database by its id
-
-    Parameter:
-        - inquiryId (int): identifies the inquiry
-    """
-    
-    inquiry = db.session.get(Inquiry, inquiryId)
-    if not inquiry:
-        return jsonify({"error": "Inquiry not found"}), 404
-
-    try:
-        db.session.delete(inquiry)
-        db.session.commit()
-
-        return jsonify({"message": "Inquiry successfully deleted"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        print(f"Server error: {str(e)}")
-        return jsonify({"error": "An internal error has occurred."}), 500
     
 
 def list_orders():
@@ -1052,8 +533,9 @@ def create_racket(body):
         app.logger.error(f"DB unavailable creating racket: {e}")
         return jsonify({"error": "DB unavailable"}), 500
     
-    except IntegrityError:
+    except IntegrityError as e:
         db.session.rollback()
+        app.logger.error(f"Duplicate racket: {e}")
         return jsonify({"error": "A racket with this name already exists"}), 409
     
     except SQLAlchemyError as e:
@@ -1101,8 +583,9 @@ def create_string(body):
         app.logger.error(f"DB unavailable creating string: {e}")
         return jsonify({"error": "DB unavailable"}), 500
     
-    except IntegrityError:
+    except IntegrityError as e:
         db.session.rollback()
+        app.logger.error(f"Duplicate string: {e}")
         return jsonify({"error": "A string with this name already exists"}), 409
     
     except SQLAlchemyError as e:
@@ -1151,8 +634,9 @@ def create_user(body):
         app.logger.error(f"DB unavailable creating user: {e}")
         return jsonify({"error": "DB unavailable"}), 500
     
-    except IntegrityError:
+    except IntegrityError as e:
         db.session.rollback()
+        app.logger.error(f"Duplicate user: {e}")
         return jsonify({"error": "A user with this username already exists"}), 409
     
     except SQLAlchemyError as e:
@@ -1191,8 +675,9 @@ def create_brand(body):
         app.logger.error(f"DB unavailable creating brand: {e}")
         return jsonify({"error": "DB unavailable"}), 500
     
-    except IntegrityError:
+    except IntegrityError as e:
         db.session.rollback()
+        app.logger.error(f"Duplicate brand: {e}")
         return jsonify({"error": "A string with this name already exists"}), 409
     
     except SQLAlchemyError as e:
@@ -1251,21 +736,377 @@ CREATE_HANDLERS = {
 # UPDATE HANDLERS
 
 def update_order(id, body):
-    pass
+    """    
+    Updates an order.
+
+    Expected JSON Format:
+    {
+        'orderId': orderId,
+        'userId': userId,
+        'racketId': racketId,
+        'mainsId': mainsId,
+        'mainsTension': mainsTension,
+        'crossesId': crossesId,
+        'crossesTension': crossesTension,
+        'sameForCrosses': sameForCrosses,
+        'orderDue': orderDue,
+        'price: price
+    }
+    """
+    if "orderId" not in body or "sameForCrosses" not in body:
+        return jsonify({"error": "Missing required field 'orderId' or 'sameForCrosses'"}), 400
+    
+    sameForCrosses = body.get('sameForCrosses')
+
+    if not sameForCrosses:
+        if "crossesId" not in body or 'crossesTension' not in body:
+            return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
+    
+    # change to all fields being required??
+    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = orderDue = price = None
+    if 'racketId' in body:
+        racketId = body.get('racketId')
+    if 'userId' in body:
+        userId = body.get('userId')
+    if 'mainsId' in body:
+        mainsId = body.get('mainsId')
+    if 'mainsTension' in body: 
+        mainsTension = body.get('mainsTension')
+        if not isinstance(mainsTension, int) or mainsTension < 0 or mainsTension > 100:
+            return jsonify({"error": "mainsTension must be a non-negative number less than 100"}), 400
+    if 'crossesId' in body: 
+        crossesId = body.get('crossesId')
+    if 'crossesTension' in body:
+        crossesTension = body.get('crossesTension')
+        if not isinstance(crossesTension, int) or crossesTension < 0 or crossesTension > 100:
+            return jsonify({"error": "crossesTension must be a non-negative number less than 100"}), 400
+    if 'orderDue' in body:
+        dateString = body.get('orderDue')
+        orderDue = datetime.strptime(dateString, '%Y-%m-%d').date()
+    if 'price' in body:
+        price = body.get('price')
+        if not isinstance(price, float) or price < 0:
+            return jsonify({"error": "Price must be a non-negative number"}), 400
+
+    try:
+        order = db.session.get(Order, id)
+        if racketId:
+            racket = db.session.get(Racket, racketId)
+            if racket == None:
+                return jsonify({"error": "Racket does not exist"}), 404
+            order.racketId = racketId
+        if userId:
+            user = db.session.get(User, userId)
+            if user == None:
+                db.session.rollback()
+                return jsonify({"error": "User does not exist"}), 404
+            order.userId = userId
+        if sameForCrosses:
+            for record in order.strungWithRecords:
+                if record.direction == None or record.direction == 'mains':
+                    record.direction = None
+                    if mainsId:
+                        string = db.session.get(String, mainsId)
+                        if not string:
+                            db.session.rollback()
+                            return jsonify({"error": "String does not exist"}), 404
+                        record.string = string
+                    if mainsTension:
+                        record.tension = mainsTension
+                else:
+                    order.strungWithRecords.remove(record)
+        else:
+            if len(order.strungWithRecords) == 2:
+
+                for record in order.strungWithRecords:
+                    if record.direction == None or record.direction == 'mains':
+                        record.direction = 'mains'
+                        if mainsId:
+                            mains = db.session.get(String, mainsId)
+                            if not mains:
+                                db.session.rollback()
+                                return jsonify({"error": "String does not exist"}), 404
+                            record.string = mains
+                        if mainsTension:
+                            record.tension = mainsTension
+                    else:
+                        if crossesId:
+                            crosses = db.session.get(String, crossesId)
+                            if not crosses:
+                                db.session.rollback()
+                                return jsonify({"error": "String does not exist"}), 404
+                            record.string = crosses
+                        if crossesTension:
+                            record.tension = crossesTension
+            else:
+                mainsStrungWith = order.strungWithRecords[0]
+                if mainsId:
+                    mains = db.session.get(String, mainsId)
+                    if not mains:
+                        db.session.rollback()
+                        return jsonify({"error": "String does not exist"}), 404
+                    mainsStrungWith.string = mains
+                if mainsTension:
+                    mainsStrungWith.tension = mainsTension
+                
+                crossesStrungWith = None
+                if crossesId and crossesTension:
+                    crosses = db.session.get(String, crossesId)
+                    if not crosses:
+                        db.session.rollback()
+                        return jsonify({"error": "String does not exist"}), 404
+                    crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
+                    order.strungWithRecords.append(crossesStrungWith)
+
+        if orderDue:
+            order.due = orderDue
+        if price:
+            order.price = price
+
+        db.session.commit()
+        return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 201
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable updating order: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def update_racket(id, body):
-    pass
+    """    
+    Updates a racket.
+
+    Expected JSON Format:
+    {
+        'racketId': racketId,
+        'brandId': brandId,
+        'name': name,
+        'price: price
+    }
+    """
+    if "racketId" not in body:
+        return jsonify({"error": "Missing required field 'racketId'"}), 400
+    
+    # change to all fields being required??
+    brandId = name = price = None
+    if 'brandId' in body:
+        brandId = body.get('brandId')
+    if 'name' in body:
+        name = body.get('name')
+    if 'price' in body:
+        price = body.get('price')
+        if not isinstance(price, float) or price < 0:
+            return jsonify({"error": "Price must be a non-negative number"})
+
+    try:
+        racket = db.session.get(Racket, id)
+        if brandId:
+            brand = db.session.get(Brand, brandId)
+            if brand == None:
+                db.session.rollback()
+                return jsonify({"error": "Brand does not exist."}), 404
+            racket.brandId = brandId
+        if name:
+            existingRacket = db.session.execute(db.select(Racket).filter_by(name=name)).scalar_one_or_none()
+            if existingRacket:
+                db.session.rollback()
+                return jsonify({"error": "A racket with this name already exists"}), 409
+            racket.name = name
+        if price:
+            racket.price = price
+
+        db.session.commit()
+        return jsonify({"message": "Racket successfully updated", "racket": racket.to_json()}), 201
+
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable updating racket: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except IntegrityError as e:
+        db.session.rollback()
+        app.logger.error(f"Duplicate racket: {e}")
+        return jsonify({"error": "A racket with this name already exists."}), 409
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def update_string(id, body):
-    pass
+    """    
+    Updates a string.
+
+    Expected JSON Format:
+    {
+        'stringId': stringId,
+        'brandId': brandId,
+        'name': name,
+        'pricePerRacket': pricePerRacket
+    }
+    """
+    if "stringId" not in body:
+        return jsonify({"error": "Missing required field 'stringId'"}), 400
+    
+    # change to all fields being required??
+    stringId = body.get('stringId')
+    brandId = name = pricePerRacket = None
+    if 'brandId' in body:
+        brandId = body.get('brandId')
+    if 'name' in body:
+        name = body.get('name')
+    if 'pricePerRacket' in body:
+        pricePerRacket = body.get('pricePerRacket')
+        if not isinstance(pricePerRacket, float) or pricePerRacket < 0:
+            return jsonify({"error": "pricePerRacket must be a non-negative number."}), 400
+
+    try:
+        string = db.session.get(String, stringId)
+        if brandId:
+            brand = db.session.get(Brand, brandId)
+            if not brand:
+                db.session.rollback()
+                return jsonify({"error": "Brand does not exist"}), 404
+            string.brandId = brandId
+        if name:
+            existingString = db.session.execute(db.select(String).filter_by(name=name)).scalar_one_or_none()
+            if existingString:
+                db.session.rollback()
+                return jsonify({"error": "There already exists a string with this name"}), 409
+            string.name = name
+        if pricePerRacket:
+            string.pricePerRacket = pricePerRacket
+
+        db.session.commit()
+        return jsonify({"message": "String successfully updated", "string": string.to_json()}), 201
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable updating string: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except IntegrityError as e:
+        db.session.rollback()
+        app.logger.error(f"Duplicate string: {e}")
+        return jsonify({"error": "A string with this name already exists."}), 409
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def update_user(id, body):
-    pass
+    """    
+    Updates a user.
+
+    Expected JSON Format:
+    {
+        'userId': userId,
+        'usernname': username,
+        'firstName': firstName,
+        'lastName: lastName,
+        'phone': phone,
+        'email': email
+    }
+    """
+    if "userId" not in body:
+        return jsonify({"error": "Missing required field 'userId'"}), 400
+    
+    # change to all fields being required??
+    username = firstName = lastName = phone = email = None
+    if 'username' in body:
+        username = body.get('username')
+    if 'firstName' in body:
+        firstName = body.get('firstName')
+    if 'lastName' in body:
+        lastName = body.get('lastName')
+    if 'phone' in body:
+        phone = body.get('phone')
+    if 'email' in body:
+        email = body.get('email')
+
+    try:
+        user = db.session.get(User, id)
+        if username:
+            # validate unique
+            user.username = username
+        if firstName:
+            user.firstName = firstName
+        if lastName:
+            user.lastName = lastName
+        if phone: 
+            if phone == "NONE":
+                user.phone = ""
+            else:
+                user.phone = phone
+        if email:
+            user.email = email
+
+        db.session.commit()
+        return jsonify({"message": "User successfully updated", "user": user.to_json()}), 201
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable updating user: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except IntegrityError as e:
+        db.session.rollback()
+        app.logger.error(f"Duplicate user: {e}")
+        return jsonify({"error": "A user with this username already exists."}), 409
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def update_brand(id, body):
-    pass
+    """    
+    Updates a brand.
 
-def update_inquiry(id, ody):
+    Expected JSON Format:
+    {
+        'brandId': brandId,
+        'name': name
+    }
+    """
+    # change to all fields being required??
+    name = None
+    if 'name' in body:
+        name = body.get('name')
+
+    try:
+        brand = db.session.get(Brand, id)
+        if name:
+            existingBrand = db.session.execute(db.select(Brand).filter_by(name=name)).scalar_one_or_none()
+            if existingBrand:
+                db.session.rollback()
+                return jsonify({"error": "A brand already exists with this name"}), 409
+            brand.name = name
+    
+        db.session.commit()
+        return jsonify({"message": "Brand successfully updated", "brand": brand.to_json()}), 201
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable updating brand: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except IntegrityError as e:
+        db.session.rollback()
+        app.logger.error(f"Duplicate brand: {e}")
+        return jsonify({"error": "A brand with this name already exists."}), 409
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
+
+def update_inquiry(id, body):
     pass
 
 
@@ -1281,22 +1122,166 @@ UPDATE_HANDLERS = {
 # DELETE HANDLERS
 
 def delete_order(id):
-    pass
+    """    
+    Deletes an order from the database by its id
+
+    Parameter:
+        - orderId (int): identifies the order
+    """
+    try:
+        order = db.session.get(Order, id)
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+        
+        db.session.delete(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order successfully deleted"}), 200
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable deleting order: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def delete_racket(id):
-    pass
+    """    
+    Deletes a single racket from the database by its id
+
+    Parameter:
+        - racketId (int): identifies the racket
+    """
+    try:
+        racket = db.session.get(Racket, id)
+        if not racket:
+            return jsonify({"error": "Racket not found"}), 404
+        
+        db.session.delete(racket)
+        db.session.commit()
+
+        return jsonify({"message": "Racket successfully deleted"}), 200
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable deleting racket: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def delete_string(id):
-    pass
+    """    
+    Deletes a string from the database by its id
+
+    Parameter:
+        - stringId (int): identifies the string
+    """
+    try:
+        string = db.session.get(String, id)
+        if not string:
+            return jsonify({"error": "String not found"}), 404
+        
+        db.session.delete(string)
+        db.session.commit()
+
+        return jsonify({"message": "String successfully deleted"}), 200
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable deleting string: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.info(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def delete_user(id):
-    pass
+    """    
+    Delete a user from the database
+
+    Parameters:
+        - userId (int): identifies the user
+    """
+    try:
+        user = db.session.get(User, id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({"message": "User successfully deleted"}), 200
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable deleting user: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def delete_brand(id):
-    pass
+    """    
+    Deletes a brand from the database by its id
+
+    Parameter:
+        - brandId (int): identifies the brand
+    """
+    try:
+        brand = db.session.get(Brand, id)
+        if not brand:
+            return jsonify({"error": "Brand not found"}), 404
+        
+        db.session.delete(brand)
+        db.session.commit()
+
+        return jsonify({"message": "Brand successfully deleted"}), 200
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable deleting brand: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 def delete_inquiry(id):
-    pass
+    """    
+    Deletes an inquiry from the database by its id
+
+    Parameter:
+        - inquiryId (int): identifies the inquiry
+    """
+    try:
+        inquiry = db.session.get(Inquiry, id)
+        if not inquiry:
+            return jsonify({"error": "Inquiry not found"}), 404
+        
+        db.session.delete(inquiry)
+        db.session.commit()
+
+        return jsonify({"message": "Inquiry successfully deleted"}), 200
+    
+    except OperationalError as e:
+        db.session.rollback()
+        app.logger.error(f"DB unavailable deleting insquiry: {e}")
+        return jsonify({"error": "DB unavailable"}), 500
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
 
 DELETE_HANDLERS = {
     'orders': delete_order,
@@ -1323,7 +1308,7 @@ def get_entry(table: str, id: int):
         return jsonify({"error": "Unknown table"}), 404
     return handler(id)
 
-@app.route("/api/<str:table>", methods=["PUT"])
+@app.route("/api/<str:table>", methods=["POST"])
 def create_entry(table: str):
     handler = CREATE_HANDLERS.get(table)
     if handler is None:
@@ -1335,7 +1320,7 @@ def create_entry(table: str):
     
     return handler(body)
 
-@app.route("/api/<str:table>/<int:id>", methods=["POST"])
+@app.route("/api/<str:table>/<int:id>", methods=["PATCH"])
 def update_entry(table: str, id: int):
     handler = UPDATE_HANDLERS.get(table)
     if handler is None:
@@ -1356,7 +1341,7 @@ def delete_entry(table: str, id: int):
     return handler(id)
 
 
-@app.route('/api/<table>/page', methods=['POST'])
+@app.route('/api/search-table', methods=['POST'])
 def get_page():
     """
     Search the database and return a pagination object. Filters can be applied and will

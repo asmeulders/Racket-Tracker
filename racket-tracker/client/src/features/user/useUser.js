@@ -4,7 +4,7 @@ export function useUser() {
 
     const createUser = async ({ username, firstName, lastName, phone, email }) => {
         try {
-            const res = await axios.post("http://localhost:5000/api/create-user", {
+            const res = await axios.post("http://localhost:5000/api/users", {
                 "username": username,
                 'firstName': firstName,
                 'lastName': lastName,
@@ -21,9 +21,9 @@ export function useUser() {
         }
     };
 
-    const getUserById = async (id) => {
+    const getUser = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/get-user-by-id/${id}`);
+            const res = await axios.get(`http://localhost:5000/api/users/${id}`);
             return res.data;
         } catch (error) {
             if (error.response) {
@@ -36,7 +36,7 @@ export function useUser() {
 
     const deleteUser = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/delete-user/${id}`);
+            await axios.delete(`http://localhost:5000/api/users/${id}`);
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
@@ -48,7 +48,7 @@ export function useUser() {
 
     const updateUser = async ({userId, username, firstName, lastName, phone, email}) => {
         try {
-            const res = await axios.post("http://localhost:5000/api/update-user", {
+            const res = await axios.patch(`http://localhost:5000/api/users/${userId}`, {
                 'userId': userId,
                 'username': username,
                 'firstName': firstName,
@@ -66,5 +66,5 @@ export function useUser() {
         }
     }
 
-    return { createUser, getUserById, deleteUser, updateUser };
+    return { createUser, getUser, deleteUser, updateUser };
 }
