@@ -518,7 +518,13 @@ def create_racket(body):
     
     name = body.get('name')
     price = body.get('price')
+    try:
+        price = float(price)
+    except ValueError as e:
+        app.logger.error(f"Invalid price input: {e}")
+        return jsonify({"error": "Invalid price input"}), 400
     if not isinstance(price, (int, float)) or price < 0:
+        app.logger.error(f"Price must be a non-negative number: {price}")
         return jsonify({"error": "Price must be a non-negative number"}), 400
 
     brandId = body.get('brandId') 

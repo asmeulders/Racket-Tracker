@@ -40,7 +40,7 @@ export const StringForm = ({ onDataCreated, handleClose, brands }) => {
                 pricePerRacket: '',
                 brandId: ''
             });
-            onStringCreated('strings', true);
+            onDataCreated('strings', true);
         }       
         setValidated(true);
     }

@@ -9,9 +9,9 @@ export function useRacket() {
       return res;
     } catch (error) {
       if (error.response) {
-        console.err(error.response.data.error);
+        console.error(error.response.data.error);
       } else{
-        console.err("Could not connect to server.");
+        console.error("Could not connect to server.");
       }
     }
   };
@@ -22,9 +22,9 @@ export function useRacket() {
       return res.data;
     } catch (error) {
       if (error.response) {
-        console.error(error.response.data.error);
+        console.erroror(error.response.data.error);
       } else {
-        console.error("Could not connect to server");
+        console.erroror("Could not connect to server");
       }
     } 
   }
@@ -34,9 +34,9 @@ export function useRacket() {
       await axios.delete(`http://localhost:5000/api/rackets/${id}`);
     } catch (error) {
       if (error.response) {
-        console.error(error.response.data.error);
+        console.erroror(error.response.data.error);
       } else {
-        console.error("Could not connect to server.");
+        console.erroror("Could not connect to server.");
       }
     }
   };
@@ -52,9 +52,9 @@ export function useRacket() {
       return res;
     } catch (error) {
       if (error.response) {
-        console.error(error.response.data.error);
+        console.erroror(error.response.data.error);
       } else{
-        console.error("Could not connect to server.");
+        console.erroror("Could not connect to server.");
       }
     }
   }
