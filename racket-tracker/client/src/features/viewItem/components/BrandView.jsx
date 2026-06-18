@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useBrand } from '../../brand/useBrand';
 
 export function BrandView() {
-    const { getBrandById, deleteBrand, updateBrand } = useBrand();
+    const { getBrand, deleteBrand, updateBrand } = useBrand();
     const { brandId } = useParams();
 
     const [ brand, setBrand ] = useState({});
@@ -14,7 +14,7 @@ export function BrandView() {
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getBrandById(brandId)
+        getBrand(brandId)
             .then(data => setBrand(data))
             .finally(() => setLoading(false));
     }, [brandId])

@@ -4,14 +4,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useInquiry } from '../../inquiry/useInquiry';
 
 export function InquiryView() {
-    const { getInquiryById, deleteInquiry } = useInquiry();
+    const { getInquiry, deleteInquiry } = useInquiry();
     const { inquiryId } = useParams();
 
     const [ inquiry, setInquiry ] = useState({});
     const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
-        getInquiryById(inquiryId)
+        getInquiry(inquiryId)
             .then(data => setInquiry(data))
             .finally(() => setLoading(false));
     }, [inquiryId])

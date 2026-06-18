@@ -418,8 +418,14 @@ def create_order(body):
     userId = body.get('userId')
     mainsId = body.get('mainsId')
     mainsTension = body.get('mainsTension')
-    if not isinstance(mainsTension, int) and mainsTension > 0 and mainsTension < 100:
-        return jsonify({"error": "'mainsTension' must be an int, positive, and less than 100"})
+    try:
+        mainsTension = int(mainsTension)
+    except ValueError as e:
+        app.logger.error(f"Invalid mainsTension input: {e}")
+        return jsonify({"error": "Invalid mainsTension input"}), 400
+    if not isinstance(mainsTension, int) or mainsTension < 0 or mainsTension > 100:
+        app.logger.error(f"Invalid mainsTension value")
+        return jsonify({"error": "mainsTension must be a non-negative number less than 100"}), 400
     
     paid = body.get('paid')
 
@@ -444,8 +450,14 @@ def create_order(body):
         if not sameForCrosses:
             crossesId = body.get('crossesId')
             crossesTension = body.get('crossesTension')
-            if not isinstance(crossesTension, int) and crossesTension > 0 and crossesTension < 100:
-                return jsonify({"error": "'mainsTension' must be an int, positive, and less than 100"})
+            try:
+                crossesTension = int(crossesTension)
+            except ValueError as e:
+                app.logger.error(f"Invalid crossesTension input: {e}")
+                return jsonify({"error": "Invalid crossesTension input"}), 400
+            if not isinstance(crossesTension, int) or crossesTension < 0 or crossesTension > 100:
+                app.logger.error(f"Invalid crossesTension value")
+                return jsonify({"error": "crossesTension must be a non-negative number less than 100"}), 400
             
             crosses = db.session.get(String, crossesId)
             if not crosses:
@@ -772,12 +784,22 @@ def update_order(id, body):
         mainsId = body.get('mainsId')
     if 'mainsTension' in body: 
         mainsTension = body.get('mainsTension')
+        try:
+            mainsTension = int(mainsTension)
+        except ValueError as e:
+            app.logger.error(f"Invalid mainsTension input: {e}")
+            return jsonify({"error": "Invalid mainsTension input"}), 400
         if not isinstance(mainsTension, int) or mainsTension < 0 or mainsTension > 100:
             return jsonify({"error": "mainsTension must be a non-negative number less than 100"}), 400
     if 'crossesId' in body: 
         crossesId = body.get('crossesId')
     if 'crossesTension' in body:
         crossesTension = body.get('crossesTension')
+        try:
+            crossesTension = int(crossesTension)
+        except ValueError as e:
+            app.logger.error(f"Invalid crossesTension input: {e}")
+            return jsonify({"error": "Invalid crossesTension input"}), 400
         if not isinstance(crossesTension, int) or crossesTension < 0 or crossesTension > 100:
             return jsonify({"error": "crossesTension must be a non-negative number less than 100"}), 400
     if 'orderDue' in body:
@@ -785,6 +807,11 @@ def update_order(id, body):
         orderDue = datetime.strptime(dateString, '%Y-%m-%d').date()
     if 'price' in body:
         price = body.get('price')
+        try:
+            price = float(price)
+        except ValueError as e:
+            app.logger.error(f"Invalid price input: {e}")
+            return jsonify({"error": "Invalid price input"}), 400
         if not isinstance(price, float) or price < 0:
             return jsonify({"error": "Price must be a non-negative number"}), 400
 
@@ -1293,7 +1320,7 @@ DELETE_HANDLERS = {
 }
 
 
-@app.route('/api/<str:table>', methods=['GET'])
+@app.route('/api/<string:table>', methods=['GET'])
 def get_entries(table: str):
     handler = LIST_HANDLERS.get(table)
     if handler is None:
@@ -1301,14 +1328,14 @@ def get_entries(table: str):
     return handler()
 
 
-@app.route('/api/<str:table>/<int:id>', methods=['GET'])
+@app.route("/api/<string:table>/<int:id>", methods=['GET'])
 def get_entry(table: str, id: int):
     handler = ENTRY_HANDLERS.get(table)
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404
     return handler(id)
 
-@app.route("/api/<str:table>", methods=["POST"])
+@app.route("/api/<string:table>", methods=["POST"])
 def create_entry(table: str):
     handler = CREATE_HANDLERS.get(table)
     if handler is None:
@@ -1320,7 +1347,7 @@ def create_entry(table: str):
     
     return handler(body)
 
-@app.route("/api/<str:table>/<int:id>", methods=["PATCH"])
+@app.route("/api/<string:table>/<int:id>", methods=["PATCH"])
 def update_entry(table: str, id: int):
     handler = UPDATE_HANDLERS.get(table)
     if handler is None:
@@ -1332,7 +1359,7 @@ def update_entry(table: str, id: int):
 
     return handler(id, body)
 
-@app.route("/api/<str:table>/<int:id>", methods=["DELETE"])
+@app.route("/api/<string:table>/<int:id>", methods=["DELETE"])
 def delete_entry(table: str, id: int):
     handler = DELETE_HANDLERS.get(table)
     if handler is None:

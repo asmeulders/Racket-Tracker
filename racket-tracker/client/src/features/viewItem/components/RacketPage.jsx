@@ -7,7 +7,7 @@ import { useDatabse } from '../../../utils/useDatabase';
 
 export function RacketPage() {
     const { fetchData } = useDatabse();
-    const { getRacketById, deleteRacket, updateRacket } = useRacket();
+    const { getRacket, deleteRacket, updateRacket } = useRacket();
     const { racketId } = useParams();
 
     const [ racket, setRacket ] = useState({});
@@ -21,7 +21,7 @@ export function RacketPage() {
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getRacketById(racketId)
+        getRacket(racketId)
             .then(data => setRacket(data))
             .finally(() => setLoading(false));
     }, [racketId])

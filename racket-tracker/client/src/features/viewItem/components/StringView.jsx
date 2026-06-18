@@ -7,7 +7,7 @@ import { useDatabase } from '../../../utils/useDatabase';
 
 export function StringView() {
     const { fetchData } = useDatabase();
-    const { getStringById, deleteString, updateString } = useString();
+    const { getString, deleteString, updateString } = useString();
     const { stringId } = useParams();
 
     const [ string, setString ] = useState({});
@@ -21,7 +21,7 @@ export function StringView() {
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getStringById(stringId)
+        getString(stringId)
             .then(data => setString(data))
             .finally(() => setLoading(false));
     }, [stringId])

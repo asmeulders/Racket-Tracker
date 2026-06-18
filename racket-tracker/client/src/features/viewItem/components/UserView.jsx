@@ -7,7 +7,7 @@ import { useDatabase } from '../../../utils/useDatabase';
 
 export function UserView() {
     const { fetchData } = useDatabase();
-    const { getUserById, deleteUser, updateUser } = useUser();
+    const { getUser, deleteUser, updateUser } = useUser();
     const { userId } = useParams();
 
     const [ user, setUser ] = useState({});
@@ -17,7 +17,7 @@ export function UserView() {
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getUserById(userId)
+        getUser(userId)
             .then(data => setUser(data))
             .finally(() => setLoading(false));
     }, [userId])

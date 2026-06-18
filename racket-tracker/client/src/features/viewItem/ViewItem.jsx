@@ -9,7 +9,7 @@ export const ViewItem = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const { getOrderById } = useOrder();
+    const { getOrder } = useOrder();
 
     const typeMap = {
         orders: 'order',
@@ -20,7 +20,7 @@ export const ViewItem = () => {
     }
     useEffect(() => {
         setLoading(true);
-        getOrderById(id)
+        getOrder(id)
         .then((data) => setData(data))
         .finally(() => setLoading(false));
     }, [type, id]);

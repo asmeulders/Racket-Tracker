@@ -10,7 +10,7 @@ import { useDatabase } from '../../../utils/useDatabase';
 export const OrderView = ({data, setData}) => {
     const { fetchData } = useDatabase();
     const navigate = useNavigate();
-    const { getOrderById, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
+    const { getOrder, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
 
     const [ order, setOrder ] = useState({});
     const [ updatedOrder, setUpdatedOrder ] = useState({});
@@ -25,12 +25,6 @@ export const OrderView = ({data, setData}) => {
     });  
 
     const [ isEditing, setIsEditing ] = useState(false);
-
-    // useEffect(() => {
-    //     getOrderById(orderId)
-    //         .then(data => setOrder(data))
-    //         .finally(() => setLoading(false));
-    // }, [orderId])
 
     useEffect(() => {
         setOrder(data);
