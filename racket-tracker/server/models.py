@@ -87,7 +87,7 @@ class Racket(db.Model):
     """
     __tablename__="rackets"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(120), unique=True, nullable=False)
     price = db.Column(db.Float, nullable=False)
     # FKs
     brandId = db.Column(db.Integer, db.ForeignKey('brands.id', ondelete='SET NULL'), nullable=True)
@@ -195,7 +195,7 @@ class String(db.Model):
     """
     __tablename__ = 'strings'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), nullable=False)
+    name = db.Column(db.String(60), unique=True, nullable=False)
     pricePerRacket = db.Column(db.Float, nullable=False)
     # FKs
     brandId = db.Column(db.Integer, db.ForeignKey('brands.id', ondelete='SET NULL'), nullable=True)
@@ -219,7 +219,7 @@ class Brand(db.Model):
     """
     __tablename__ = "brands"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
+    name = db.Column(db.String(30), unique=True, nullable=False)
     # Relationships
     strings = db.relationship('String', back_populates='brand')
     rackets = db.relationship('Racket', back_populates='brand')
