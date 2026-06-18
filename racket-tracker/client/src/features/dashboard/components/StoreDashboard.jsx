@@ -10,7 +10,7 @@ import { User, UserFilter, UserForm } from '../../user';
 import { Brand, BrandFilter, BrandForm } from '../../brand';
 import { Inquiry, InquiryFilter, InquiryForm } from '../../inquiry';
 import { FilterSearch, TabContent } from '../index.js';
-import { fetchData, searchTable, initDatabases } from '../../../utils/db_utils.js';
+import { useDatabase } from '../../../utils/useDatabase.js';
 import { NewItem } from './NewItem.jsx';
 import './StoreDashboard.css';
 
@@ -21,6 +21,7 @@ import './StoreDashboard.css';
 // other racket table for specific model specs
 
 export function StoreDashboard() {
+    const { searchTable } = useDatabase();
     const [data, setData] = useState({
         orders: [],
         users: [],

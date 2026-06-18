@@ -1,21 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useOrder } from './index';
-import { UserSelect } from '../user';
-import { RacketSelect } from '../racket';
-import { StringSelect } from '../string';
-import { fetchData } from '../../utils/db_utils';
+import { useOrder } from '../../order/index';
+import { UserSelect } from '../../user';
+import { RacketSelect } from '../../racket';
+import { StringSelect } from '../../string';
+import { useDatabase } from '../../../utils/useDatabase';
 
-// TODO: update this page with new changes
+export const OrderView = ({data, setData}) => {
+    const { fetchData } = useDatabase();
+    const navigate = useNavigate();
+    const { getOrder, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
 
-
-export const OrderPage = () => {
-    const navigate = useNavigate()
-    const { getOrderById, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
-    const { orderId } = useParams();
-
-    const [ loading, setLoading ] = useState(true);
     const [ order, setOrder ] = useState({});
     const [ updatedOrder, setUpdatedOrder ] = useState({});
     const [ isComplete, setIsComplete ] = useState(false);
@@ -31,10 +27,8 @@ export const OrderPage = () => {
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getOrderById(orderId)
-            .then(data => setOrder(data))
-            .finally(() => setLoading(false));
-    }, [orderId])
+        setOrder(data);
+    }, [])
 
     useEffect(() => {
         if (order !== null) {
@@ -44,7 +38,6 @@ export const OrderPage = () => {
         console.log(order);
     }, [order]);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(order).length === 0) return <div>Order not found.</div>;
 
     const isLate = order && order.due && !order.complete && new Date(order.due) < new Date();
@@ -58,7 +51,7 @@ export const OrderPage = () => {
         const confirmed = window.confirm("Are you sure you want to delete this order?");
 
         if (confirmed) {
-            deleteOrder(orderId);
+            deleteOrder(order.id);
             navigate('/store-dashboard');
         }
     }
@@ -98,10 +91,10 @@ export const OrderPage = () => {
     }
 
     const handleSave = async (field) => {
-        console.log("Order saved: ", orderId);
+        console.log("Order saved: ", order.id);
         // update the order
         const res = await updateOrder({
-            orderId: orderId,
+            orderId: order.id,
             userId: updatedOrder.userId,
             racketId: updatedOrder.racketId,
             mainsId: updatedOrder.mainsId,
@@ -112,14 +105,14 @@ export const OrderPage = () => {
             orderDue: updatedOrder.orderDue,
             price: updatedOrder.price
         });
-        setOrder(res.data.order);
+        setData(res.data.order);
         setUpdatedOrder({});
         setIsEditing(false);
     }
     // TODO: make css general fo these?
 
     return(
-        <div className="order-page">
+        <div className="item-page">
 
             <div className={`order-header ${isComplete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
                 <div>Status: {isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
@@ -127,8 +120,8 @@ export const OrderPage = () => {
                 <div>Due: {order.due}</div>
             </div>
 
-            <div className='order-page-content'>
-                <div className="order-card">
+            <div className='item-page-content'>
+                <div className="item-card">
 
                     {/* <div className="order-photo-section">
                         <div className="racket-photo">
@@ -137,30 +130,24 @@ export const OrderPage = () => {
                         <span>Ordered: {order.orderDate}</span>
                     </div> */}
 
-                    <div className="order-details">
-                        <div className='field-label'>
-                            <label>Customer:</label>
-                        </div>
+                    <div className="item-fields">
+                        <span className='field-label'>Customer:</span>
                         <div>
                             {isEditing ? 
                                 <UserSelect onUserChange={setUpdatedOrder} value={updatedOrder?.userId} users={editData.users} /> : 
-                                <span>{order.username}</span>
+                                <span className='field-details'>{order.user.firstName} {order.user.lastName}</span>
                             }
                         </div>                      
 
-                        <div className='field-label'>
-                            <label>Racket:</label>
-                        </div>
+                        <span className='field-label'>Racket:</span>
                         <div>
                             {isEditing ? 
                                 <RacketSelect onRacketChange={setUpdatedOrder} value={updatedOrder?.racketId} rackets={editData.rackets} /> : 
-                                <span>{order.racketBrand} {order.racketName}</span>
+                                <span className='field-details'>{order.racketBrand} {order.racketName}</span>
                             }
                         </div>
 
-                        <div className='field-label'>
-                            <label>Stringing:</label>
-                        </div>
+                        <label className='field-label'>Stringing:</label>
                         <div>
                             {isEditing ? 
                                 <div>
@@ -178,7 +165,7 @@ export const OrderPage = () => {
                                     } 
                                     {/* TODO: This above is suspicious */}
                                 </div> : 
-                                <div className='string-directions'>
+                                <div className='field-details'>
                                     <span>(Mains) {mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span>
                                     {crosses 
                                         ? <span> (Crosses) {crosses.stringBrand} {crosses.stringName} @ {crosses.tension}lbs</span>
@@ -188,27 +175,23 @@ export const OrderPage = () => {
                             }
                         </div>
 
-                        <div className='field-label'>
-                            <label>Price:</label>   
-                        </div>
+                        <label className='field-label'>Price:</label>   
                         <div>
                             {isEditing ? 
                                 <input type="number" step='0.01' min='0' placeholder='Price' value={updatedOrder.price} onChange={(e) => setUpdatedOrder(prev => ({ ...prev, price: e.target.value }))}/> :
-                                <span>${order.price}</span>
+                                <span className='field-details'>${order.price}</span>
                             }
                         </div>
 
-                        <div className='field-label'>
-                            <label>Due Date:</label>
-                        </div>
+                        <span className='field-label'>Due Date:</span>
                         <div>
                             {isEditing ? 
                                 <input type='date' onChange={(e) => setUpdatedOrder(prev => ({...prev, orderDue: e.target.value}))} />
-                                : <span>{order.due}</span>
+                                : <span className='field-details'>{order.due}</span>
                             }
                         </div>
                     </div>
-                    <div className='order-edit-btn'>
+                    <div className='item-edit-btn'>
                         {isEditing ? 
                             <button onClick={() => handleSave()}>Save</button> :
                             <button onClick={async () => await handleEdit()}>Edit</button>
@@ -216,15 +199,15 @@ export const OrderPage = () => {
                     </div>
                 </div>
 
-                <div className="order-actions">
-                    <button className="btn-delete" onClick={handleDelete}>Delete Order</button>
-                    <button className="btn-complete" onClick={handleComplete}>
+                <div className="item-actions">
+                    <button className="action-btn" onClick={handleDelete}>Delete Order</button>
+                    <button className="action-btn" onClick={handleComplete}>
                         {isComplete ? "Mark Incomplete" : "Mark Complete"}
                     </button>
-                    <button className="btn-pay" onClick={handlePay}>
+                    <button className="action-btn" onClick={handlePay}>
                         {isPaid ? "Mark Unpaid" : "Mark Paid"}
                     </button>
-                    <button className="btn-new-order">Create New Order</button>
+                    <button className="action-btn">Create New Order</button>
                 </div>
 
             </div>

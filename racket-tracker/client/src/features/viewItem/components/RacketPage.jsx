@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useRacket } from './useRacket';
-import { BrandSelect } from '../brand';
-import { fetchData } from '../../utils/db_utils';
+import { useRacket } from '../../racket/useRacket';
+import { BrandSelect } from '../../brand';
+import { useDatabse } from '../../../utils/useDatabase';
 
 export function RacketPage() {
-    const { getRacketById, deleteRacket, updateRacket } = useRacket();
+    const { fetchData } = useDatabse();
+    const { getRacket, deleteRacket, updateRacket } = useRacket();
     const { racketId } = useParams();
 
     const [ racket, setRacket ] = useState({});
@@ -20,7 +21,7 @@ export function RacketPage() {
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getRacketById(racketId)
+        getRacket(racketId)
             .then(data => setRacket(data))
             .finally(() => setLoading(false));
     }, [racketId])
@@ -66,9 +67,9 @@ export function RacketPage() {
 
     // TODO: make css general for these?
     return (
-        <div className='racket-page'>
-            <div className='racket-card'>
-                <div className='racket-details'>
+        <div className='item-page'>
+            <div className='item-card'>
+                <div className='item-fields'>
                     <span className='field-label'>Brand:</span>
                     {isEditing ?
                         <BrandSelect 
@@ -77,7 +78,7 @@ export function RacketPage() {
                             onBrandChange={setUpdatedRacket}
                             onDataCreated={handleNewBrand}
                         /> :
-                        <span>{racket.brandName}</span>
+                        <span className='field-details'>{racket.brandName}</span>
                     }
 
                     <span className='field-label'>Racket Name:</span>
@@ -88,12 +89,13 @@ export function RacketPage() {
                             value={updatedRacket.name} 
                             onChange={(e) => setUpdatedRacket(prev => ({...prev, name: e.target.value}))}
                         /> :
-                        <span>{racket.name}</span>
+                        <span className='field-details'>{racket.name}</span>
                     }
 
                     <span className='field-label'>Price:</span>
                     {isEditing ?
                         <input
+                            id='price'
                             type='number' 
                             step='0.01'
                             min='0'
@@ -101,10 +103,10 @@ export function RacketPage() {
                             value={updatedRacket.price} 
                             onChange={(e) => setUpdatedRacket(prev => ({...prev, price: e.target.value}))}
                         /> :
-                        <span>{racket.price}</span>
+                        <span className='field-details'>{racket.price}</span>
                     }
                 </div>
-                <div className='racket-edit-btn'>
+                <div className='item-edit-btn'>
                     {isEditing ? 
                         <button onClick={() => handleSave()}>Save</button> :
                         <button onClick={async () => await handleEdit()}>Edit</button>

@@ -5,7 +5,7 @@ import '../User.css';
 export function User({user}) {
   return (
     <div key={user.id} className='user-container'>
-      <strong>{user.username}</strong>
+      <strong>{user.firstName} {user.lastName} </strong><span>({user.username})</span>
       <div className='owns-container'>
         Owns:
         <ul className='owns-racket'>

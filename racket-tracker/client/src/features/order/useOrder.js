@@ -3,7 +3,7 @@ import axios from 'axios';
 export function useOrder() {
     const createOrder = async ({ racketId, userId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, paid }) => {
         try {
-            const res = await axios.post("http://localhost:5000/create-order", {
+            const res = await axios.post("http://localhost:5000/api/orders", {
                 "racketId": racketId,
                 "userId": userId,
                 "mainsId": mainsId,
@@ -23,9 +23,10 @@ export function useOrder() {
         }
     };
 
-    const getOrderById = async (id) => {
+    const getOrder = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:5000/get-order-by-id/${id}`);
+            const res = await axios.get(`http://localhost:5000/api/orders/${id}`);
+            console.log("Res Data: ", res.data);
             return res.data;
         } catch (error) {
             if (error.response) {
@@ -38,7 +39,7 @@ export function useOrder() {
 
     const deleteOrder = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/delete-order/${id}`);
+            await axios.delete(`http://localhost:5000/api/orders/${id}`);
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
@@ -51,7 +52,7 @@ export function useOrder() {
 
     const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, orderDue, price }) => {
         try {
-            const res = await axios.post("http://localhost:5000/update-order", {
+            const res = await axios.patch(`http://localhost:5000/api/orders/${orderId}`, {
                 'orderId': orderId,
                 'userId': userId,
                 'racketId': racketId,
@@ -76,7 +77,7 @@ export function useOrder() {
     const completeOrder = async (order) => {
         try{
             console.log("Completing order: ", order.id);
-            const response = await axios.patch(`http://localhost:5000/toggle-complete/${order.id}`);
+            const response = await axios.patch(`http://localhost:5000/api/toggle-complete/${order.id}`);
             return response.data.order.complete;
         } catch (error) {
             if (error.response) {
@@ -90,7 +91,7 @@ export function useOrder() {
     const orderPaid = async (order) => {
         try{
             console.log("Paying for order: ", order.id);
-            const response = await axios.patch(`http://localhost:5000/pay-for-order/${order.id}`);
+            const response = await axios.patch(`http://localhost:5000/api/pay-for-order/${order.id}`);
             return response.data.order.paid;
             } catch (error) {
             if (error.response) {
@@ -101,5 +102,5 @@ export function useOrder() {
         }
     }
 
-    return { createOrder, getOrderById, deleteOrder, updateOrder, completeOrder, orderPaid };
+    return { createOrder, getOrder, deleteOrder, updateOrder, completeOrder, orderPaid };
 }
