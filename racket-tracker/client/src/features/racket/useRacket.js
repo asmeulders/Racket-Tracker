@@ -3,7 +3,7 @@ import axios from 'axios';
 export function useRacket() {
   const createRacket = async ({ name, price, brandId }) => {
     try {
-      const res = await axios.post("http://localhost:5000/create-racket", {
+      const res = await axios.post("http://localhost:5000/api/create-racket", {
         name, price, brandId: brandId
       });
       return res;
@@ -18,7 +18,7 @@ export function useRacket() {
 
   const getRacketById = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:5000/get-racket-by-id/${id}`);
+      const res = await axios.get(`http://localhost:5000/api/get-racket-by-id/${id}`);
       return res.data;
     } catch (error) {
       if (error.response) {
@@ -31,7 +31,7 @@ export function useRacket() {
 
   const deleteRacket = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/delete-racket/${id}`);
+      await axios.delete(`http://localhost:5000/api/delete-racket/${id}`);
     } catch (error) {
       if (error.response) {
         console.error(error.response.data.error);
@@ -43,7 +43,7 @@ export function useRacket() {
 
   const updateRacket = async ({racketId, brandId, name, price}) => {
     try {
-      const res = await axios.post("http://localhost:5000/update-racket", {
+      const res = await axios.post("http://localhost:5000/api/update-racket", {
         'racketId': racketId,
         'brandId': brandId,
         'name': name,

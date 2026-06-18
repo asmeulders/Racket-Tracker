@@ -4,11 +4,12 @@ import { RacketForm } from '../racket';
 import { StringForm } from '../string';
 import { UserForm } from '../user';
 import { BrandForm } from '../brand';
-import { initDatabases } from '../../utils/db_utils';
+import { useDatabase } from '../../utils/useDatabase';
 
 export function StoreDashboardPage(){
+    const { initDatabase } = useDatabase();
     const handleInit = async () => {
-        await initDatabases();
+        await initDatabase();
     }
 
     return (

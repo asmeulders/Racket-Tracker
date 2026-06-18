@@ -4,7 +4,7 @@ export function useString() {
 
     const createString = async ({ name, pricePerRacket, brandId }) => {
         try {
-            const res = await axios.post("http://localhost:5000/create-string", {
+            const res = await axios.post("http://localhost:5000/api/create-string", {
                 'name': name,
                 "pricePerRacket": pricePerRacket,
                 "brandId": brandId
@@ -22,7 +22,7 @@ export function useString() {
 
     const getStringById = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:5000/get-string-by-id/${id}`);
+            const res = await axios.get(`http://localhost:5000/api/get-string-by-id/${id}`);
             return res.data;
         } catch (error) {
             if (error.response) {
@@ -35,7 +35,7 @@ export function useString() {
 
     const deleteString = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/delete-string/${id}`);
+            await axios.delete(`http://localhost:5000/api/delete-string/${id}`);
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
@@ -47,7 +47,7 @@ export function useString() {
 
     const updateString = async ({stringId, brandId, name, pricePerRacket}) => {
         try {
-            const res = await axios.post("http://localhost:5000/update-string", {
+            const res = await axios.post("http://localhost:5000/api/update-string", {
                 'stringId': stringId,
                 'brandId': brandId,
                 'name': name,

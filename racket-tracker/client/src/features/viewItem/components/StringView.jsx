@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useString } from './useString';
-import { BrandSelect } from '../brand';
-import { fetchData } from '../../utils/db_utils';
+import { useString } from '../../string/useString';
+import { BrandSelect } from '../../brand';
+import { useDatabase } from '../../../utils/useDatabase';
 
-export function StringPage() {
+export function StringView() {
+    const { fetchData } = useDatabase();
     const { getStringById, deleteString, updateString } = useString();
     const { stringId } = useParams();
 
@@ -66,9 +67,9 @@ export function StringPage() {
 
     // TODO: make css general for these?
     return (
-        <div className='string-page'>
-            <div className='string-card'>
-                <div className='string-details'>
+        <div className='item-page'>
+            <div className='item-card'>
+                <div className='item-fields'>
                     <span className='field-label'>Brand:</span>
                     {isEditing ?
                         <BrandSelect 
@@ -77,7 +78,7 @@ export function StringPage() {
                             onBrandChange={setUpdatedString}
                             onDataCreated={handleNewBrand}
                         /> :
-                        <span>{string.brandName}</span>
+                        <span className='field-details'>{string.brandName}</span>
                     }
 
                     <span className='field-label'>String Name:</span>
@@ -88,7 +89,7 @@ export function StringPage() {
                             value={updatedString.name} 
                             onChange={(e) => setUpdatedString(prev => ({...prev, name: e.target.value}))}
                         /> :
-                        <span>{string.name}</span>
+                        <span className='field-details'>{string.name}</span>
                     }
 
                     <span className='field-label'>Price per Racket:</span>
@@ -102,10 +103,10 @@ export function StringPage() {
                             value={updatedString.pricePerRacket} 
                             onChange={(e) => setUpdatedString(prev => ({...prev, pricePerRacket: e.target.value}))}
                         /> :
-                        <span>{string.pricePerRacket}</span>
+                        <span className='field-details'>{string.pricePerRacket}</span>
                     }
                 </div>
-                <div className='string-edit-btn'>
+                <div className='item-edit-btn'>
                     {isEditing ? 
                         <button onClick={() => handleSave()}>Save</button> :
                         <button onClick={async () => await handleEdit()}>Edit</button>

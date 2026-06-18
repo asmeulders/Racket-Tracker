@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useUser } from './useUser';
-import { BrandSelect } from '../brand';
-import { fetchData } from '../../utils/db_utils';
+import { useUser } from '../../user/useUser';
+import { BrandSelect } from '../../brand';
+import { useDatabase } from '../../../utils/useDatabase';
 
-export function UserPage() {
+export function UserView() {
+    const { fetchData } = useDatabase();
     const { getUserById, deleteUser, updateUser } = useUser();
     const { userId } = useParams();
 
@@ -63,9 +64,9 @@ export function UserPage() {
 
     // TODO: make css general for these?
     return (
-        <div className='user-page'>
-            <div className='user-card'>
-                <div className='user-details'>
+        <div className='item-page'>
+            <div className='item-card'>
+                <div className='item-fields'>
                     <span className='field-label'>Username:</span>
                     {isEditing ?
                         <input 
@@ -75,7 +76,7 @@ export function UserPage() {
                             value={updatedUser.username}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, username: e.target.value}))}
                         /> :
-                        <span>{user.username}</span>
+                        <span className='field-details'>{user.username}</span>
                     }
 
                     <span className='field-label'>First Name:</span>
@@ -87,7 +88,7 @@ export function UserPage() {
                             value={updatedUser.firstName}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, firstName: e.target.value}))}
                         /> :
-                        <span>{user.firstName}</span>
+                        <span className='field-details'>{user.firstName}</span>
                     }
 
                     <span className='field-label'>Last Name:</span>
@@ -99,7 +100,7 @@ export function UserPage() {
                             value={updatedUser.lastName}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, lastName: e.target.value}))}
                         /> :
-                        <span>{user.lastName}</span>
+                        <span className='field-details'>{user.lastName}</span>
                     }
 
                     <span className='field-label'>Phone Number:</span>
@@ -111,7 +112,7 @@ export function UserPage() {
                             value={updatedUser.phone}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, phone: e.target.value}))}
                         /> :
-                        <span>{user.phone}</span>
+                        <span className='field-details'>{user.phone}</span>
                     }
 
                     <span className='field-label'>Email:</span>
@@ -123,10 +124,10 @@ export function UserPage() {
                             value={updatedUser.email}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, email: e.target.value}))}
                         /> :
-                        <span>{user.email}</span>
+                        <span className='field-details'>{user.email}</span>
                     }
                 </div>
-                <div className='user-edit-btn'>
+                <div className='item-edit-btn'>
                     {isEditing ? 
                         <button onClick={() => handleSave()}>Save</button> :
                         <button onClick={async () => await handleEdit()}>Edit</button>

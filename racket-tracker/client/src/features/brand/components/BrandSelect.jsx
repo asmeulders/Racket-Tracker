@@ -3,7 +3,6 @@ import Form from 'react-bootstrap/Form';
 
 import { useBrand } from '../useBrand';
 import { create } from 'axios';
-import { fetchData } from '../../../utils/db_utils';
 
 export const BrandSelect = ({ onBrandChange, onDataCreated, value, brands }) => {
     const { createBrand } = useBrand();

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useInquiry } from './useInquiry';
+import { useInquiry } from '../../inquiry/useInquiry';
 
-export function InquiryPage() {
+export function InquiryView() {
     const { getInquiryById, deleteInquiry } = useInquiry();
     const { inquiryId } = useParams();
 
@@ -29,9 +29,9 @@ export function InquiryPage() {
 
     // TODO: make css general for these?
     return (
-        <div className='inquiry-page'>
-            <div className='inquiry-card'>
-                <div className='inquiry-details'>
+        <div className='item-page'>
+            <div className='item-card'>
+                <div className='item-fields'>
                     {/* Date */}
                     <span className='field-label'>Date:</span>
                     <span className='field-details'>{inquiry.date}</span>

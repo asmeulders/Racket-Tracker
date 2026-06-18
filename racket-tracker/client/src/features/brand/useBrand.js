@@ -4,7 +4,7 @@ export function useBrand() {
 
     const createBrand = async ({ name }) => {
         try {
-            const res = await axios.post("http://localhost:5000/create-brand", {
+            const res = await axios.post("http://localhost:5000/api/create-brand", {
                 "name": name
             })
             return res;
@@ -19,7 +19,7 @@ export function useBrand() {
 
     const getBrandById = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:5000/get-brand-by-id/${id}`);
+            const res = await axios.get(`http://localhost:5000/api/get-brand-by-id/${id}`);
             return res.data;
         } catch (error) {
             if (error.response) {
@@ -32,7 +32,7 @@ export function useBrand() {
 
     const deleteBrand = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/delete-brand/${id}`);
+            await axios.delete(`http://localhost:5000/api/delete-brand/${id}`);
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
@@ -44,7 +44,7 @@ export function useBrand() {
 
     const updateBrand = async ({brandId, name}) => {
         try {
-            const res = await axios.post("http://localhost:5000/update-brand", {
+            const res = await axios.post("http://localhost:5000/api/update-brand", {
                 'brandId': brandId,
                 'name': name
             });

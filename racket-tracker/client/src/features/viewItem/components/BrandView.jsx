@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useBrand } from './useBrand';
+import { useBrand } from '../../brand/useBrand';
 
-export function BrandPage() {
+export function BrandView() {
     const { getBrandById, deleteBrand, updateBrand } = useBrand();
     const { brandId } = useParams();
 
@@ -51,17 +51,17 @@ export function BrandPage() {
 
     // TODO: make css general for these?
     return (
-        <div className='brand-page'>
-            <div className='brand-card'>
-                <div className='brand-details'>
+        <div className='item-page'>
+            <div className='item-card'>
+                <div className='item-fields'>
                     <span className='field-label'>Brand Name:</span>
                     {isEditing ?
                         <input id='brand-name' type='text' placeholder='Brand Name' value={updatedBrand.name} onChange={(e) => setUpdatedBrand(prev => ({...prev, name: e.target.value}))}>
                         </input> :
-                        <span>{brand.name}</span>
+                        <span className='field-details'>{brand.name}</span>
                     }
                 </div>
-                <div className='brand-edit-btn'>
+                <div className='item-edit-btn'>
                     {isEditing ? 
                         <button onClick={() => handleSave()}>Save</button> :
                         <button onClick={async () => await handleEdit()}>Edit</button>
