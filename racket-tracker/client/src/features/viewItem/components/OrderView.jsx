@@ -5,10 +5,8 @@ import { useOrder } from '../../order/index';
 import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
-import { useDatabase } from '../../../utils/useDatabase';
 
 export const OrderView = ({data, setData}) => {
-    const { fetchData } = useDatabase();
     const navigate = useNavigate();
     const { getOrder, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
 

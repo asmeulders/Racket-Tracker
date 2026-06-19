@@ -3,18 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useInquiry } from '../../inquiry/useInquiry';
 
-export function InquiryView() {
+export function InquiryView({data, setData}) {
     const { getInquiry, deleteInquiry } = useInquiry();
     const { inquiryId } = useParams();
 
     const [ inquiry, setInquiry ] = useState({});
     const [ loading, setLoading ] = useState(true);
-
-    useEffect(() => {
-        getInquiry(inquiryId)
-            .then(data => setInquiry(data))
-            .finally(() => setLoading(false));
-    }, [inquiryId])
 
     if (loading) return <div>Loading...</div>;
     if (Object.keys(inquiry).length === 0) return <div>Inquiry not found.</div>;
@@ -26,6 +20,10 @@ export function InquiryView() {
             navigate('/store-dashboard');
         }
     }
+
+    useEffect(() => {
+        setInquiry(data);
+    })
 
     // TODO: make css general for these?
     return (

@@ -3,28 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useRacket } from '../../racket/useRacket';
 import { BrandSelect } from '../../brand';
-import { useDatabse } from '../../../utils/useDatabase';
+import { useDatabase } from '../../../utils/useDatabase';
 
-export function RacketPage() {
+export function RacketView({data, setData}) {
     const { fetchData } = useDatabse();
     const { getRacket, deleteRacket, updateRacket } = useRacket();
-    const { racketId } = useParams();
 
     const [ racket, setRacket ] = useState({});
     const [ updatedRacket, setUpdatedRacket ] = useState({});
     const [ loading, setLoading ] = useState(true);
+    const [ isEditing, setIsEditing ] = useState(false);
 
     const [editData, setEditData] = useState({
         brands: []
     }); 
-
-    const [ isEditing, setIsEditing ] = useState(false);
-
-    useEffect(() => {
-        getRacket(racketId)
-            .then(data => setRacket(data))
-            .finally(() => setLoading(false));
-    }, [racketId])
 
     if (loading) return <div>Loading...</div>;
     if (Object.keys(racket).length === 0) return <div>Racket not found.</div>;
@@ -64,6 +56,10 @@ export function RacketPage() {
         const data = await fetchData({ table: 'brands'});
         setEditData({ brands: data });
     }
+
+    useEffect(() => {
+        setRacket(data);
+    })
 
     // TODO: make css general for these?
     return (

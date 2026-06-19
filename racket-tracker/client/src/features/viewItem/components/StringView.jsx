@@ -3,28 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useString } from '../../string/useString';
 import { BrandSelect } from '../../brand';
-import { useDatabase } from '../../../utils/useDatabase';
 
-export function StringView() {
-    const { fetchData } = useDatabase();
+export function StringView({data, setData}) {
     const { getString, deleteString, updateString } = useString();
-    const { stringId } = useParams();
 
     const [ string, setString ] = useState({});
     const [ updatedString, setUpdatedString ] = useState({});
     const [ loading, setLoading ] = useState(true);
+    const [ isEditing, setIsEditing ] = useState(false);
 
     const [editData, setEditData] = useState({
         brands: []
     }); 
-
-    const [ isEditing, setIsEditing ] = useState(false);
-
-    useEffect(() => {
-        getString(stringId)
-            .then(data => setString(data))
-            .finally(() => setLoading(false));
-    }, [stringId])
 
     if (loading) return <div>Loading...</div>;
     if (Object.keys(string).length === 0) return <div>String not found.</div>;
@@ -64,6 +54,10 @@ export function StringView() {
         const data = await fetchData({ table: 'brands'});
         setEditData({ brands: data });
     }
+
+    useEffect(() => {
+        setString(data);
+    })
 
     // TODO: make css general for these?
     return (

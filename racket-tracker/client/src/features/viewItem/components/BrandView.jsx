@@ -3,21 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useBrand } from '../../brand/useBrand';
 
-export function BrandView() {
+export function BrandView({data, setData}) {
     const { getBrand, deleteBrand, updateBrand } = useBrand();
-    const { brandId } = useParams();
 
     const [ brand, setBrand ] = useState({});
     const [ updatedBrand, setUpdatedBrand ] = useState({});
     const [ loading, setLoading ] = useState(true);
-
     const [ isEditing, setIsEditing ] = useState(false);
-
-    useEffect(() => {
-        getBrand(brandId)
-            .then(data => setBrand(data))
-            .finally(() => setLoading(false));
-    }, [brandId])
 
     if (loading) return <div>Loading...</div>;
     if (Object.keys(brand).length === 0) return <div>Brand not found.</div>;
@@ -48,6 +40,10 @@ export function BrandView() {
         setUpdatedBrand({});
         setIsEditing(false);
     }
+
+    useEffect(() => {
+        setBrand(data);
+    })
 
     // TODO: make css general for these?
     return (

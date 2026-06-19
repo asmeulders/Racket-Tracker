@@ -3,24 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useUser } from '../../user/useUser';
 import { BrandSelect } from '../../brand';
-import { useDatabase } from '../../../utils/useDatabase';
 
-export function UserView() {
-    const { fetchData } = useDatabase();
-    const { getUser, deleteUser, updateUser } = useUser();
-    const { userId } = useParams();
+export function UserView({data, setData}) {
+    const { deleteUser, updateUser } = useUser();
 
     const [ user, setUser ] = useState({});
     const [ updatedUser, setUpdatedUser ] = useState({});
     const [ loading, setLoading ] = useState(true);
-
     const [ isEditing, setIsEditing ] = useState(false);
-
-    useEffect(() => {
-        getUser(userId)
-            .then(data => setUser(data))
-            .finally(() => setLoading(false));
-    }, [userId])
 
     if (loading) return <div>Loading...</div>;
     if (Object.keys(user).length === 0) return <div>User not found.</div>;
@@ -61,6 +51,10 @@ export function UserView() {
         setUpdatedUser({});
         setIsEditing(false);
     }
+
+    useEffect(() => {
+        setUser(data);
+    }, [])
 
     // TODO: make css general for these?
     return (

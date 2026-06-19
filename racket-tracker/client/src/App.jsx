@@ -8,7 +8,7 @@ import {
 import Home from "./index";
 import Layout from './components/layout/Layout';
 import { StoreDashboardPage } from './features/dashboard/StoreDashboardPage';
-import { ViewItem } from './features/viewItem/ViewItem';
+import { ViewItem } from './features/viewItem/components/ViewItem';
 import './App.css'
 
 function App() {
