@@ -8,9 +8,7 @@ export function InquiryView({data, setData}) {
     const { inquiryId } = useParams();
 
     const [ inquiry, setInquiry ] = useState({});
-    const [ loading, setLoading ] = useState(true);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(inquiry).length === 0) return <div>Inquiry not found.</div>;
 
     const handleDelete = () => {
@@ -23,7 +21,7 @@ export function InquiryView({data, setData}) {
 
     useEffect(() => {
         setInquiry(data);
-    })
+    }, [])
 
     // TODO: make css general for these?
     return (

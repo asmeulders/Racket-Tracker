@@ -12,7 +12,6 @@ export function UserView({data, setData}) {
     const [ loading, setLoading ] = useState(true);
     const [ isEditing, setIsEditing ] = useState(false);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(user).length === 0) return <div>User not found.</div>;
 
     const handleDelete = () => {

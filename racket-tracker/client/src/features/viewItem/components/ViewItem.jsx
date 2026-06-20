@@ -11,13 +11,6 @@ export const ViewItem = () => {
 
     const { getItem } = useViewItem();
 
-    const typeMap = {
-        orders: 'order',
-        brands: 'brand',
-        strings: 'string',
-        rackets: 'racket',
-        inquiries: 'inquiry'
-    }
     useEffect(() => {
         setLoading(true);
         getItem(type, id)

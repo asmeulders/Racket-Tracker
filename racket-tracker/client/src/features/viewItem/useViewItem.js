@@ -1,9 +1,13 @@
+import axios from 'axios';
+
 export function useViewItem() {
     const getItem = async (type, id) => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/${type}/${id}`);
+            console.log("about to fetch:", `http://127.0.0.1:5000/api/${type}/${id}`);
+            const res = await axios.get(`http://127.0.0.1:5000/api/${type}/${id}`);
             return res.data;
         } catch (error) {
+            console.log("caught error: ", error);
             if (error.response) {
                 console.error(error.response.data.error);
             } else {

@@ -3,7 +3,7 @@ import axios from 'axios';
 export function useDatabase() {
     const initDatabase = async () => { // move to useDashbaord
         try {
-            await axios.post('http://127.0.0.1:5000/api/init_db');
+            await axios.post('http://127.0.0.1:5000/api/seed_db');
             console.log("Databases Created & Seeded!");
         } catch (error) {
             console.error("Error initializing DB:", error);

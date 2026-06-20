@@ -1336,6 +1336,7 @@ def get_entries(table: str):
 
 @app.route("/api/<string:table>/<int:id>", methods=['GET'])
 def get_entry(table: str, id: int):
+    print("handle get entry")
     handler = ENTRY_HANDLERS.get(table)
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404

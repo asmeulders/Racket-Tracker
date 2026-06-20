@@ -33,7 +33,6 @@ export const OrderView = ({data, setData}) => {
             setIsComplete(order.complete);
             setIsPaid(order.paid);
         }
-        console.log(order);
     }, [order]);
 
     if (Object.keys(order).length === 0) return <div>Order not found.</div>;
@@ -107,7 +106,6 @@ export const OrderView = ({data, setData}) => {
         setUpdatedOrder({});
         setIsEditing(false);
     }
-    // TODO: make css general fo these?
 
     return(
         <div className="item-page">

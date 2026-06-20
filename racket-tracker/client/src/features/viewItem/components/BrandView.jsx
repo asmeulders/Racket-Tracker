@@ -8,10 +8,8 @@ export function BrandView({data, setData}) {
 
     const [ brand, setBrand ] = useState({});
     const [ updatedBrand, setUpdatedBrand ] = useState({});
-    const [ loading, setLoading ] = useState(true);
     const [ isEditing, setIsEditing ] = useState(false);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(brand).length === 0) return <div>Brand not found.</div>;
 
     const handleDelete = () => {
@@ -43,7 +41,7 @@ export function BrandView({data, setData}) {
 
     useEffect(() => {
         setBrand(data);
-    })
+    }, [])
 
     // TODO: make css general for these?
     return (

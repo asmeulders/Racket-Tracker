@@ -9,14 +9,12 @@ export function StringView({data, setData}) {
 
     const [ string, setString ] = useState({});
     const [ updatedString, setUpdatedString ] = useState({});
-    const [ loading, setLoading ] = useState(true);
     const [ isEditing, setIsEditing ] = useState(false);
 
     const [editData, setEditData] = useState({
         brands: []
     }); 
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(string).length === 0) return <div>String not found.</div>;
 
     const handleDelete = () => {
@@ -57,7 +55,7 @@ export function StringView({data, setData}) {
 
     useEffect(() => {
         setString(data);
-    })
+    }, [])
 
     // TODO: make css general for these?
     return (

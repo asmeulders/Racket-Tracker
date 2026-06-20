@@ -6,19 +6,17 @@ import { BrandSelect } from '../../brand';
 import { useDatabase } from '../../../utils/useDatabase';
 
 export function RacketView({data, setData}) {
-    const { fetchData } = useDatabse();
+    const { fetchData } = useDatabase();
     const { getRacket, deleteRacket, updateRacket } = useRacket();
 
     const [ racket, setRacket ] = useState({});
     const [ updatedRacket, setUpdatedRacket ] = useState({});
-    const [ loading, setLoading ] = useState(true);
     const [ isEditing, setIsEditing ] = useState(false);
 
     const [editData, setEditData] = useState({
         brands: []
     }); 
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(racket).length === 0) return <div>Racket not found.</div>;
 
     const handleDelete = () => {
@@ -59,7 +57,7 @@ export function RacketView({data, setData}) {
 
     useEffect(() => {
         setRacket(data);
-    })
+    }, [])
 
     // TODO: make css general for these?
     return (
