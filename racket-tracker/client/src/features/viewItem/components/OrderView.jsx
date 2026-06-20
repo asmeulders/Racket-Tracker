@@ -88,8 +88,6 @@ export const OrderView = ({data, setData}) => {
     }
 
     const handleSave = async (field) => {
-        console.log("Order saved: ", order.id);
-        // update the order
         const res = await updateOrder({
             orderId: order.id,
             userId: updatedOrder.userId,

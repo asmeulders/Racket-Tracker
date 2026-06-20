@@ -12,7 +12,7 @@ export function BrandView({data, setData}) {
 
     useEffect(() => {
         setBrand(data);
-    }, []);
+    }, [data]);
 
     if (Object.keys(brand).length === 0) return <div>Brand not found.</div>;
 
@@ -30,15 +30,11 @@ export function BrandView({data, setData}) {
     }
 
     const handleSave = async () => {
-        console.log("Brand saved: ", brandId);
-
         const res = await updateBrand({
-            brandId: brandId,
+            brandId: brand.id,
             name: updatedBrand.name
         });
-        console.log(res);
-
-        setBrand(res.data.brand);
+        setData(res.data.brand);
         setUpdatedBrand({});
         setIsEditing(false);
     }

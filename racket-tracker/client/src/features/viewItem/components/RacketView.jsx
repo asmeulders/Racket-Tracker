@@ -20,7 +20,7 @@ export function RacketView({data, setData}) {
     useEffect(() => {
         console.log(data);
         setRacket(data);
-    }, []);
+    }, [data]);
 
     if (Object.keys(racket).length === 0) return <div>Racket not found.</div>;
 
@@ -40,15 +40,12 @@ export function RacketView({data, setData}) {
     }
 
     const handleSave = async () => {
-        console.log("Racket saved: ", racketId);
-
         const res = await updateRacket({
-            racketId: racketId,
+            racketId: racket.id,
             brandId: updatedRacket.brandId,
             name: updatedRacket.name,
             price: updatedRacket.price
         });
-        console.log(res);
 
         setRacket(res.data.racket);
         setUpdatedRacket({});

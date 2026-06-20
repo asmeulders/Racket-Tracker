@@ -11,7 +11,7 @@ export function InquiryView({data, setData}) {
 
     useEffect(() => {
         setInquiry(data);
-    }, []);
+    }, [data]);
 
     if (Object.keys(inquiry).length === 0) return <div>Inquiry not found.</div>;
 
@@ -23,7 +23,6 @@ export function InquiryView({data, setData}) {
         }
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>
