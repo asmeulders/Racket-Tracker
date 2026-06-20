@@ -17,6 +17,11 @@ export function RacketView({data, setData}) {
         brands: []
     }); 
 
+    useEffect(() => {
+        console.log(data);
+        setRacket(data);
+    }, []);
+
     if (Object.keys(racket).length === 0) return <div>Racket not found.</div>;
 
     const handleDelete = () => {
@@ -54,10 +59,6 @@ export function RacketView({data, setData}) {
         const data = await fetchData({ table: 'brands'});
         setEditData({ brands: data });
     }
-
-    useEffect(() => {
-        setRacket(data);
-    }, [])
 
     // TODO: make css general for these?
     return (

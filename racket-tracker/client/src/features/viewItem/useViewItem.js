@@ -3,7 +3,6 @@ import axios from 'axios';
 export function useViewItem() {
     const getItem = async (type, id) => {
         try {
-            console.log("about to fetch:", `http://127.0.0.1:5000/api/${type}/${id}`);
             const res = await axios.get(`http://127.0.0.1:5000/api/${type}/${id}`);
             return res.data;
         } catch (error) {
@@ -16,5 +15,19 @@ export function useViewItem() {
         } 
     };
 
-    return { getItem };
+    const getList = async (type) => {
+        try {
+            const res = await axios.get(`http://127.0.0.1:5000/api/${type}`);
+            return res.data;
+        } catch (error) {
+            console.log("caught error: ", error);
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else {
+                console.error("Could not connect to server");
+            }
+        } 
+    }
+
+    return { getItem, getList };
 }

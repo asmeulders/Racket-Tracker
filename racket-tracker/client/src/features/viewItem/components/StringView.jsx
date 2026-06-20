@@ -15,6 +15,10 @@ export function StringView({data, setData}) {
         brands: []
     }); 
 
+    useEffect(() => {
+        setString(data);
+    }, []);
+
     if (Object.keys(string).length === 0) return <div>String not found.</div>;
 
     const handleDelete = () => {
@@ -52,10 +56,6 @@ export function StringView({data, setData}) {
         const data = await fetchData({ table: 'brands'});
         setEditData({ brands: data });
     }
-
-    useEffect(() => {
-        setString(data);
-    }, [])
 
     // TODO: make css general for these?
     return (

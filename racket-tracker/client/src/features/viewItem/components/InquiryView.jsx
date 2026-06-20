@@ -9,6 +9,10 @@ export function InquiryView({data, setData}) {
 
     const [ inquiry, setInquiry ] = useState({});
 
+    useEffect(() => {
+        setInquiry(data);
+    }, []);
+
     if (Object.keys(inquiry).length === 0) return <div>Inquiry not found.</div>;
 
     const handleDelete = () => {
@@ -18,10 +22,6 @@ export function InquiryView({data, setData}) {
             navigate('/store-dashboard');
         }
     }
-
-    useEffect(() => {
-        setInquiry(data);
-    }, [])
 
     // TODO: make css general for these?
     return (

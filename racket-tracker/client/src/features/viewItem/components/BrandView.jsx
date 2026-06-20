@@ -10,6 +10,10 @@ export function BrandView({data, setData}) {
     const [ updatedBrand, setUpdatedBrand ] = useState({});
     const [ isEditing, setIsEditing ] = useState(false);
 
+    useEffect(() => {
+        setBrand(data);
+    }, []);
+
     if (Object.keys(brand).length === 0) return <div>Brand not found.</div>;
 
     const handleDelete = () => {
@@ -39,11 +43,6 @@ export function BrandView({data, setData}) {
         setIsEditing(false);
     }
 
-    useEffect(() => {
-        setBrand(data);
-    }, [])
-
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>

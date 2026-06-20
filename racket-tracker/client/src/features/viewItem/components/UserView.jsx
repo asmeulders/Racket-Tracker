@@ -12,6 +12,10 @@ export function UserView({data, setData}) {
     const [ loading, setLoading ] = useState(true);
     const [ isEditing, setIsEditing ] = useState(false);
 
+    useEffect(() => {
+        setUser(data);
+    }, []);
+
     if (Object.keys(user).length === 0) return <div>User not found.</div>;
 
     const handleDelete = () => {
@@ -50,10 +54,6 @@ export function UserView({data, setData}) {
         setUpdatedUser({});
         setIsEditing(false);
     }
-
-    useEffect(() => {
-        setUser(data);
-    }, [])
 
     // TODO: make css general for these?
     return (

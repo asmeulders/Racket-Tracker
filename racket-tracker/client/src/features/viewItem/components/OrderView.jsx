@@ -5,16 +5,18 @@ import { useOrder } from '../../order/index';
 import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
+import { useViewItem } from '../useViewItem';
 
 export const OrderView = ({data, setData}) => {
     const navigate = useNavigate();
     const { getOrder, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
+    const { getList } = useViewItem();
 
     const [ order, setOrder ] = useState({});
     const [ updatedOrder, setUpdatedOrder ] = useState({});
     const [ isComplete, setIsComplete ] = useState(false);
     const [ isPaid, setIsPaid ] = useState(false);
-
+    const [ isEditing, setIsEditing ] = useState(false);
     const [editData, setEditData] = useState({
         orders: [],
         users: [],
@@ -22,11 +24,9 @@ export const OrderView = ({data, setData}) => {
         strings: []
     });  
 
-    const [ isEditing, setIsEditing ] = useState(false);
-
     useEffect(() => {
         setOrder(data);
-    }, [])
+    }, [data]);
 
     useEffect(() => {
         if (order !== null) {
@@ -69,7 +69,7 @@ export const OrderView = ({data, setData}) => {
         const tables = ['users', 'rackets', 'strings'];
 
         for (let i = 0; i < tables.length; i++) {
-            const data = await fetchData({ table: tables[i] });
+            const data = await getList(tables[i]);
             setEditData(prev => ({ ...prev, [tables[i]]: data }));
         }
         if (order.sameForCrosses) {
