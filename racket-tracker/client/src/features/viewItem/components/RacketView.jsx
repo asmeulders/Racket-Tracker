@@ -4,15 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useRacket } from '../../racket/useRacket';
 import { BrandSelect } from '../../brand';
 import { useDatabase } from '../../../utils/useDatabase';
+import { useViewItem } from '../useViewItem';
 
 export function RacketView({data, setData}) {
-    const { fetchData } = useDatabase();
     const { getRacket, deleteRacket, updateRacket } = useRacket();
+    const { getList } = useViewItem();
 
     const [ racket, setRacket ] = useState({});
     const [ updatedRacket, setUpdatedRacket ] = useState({});
     const [ isEditing, setIsEditing ] = useState(false);
-
     const [editData, setEditData] = useState({
         brands: []
     }); 
@@ -27,14 +27,14 @@ export function RacketView({data, setData}) {
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this racket?");
         if (confirmed) {
-            deleteRacket(racketId);
+            deleteRacket(racket.id);
             navigate('/store-dashboard');
         }
     }
 
     const handleEdit = async () => {
-        const data = await fetchData({ table: 'brands' });
-        setEditData(prev => ({ ...prev, brands: data }));
+        const list = await getList('brands');
+        setEditData(prev => ({ ...prev, brands: list }));
         setUpdatedRacket({...racket})
         setIsEditing(true);
     }
@@ -47,17 +47,16 @@ export function RacketView({data, setData}) {
             price: updatedRacket.price
         });
 
-        setRacket(res.data.racket);
+        setData(res.data.racket);
         setUpdatedRacket({});
         setIsEditing(false);
     }
 
     const handleNewBrand = async () => {
-        const data = await fetchData({ table: 'brands'});
-        setEditData({ brands: data });
+        const lsit = await getList('brands');
+        setEditData({ brands: list });
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>

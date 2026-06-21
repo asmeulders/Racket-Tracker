@@ -44,11 +44,11 @@ export const OrderView = ({data, setData}) => {
     const mains = jobDetails.find(j => j.direction === "mains") ?? jobDetails.find(j => j.direction === null);
     const crosses = jobDetails.find(j => j.direction === "crosses");
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this order?");
 
         if (confirmed) {
-            deleteOrder(order.id);
+            await deleteOrder(order.id);
             navigate('/store-dashboard');
         }
     }
@@ -97,7 +97,7 @@ export const OrderView = ({data, setData}) => {
             crossesId: updatedOrder.crossesId,
             crossesTension: updatedOrder.crossesTension,
             sameForCrosses: updatedOrder.sameForCrosses,
-            orderDue: updatedOrder.orderDue,
+            due: updatedOrder.due,
             price: updatedOrder.price
         });
         setData(res.data.order);
@@ -180,7 +180,7 @@ export const OrderView = ({data, setData}) => {
                         <span className='field-label'>Due Date:</span>
                         <div>
                             {isEditing ? 
-                                <input type='date' onChange={(e) => setUpdatedOrder(prev => ({...prev, orderDue: e.target.value}))} />
+                                <input type='date' value={updatedOrder.due} onChange={(e) => setUpdatedOrder(prev => ({...prev, due: e.target.value}))} />
                                 : <span className='field-details'>{order.due}</span>
                             }
                         </div>

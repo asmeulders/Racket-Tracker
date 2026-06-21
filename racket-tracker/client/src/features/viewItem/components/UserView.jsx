@@ -14,14 +14,14 @@ export function UserView({data, setData}) {
 
     useEffect(() => {
         setUser(data);
-    }, []);
+    }, [data]);
 
     if (Object.keys(user).length === 0) return <div>User not found.</div>;
 
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this user?");
         if (confirmed) {
-            deleteUser(userId);
+            deleteUser(user.id);
             navigate('/store-dashboard');
         }
     }
@@ -35,27 +35,21 @@ export function UserView({data, setData}) {
     }
 
     const handleSave = async () => {
-        console.log("User saved: ", userId);
-        console.log(updatedUser);
-
         const phone = updatedUser.phone !== "" ? updatedUser.phone : "NONE";
-
         const res = await updateUser({
-            userId: userId,
+            userId: user.id,
             username: updatedUser.username,
             firstName: updatedUser.firstName,
             lastName: updatedUser.lastName,
             phone: phone,
             email: updatedUser.email
         });
-        console.log(res);
 
-        setUser(res.data.user);
+        setData(res.data.user);
         setUpdatedUser({});
         setIsEditing(false);
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>
@@ -105,7 +99,7 @@ export function UserView({data, setData}) {
                             value={updatedUser.phone}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, phone: e.target.value}))}
                         /> :
-                        <span className='field-details'>{user.phone}</span>
+                        <span className='field-details'>{user.phone ? user.phone : 'N/A'}</span>
                     }
 
                     <span className='field-label'>Email:</span>

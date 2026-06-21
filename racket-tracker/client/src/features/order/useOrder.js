@@ -50,7 +50,7 @@ export function useOrder() {
         
     };
 
-    const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, orderDue, price }) => {
+    const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, due, price }) => {
         try {
             const res = await axios.patch(`http://localhost:5000/api/orders/${orderId}`, {
                 'orderId': orderId,
@@ -61,7 +61,7 @@ export function useOrder() {
                 'crossesId': crossesId,
                 'crossesTension': crossesTension,
                 'sameForCrosses': sameForCrosses,
-                'orderDue': orderDue,
+                'due': due,
                 'price': price
             });
             return res;

@@ -18,7 +18,7 @@ export function InquiryView({data, setData}) {
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this inquiry?");
         if (confirmed) {
-            deleteInquiry(inquiryId);
+            deleteInquiry(inquiry.id);
             navigate('/store-dashboard');
         }
     }

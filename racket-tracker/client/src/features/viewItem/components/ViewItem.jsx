@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { BrandView, InquiryView, OrderView, RacketView, StringView, UserView, NotFoundView } from '../index';
 import { useViewItem } from '../useViewItem';
+import '../ViewItem.css';
 
 export const ViewItem = () => {
     const { type, id } = useParams();
