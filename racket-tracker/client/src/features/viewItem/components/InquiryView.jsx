@@ -15,10 +15,10 @@ export function InquiryView({data, setData}) {
 
     if (Object.keys(inquiry).length === 0) return <div>Inquiry not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this inquiry?");
         if (confirmed) {
-            deleteInquiry(inquiry.id);
+            await deleteInquiry(inquiry.id);
             navigate('/store-dashboard');
         }
     }
@@ -49,6 +49,11 @@ export function InquiryView({data, setData}) {
 
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete Inquiry</button>
+                <button className="action-btn">Create New Inquiry</button>
+            </div>    
         </div>
     );
 };

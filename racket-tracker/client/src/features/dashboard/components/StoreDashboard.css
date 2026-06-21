@@ -119,7 +119,7 @@
   width: 90%;
 }
 
-.item-actions {
+.item-actions-btn {
   display: flex;
   flex-direction: column;
   align-items: center;

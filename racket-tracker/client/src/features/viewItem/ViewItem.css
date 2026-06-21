@@ -38,12 +38,6 @@
     margin: 15pt;
 }
 
-.item-page-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
 .item-card {
     position: relative;
     border-radius: 5pt;
@@ -81,14 +75,17 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.order-card button {
+.item-edit-btn {
+    position: absolute;
+    top: 8px;
+    right: 16px;
     border-radius: 5pt;
     padding: 5pt 10pt;
     margin: 10pt;
     background-color: var(--primary);
 }
 
-.item-card button:hover {
+.item-edit-btn:hover {
     background-color: var(--primary-transparent);
 }
 
@@ -98,6 +95,9 @@
 } */
 
 .item-actions {
+    position: absolute;
+    right: 150px;
+    top: 300px;
     display: flex;
     flex-direction: column;
     height: fit-content;
@@ -113,12 +113,6 @@
     padding: 5pt;
 }
 
-.action-btn button:hover {
+.action-btn:hover {
     background-color: var(--primary-transparent);
-}
-
-.item-edit-btn {
-    position: absolute;
-    top: 8px;
-    right: 16px;
 }

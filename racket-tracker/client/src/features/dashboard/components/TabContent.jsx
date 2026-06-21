@@ -58,7 +58,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                             <div className="item-content">
                                 {renderItem(item, onDataDeleted)}
                             </div>
-                            <div className='item-actions'>
+                            <div className='item-actions-btn'>
                                 <button type='button' onClick={() => handleDelete(item)}>Delete</button>
                                 <button type='button' onClick={() => handleEdit(item)}>Edit</button>      
                             </div>          

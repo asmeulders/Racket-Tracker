@@ -24,10 +24,10 @@ export function RacketView({data, setData}) {
 
     if (Object.keys(racket).length === 0) return <div>Racket not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this racket?");
         if (confirmed) {
-            deleteRacket(racket.id);
+            await deleteRacket(racket.id);
             navigate('/store-dashboard');
         }
     }
@@ -104,6 +104,11 @@ export function RacketView({data, setData}) {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete Racket</button>
+                <button className="action-btn">Create New Racket</button>
+            </div>    
         </div>
     );
 };

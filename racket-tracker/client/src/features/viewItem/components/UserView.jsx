@@ -18,10 +18,10 @@ export function UserView({data, setData}) {
 
     if (Object.keys(user).length === 0) return <div>User not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this user?");
         if (confirmed) {
-            deleteUser(user.id);
+            await deleteUser(user.id);
             navigate('/store-dashboard');
         }
     }
@@ -121,6 +121,11 @@ export function UserView({data, setData}) {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete User</button>
+                <button className="action-btn">Create New User</button>
+            </div>    
         </div>
     );
 };

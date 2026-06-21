@@ -22,10 +22,10 @@ export function StringView({data, setData}) {
 
     if (Object.keys(string).length === 0) return <div>String not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this string?");
         if (confirmed) {
-            deleteString(string.id);
+            await deleteString(string.id);
             navigate('/store-dashboard');
         }
     }
@@ -103,6 +103,11 @@ export function StringView({data, setData}) {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete String</button>
+                <button className="action-btn">Create New String</button>
+            </div>    
         </div>
     );
 };

@@ -16,10 +16,10 @@ export function BrandView({data, setData}) {
 
     if (Object.keys(brand).length === 0) return <div>Brand not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this brand?");
         if (confirmed) {
-            deleteBrand(brand.id);
+            await deleteBrand(brand.id);
             navigate('/store-dashboard');
         }
     }
@@ -57,6 +57,11 @@ export function BrandView({data, setData}) {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete Brand</button>
+                <button className="action-btn">Create New Brand</button>
+            </div>    
         </div>
     );
 };
