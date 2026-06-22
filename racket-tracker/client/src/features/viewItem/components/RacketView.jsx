@@ -28,7 +28,7 @@ export function RacketView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this racket?");
         if (confirmed) {
             await deleteRacket(racket.id);
-            navigate('/store-dashboard');
+            navigate('/store');
         }
     }
 

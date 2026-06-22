@@ -26,7 +26,7 @@ export function StringView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this string?");
         if (confirmed) {
             await deleteString(string.id);
-            navigate('/store-dashboard');
+            navigate('/store');
         }
     }
 

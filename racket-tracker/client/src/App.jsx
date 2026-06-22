@@ -7,7 +7,9 @@ import {
 
 import Home from "./index";
 import Layout from './components/layout/Layout';
-import { StoreDashboardPage } from './features/dashboard/StoreDashboardPage';
+import { StoreDashboard } from './features/dashboard/components/StoreDashboard';
+import { Store } from './features/store/Store';
+import { ItemList } from './features/store';
 import { ViewItem } from './features/viewItem/components/ViewItem';
 import './App.css'
 
@@ -17,8 +19,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />} >
             <Route index element={<Home />} />
-            <Route path="/store-dashboard" element={<StoreDashboardPage />} />
-            <Route path="/view-item/:type/:id" element={<ViewItem />} />
+          </Route>
+          <Route path="/store" element={<Store />}>
+            <Route index element={<StoreDashboard />} />
+            <Route path="view-list/:type" element={<ItemList />} />
+            <Route path="view-item/:type/:id" element={<ViewItem />} /> 
           </Route>
         </Routes>
       </Router>

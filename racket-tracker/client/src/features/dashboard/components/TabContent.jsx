@@ -43,7 +43,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
 
     const handleEdit = async (item) => {
         console.log("handle edit: ", item);
-        const url = `/view-item/${activeTab}/${item.id}`;
+        const url = `/store/view-item/${activeTab}/${item.id}`;
         await navigate(url);
     };
 

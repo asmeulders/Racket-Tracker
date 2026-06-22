@@ -22,7 +22,7 @@ export function UserView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this user?");
         if (confirmed) {
             await deleteUser(user.id);
-            navigate('/store-dashboard');
+            navigate('/store');
         }
     }
 

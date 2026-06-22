@@ -20,7 +20,7 @@ export function BrandView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this brand?");
         if (confirmed) {
             await deleteBrand(brand.id);
-            navigate('/store-dashboard');
+            navigate('/store');
         }
     }
 

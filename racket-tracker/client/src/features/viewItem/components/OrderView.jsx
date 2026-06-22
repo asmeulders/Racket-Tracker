@@ -49,7 +49,7 @@ export const OrderView = ({data, setData}) => {
 
         if (confirmed) {
             await deleteOrder(order.id);
-            navigate('/store-dashboard');
+            navigate('/store');
         }
     }
 

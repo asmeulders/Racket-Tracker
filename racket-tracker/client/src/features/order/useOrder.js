@@ -47,7 +47,6 @@ export function useOrder() {
                 console.error("Could not connect to server.");
             }
         }
-        
     };
 
     const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, due, price }) => {
