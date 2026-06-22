@@ -3,30 +3,24 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useBrand } from '../../brand/useBrand';
 
-export function BrandView() {
+export function BrandView({data, setData}) {
     const { getBrand, deleteBrand, updateBrand } = useBrand();
-    const { brandId } = useParams();
 
     const [ brand, setBrand ] = useState({});
     const [ updatedBrand, setUpdatedBrand ] = useState({});
-    const [ loading, setLoading ] = useState(true);
-
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getBrand(brandId)
-            .then(data => setBrand(data))
-            .finally(() => setLoading(false));
-    }, [brandId])
+        setBrand(data);
+    }, [data]);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(brand).length === 0) return <div>Brand not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this brand?");
         if (confirmed) {
-            deleteBrand(brandId);
-            navigate('/store-dashboard');
+            await deleteBrand(brand.id);
+            navigate('/store');
         }
     }
 
@@ -36,20 +30,15 @@ export function BrandView() {
     }
 
     const handleSave = async () => {
-        console.log("Brand saved: ", brandId);
-
         const res = await updateBrand({
-            brandId: brandId,
+            brandId: brand.id,
             name: updatedBrand.name
         });
-        console.log(res);
-
-        setBrand(res.data.brand);
+        setData(res.data.brand);
         setUpdatedBrand({});
         setIsEditing(false);
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>
@@ -68,6 +57,11 @@ export function BrandView() {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete Brand</button>
+                <button className="action-btn">Create New Brand</button>
+            </div>    
         </div>
     );
 };

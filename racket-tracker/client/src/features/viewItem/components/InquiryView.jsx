@@ -3,31 +3,26 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useInquiry } from '../../inquiry/useInquiry';
 
-export function InquiryView() {
+export function InquiryView({data, setData}) {
     const { getInquiry, deleteInquiry } = useInquiry();
     const { inquiryId } = useParams();
 
     const [ inquiry, setInquiry ] = useState({});
-    const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
-        getInquiry(inquiryId)
-            .then(data => setInquiry(data))
-            .finally(() => setLoading(false));
-    }, [inquiryId])
+        setInquiry(data);
+    }, [data]);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(inquiry).length === 0) return <div>Inquiry not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this inquiry?");
         if (confirmed) {
-            deleteInquiry(inquiryId);
-            navigate('/store-dashboard');
+            await deleteInquiry(inquiry.id);
+            navigate('/store');
         }
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>
@@ -54,6 +49,11 @@ export function InquiryView() {
 
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete Inquiry</button>
+                <button className="action-btn">Create New Inquiry</button>
+            </div>    
         </div>
     );
 };

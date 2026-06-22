@@ -42,23 +42,9 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
     };
 
     const handleEdit = async (item) => {
-        const url = `/view-item/${activeTab}/${item.id}`;
+        console.log("handle edit: ", item);
+        const url = `/store/view-item/${activeTab}/${item.id}`;
         await navigate(url);
-        // if (activeTab === "orders") {
-        //     await navigate(`/view-order/${item.id}`);
-        // } else if (activeTab === "rackets") {
-        //     await navigate(`/view-racket/${item.id}`);
-        // } else if (activeTab === "strings") {
-        //     await navigate(`/view-string/${item.id}`);
-        // } else if (activeTab === "users") {
-        //     await navigate(`/view-user/${item.id}`);
-        // } else if (activeTab === "brands") {
-        //     await navigate(`/view-brand/${item.id}`);
-        // } else if (activeTab === "inquiries") {
-        //     await navigate(`/view-inquiry/${item.id}`);
-        // } else {
-        //     console.error("Unknown tab.");
-        // }
     };
 
     return (
@@ -72,7 +58,7 @@ export const TabContent = ({ items, renderItem, onDataDeleted, activeTab}) => {
                             <div className="item-content">
                                 {renderItem(item, onDataDeleted)}
                             </div>
-                            <div className='item-actions'>
+                            <div className='item-actions-btn'>
                                 <button type='button' onClick={() => handleDelete(item)}>Delete</button>
                                 <button type='button' onClick={() => handleEdit(item)}>Edit</button>      
                             </div>          

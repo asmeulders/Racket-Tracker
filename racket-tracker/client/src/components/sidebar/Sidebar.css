@@ -1,0 +1,39 @@
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 250px;
+  background-color: var(--primary);
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar-link {
+  display: block;
+  color: white;
+  padding: 16px;
+  text-decoration: none;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.sidebar-link.active {
+  background-color: var(--secondary);
+}
+
+/* Links on mouse-over */
+.sidebar-link:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+.sidebar-logo {
+  color: white;
+  justify-self: start;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 16px;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+}

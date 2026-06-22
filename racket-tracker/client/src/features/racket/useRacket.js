@@ -9,9 +9,9 @@ export function useRacket() {
       return res;
     } catch (error) {
       if (error.response) {
-        console.err(error.response.data.error);
+        console.error(error.response.data.error);
       } else{
-        console.err("Could not connect to server.");
+        console.error("Could not connect to server.");
       }
     }
   };
@@ -49,6 +49,7 @@ export function useRacket() {
         'name': name,
         'price': price
       });
+      console.log("res:", res);
       return res;
     } catch (error) {
       if (error.response) {

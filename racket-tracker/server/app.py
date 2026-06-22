@@ -518,7 +518,13 @@ def create_racket(body):
     
     name = body.get('name')
     price = body.get('price')
-    if not isinstance(price, (int, float)) or price < 0:
+    try:
+        price = float(price)
+    except ValueError as e:
+        app.logger.error(f"Invalid price input: {e}")
+        return jsonify({"error": "Invalid price input"}), 400
+    if price < 0:
+        app.logger.error(f"Price must be a non-negative number: {price}")
         return jsonify({"error": "Price must be a non-negative number"}), 400
 
     brandId = body.get('brandId') 
@@ -571,6 +577,13 @@ def create_string(body):
     
     name = body.get('name')
     pricePerRacket = body.get('pricePerRacket')
+    try:
+        pricePerRacket = float(pricePerRacket)
+    except ValueError as e:
+        app.logger.error((f"Invalid price input: {e}"))
+        return jsonify({"error": "Invalid price input"}), 400
+    if pricePerRacket < 0:
+        return jsonify({"error": "pricePerRacket must be a non-negative number"}), 400
     brandId = body.get('brandId')
 
     try:
@@ -761,7 +774,7 @@ def update_order(id, body):
         'crossesId': crossesId,
         'crossesTension': crossesTension,
         'sameForCrosses': sameForCrosses,
-        'orderDue': orderDue,
+        'due': due,
         'price: price
     }
     """
@@ -775,7 +788,7 @@ def update_order(id, body):
             return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
     
     # change to all fields being required??
-    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = orderDue = price = None
+    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = due = price = None
     if 'racketId' in body:
         racketId = body.get('racketId')
     if 'userId' in body:
@@ -789,7 +802,7 @@ def update_order(id, body):
         except ValueError as e:
             app.logger.error(f"Invalid mainsTension input: {e}")
             return jsonify({"error": "Invalid mainsTension input"}), 400
-        if not isinstance(mainsTension, int) or mainsTension < 0 or mainsTension > 100:
+        if mainsTension < 0 or mainsTension > 100:
             return jsonify({"error": "mainsTension must be a non-negative number less than 100"}), 400
     if 'crossesId' in body: 
         crossesId = body.get('crossesId')
@@ -800,11 +813,11 @@ def update_order(id, body):
         except ValueError as e:
             app.logger.error(f"Invalid crossesTension input: {e}")
             return jsonify({"error": "Invalid crossesTension input"}), 400
-        if not isinstance(crossesTension, int) or crossesTension < 0 or crossesTension > 100:
+        if crossesTension < 0 or crossesTension > 100:
             return jsonify({"error": "crossesTension must be a non-negative number less than 100"}), 400
-    if 'orderDue' in body:
-        dateString = body.get('orderDue')
-        orderDue = datetime.strptime(dateString, '%Y-%m-%d').date()
+    if 'due' in body:
+        dateString = body.get('due')
+        due = datetime.strptime(dateString, '%Y-%m-%d').date()
     if 'price' in body:
         price = body.get('price')
         try:
@@ -812,7 +825,7 @@ def update_order(id, body):
         except ValueError as e:
             app.logger.error(f"Invalid price input: {e}")
             return jsonify({"error": "Invalid price input"}), 400
-        if not isinstance(price, float) or price < 0:
+        if price < 0:
             return jsonify({"error": "Price must be a non-negative number"}), 400
 
     try:
@@ -885,8 +898,8 @@ def update_order(id, body):
                     crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
                     order.strungWithRecords.append(crossesStrungWith)
 
-        if orderDue:
-            order.due = orderDue
+        if due:
+            order.due = due
         if price:
             order.price = price
 
@@ -926,8 +939,13 @@ def update_racket(id, body):
         name = body.get('name')
     if 'price' in body:
         price = body.get('price')
-        if not isinstance(price, float) or price < 0:
-            return jsonify({"error": "Price must be a non-negative number"})
+        try:
+            price = float(price)
+        except ValueError as e:
+            app.logger.error(f"Invalid price input: {e}")
+            return jsonify({"error": "Invalid pricePerRacket input."}), 400
+        if price < 0:
+            return jsonify({"error": "Price must be a non-negative number."}), 400
 
     try:
         racket = db.session.get(Racket, id)
@@ -939,7 +957,7 @@ def update_racket(id, body):
             racket.brandId = brandId
         if name:
             existingRacket = db.session.execute(db.select(Racket).filter_by(name=name)).scalar_one_or_none()
-            if existingRacket:
+            if existingRacket and id != existingRacket.id:
                 db.session.rollback()
                 return jsonify({"error": "A racket with this name already exists"}), 409
             racket.name = name
@@ -975,12 +993,8 @@ def update_string(id, body):
         'name': name,
         'pricePerRacket': pricePerRacket
     }
-    """
-    if "stringId" not in body:
-        return jsonify({"error": "Missing required field 'stringId'"}), 400
-    
+    """    
     # change to all fields being required??
-    stringId = body.get('stringId')
     brandId = name = pricePerRacket = None
     if 'brandId' in body:
         brandId = body.get('brandId')
@@ -988,11 +1002,16 @@ def update_string(id, body):
         name = body.get('name')
     if 'pricePerRacket' in body:
         pricePerRacket = body.get('pricePerRacket')
-        if not isinstance(pricePerRacket, float) or pricePerRacket < 0:
+        try:
+            pricePerRacket = float(pricePerRacket)
+        except ValueError as e:
+            app.logger.error(f"Invalid pricePerRacket input: {e}")
+            return jsonify({"error": "Invalid pricePerRacket input."}), 400
+        if pricePerRacket < 0:
             return jsonify({"error": "pricePerRacket must be a non-negative number."}), 400
 
     try:
-        string = db.session.get(String, stringId)
+        string = db.session.get(String, id)
         if brandId:
             brand = db.session.get(Brand, brandId)
             if not brand:
@@ -1001,7 +1020,7 @@ def update_string(id, body):
             string.brandId = brandId
         if name:
             existingString = db.session.execute(db.select(String).filter_by(name=name)).scalar_one_or_none()
-            if existingString:
+            if existingString and existingString.id != id:
                 db.session.rollback()
                 return jsonify({"error": "There already exists a string with this name"}), 409
             string.name = name
@@ -1039,10 +1058,7 @@ def update_user(id, body):
         'phone': phone,
         'email': email
     }
-    """
-    if "userId" not in body:
-        return jsonify({"error": "Missing required field 'userId'"}), 400
-    
+    """    
     # change to all fields being required??
     username = firstName = lastName = phone = email = None
     if 'username' in body:
@@ -1330,6 +1346,7 @@ def get_entries(table: str):
 
 @app.route("/api/<string:table>/<int:id>", methods=['GET'])
 def get_entry(table: str, id: int):
+    print("handle get entry")
     handler = ENTRY_HANDLERS.get(table)
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404

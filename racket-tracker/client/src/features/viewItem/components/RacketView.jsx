@@ -3,69 +3,60 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useRacket } from '../../racket/useRacket';
 import { BrandSelect } from '../../brand';
-import { useDatabse } from '../../../utils/useDatabase';
+import { useDatabase } from '../../../utils/useDatabase';
+import { useViewItem } from '../useViewItem';
 
-export function RacketPage() {
-    const { fetchData } = useDatabse();
+export function RacketView({data, setData}) {
     const { getRacket, deleteRacket, updateRacket } = useRacket();
-    const { racketId } = useParams();
+    const { getList } = useViewItem();
 
     const [ racket, setRacket ] = useState({});
     const [ updatedRacket, setUpdatedRacket ] = useState({});
-    const [ loading, setLoading ] = useState(true);
-
+    const [ isEditing, setIsEditing ] = useState(false);
     const [editData, setEditData] = useState({
         brands: []
     }); 
 
-    const [ isEditing, setIsEditing ] = useState(false);
-
     useEffect(() => {
-        getRacket(racketId)
-            .then(data => setRacket(data))
-            .finally(() => setLoading(false));
-    }, [racketId])
+        console.log(data);
+        setRacket(data);
+    }, [data]);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(racket).length === 0) return <div>Racket not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this racket?");
         if (confirmed) {
-            deleteRacket(racketId);
-            navigate('/store-dashboard');
+            await deleteRacket(racket.id);
+            navigate('/store');
         }
     }
 
     const handleEdit = async () => {
-        const data = await fetchData({ table: 'brands' });
-        setEditData(prev => ({ ...prev, brands: data }));
+        const list = await getList('brands');
+        setEditData(prev => ({ ...prev, brands: list }));
         setUpdatedRacket({...racket})
         setIsEditing(true);
     }
 
     const handleSave = async () => {
-        console.log("Racket saved: ", racketId);
-
         const res = await updateRacket({
-            racketId: racketId,
+            racketId: racket.id,
             brandId: updatedRacket.brandId,
             name: updatedRacket.name,
             price: updatedRacket.price
         });
-        console.log(res);
 
-        setRacket(res.data.racket);
+        setData(res.data.racket);
         setUpdatedRacket({});
         setIsEditing(false);
     }
 
     const handleNewBrand = async () => {
-        const data = await fetchData({ table: 'brands'});
-        setEditData({ brands: data });
+        const lsit = await getList('brands');
+        setEditData({ brands: list });
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>
@@ -113,6 +104,11 @@ export function RacketPage() {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete Racket</button>
+                <button className="action-btn">Create New Racket</button>
+            </div>    
         </div>
     );
 };

@@ -1,26 +1,20 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { BrandView, InquiryView, OrderView, StringView, UserView, NotFoundView } from './index';
-import { useOrder } from '../order/useOrder';
+import { BrandView, InquiryView, OrderView, RacketView, StringView, UserView, NotFoundView } from '../index';
+import { useViewItem } from '../useViewItem';
+import '../ViewItem.css';
 
 export const ViewItem = () => {
     const { type, id } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const { getOrder } = useOrder();
+    const { getItem } = useViewItem();
 
-    const typeMap = {
-        orders: 'order',
-        brands: 'brand',
-        strings: 'string',
-        rackets: 'racket',
-        inquiries: 'inquiry'
-    }
     useEffect(() => {
         setLoading(true);
-        getOrder(id)
+        getItem(type, id)
         .then((data) => setData(data))
         .finally(() => setLoading(false));
     }, [type, id]);
@@ -31,6 +25,7 @@ export const ViewItem = () => {
         orders: OrderView,
         brands: BrandView,
         users: UserView,
+        rackets: RacketView,
         inquiries: InquiryView,
         strings: StringView
     };

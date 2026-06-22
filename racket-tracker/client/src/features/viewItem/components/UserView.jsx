@@ -3,33 +3,26 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useUser } from '../../user/useUser';
 import { BrandSelect } from '../../brand';
-import { useDatabase } from '../../../utils/useDatabase';
 
-export function UserView() {
-    const { fetchData } = useDatabase();
-    const { getUser, deleteUser, updateUser } = useUser();
-    const { userId } = useParams();
+export function UserView({data, setData}) {
+    const { deleteUser, updateUser } = useUser();
 
     const [ user, setUser ] = useState({});
     const [ updatedUser, setUpdatedUser ] = useState({});
     const [ loading, setLoading ] = useState(true);
-
     const [ isEditing, setIsEditing ] = useState(false);
 
     useEffect(() => {
-        getUser(userId)
-            .then(data => setUser(data))
-            .finally(() => setLoading(false));
-    }, [userId])
+        setUser(data);
+    }, [data]);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(user).length === 0) return <div>User not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this user?");
         if (confirmed) {
-            deleteUser(userId);
-            navigate('/store-dashboard');
+            await deleteUser(user.id);
+            navigate('/store');
         }
     }
 
@@ -42,27 +35,21 @@ export function UserView() {
     }
 
     const handleSave = async () => {
-        console.log("User saved: ", userId);
-        console.log(updatedUser);
-
         const phone = updatedUser.phone !== "" ? updatedUser.phone : "NONE";
-
         const res = await updateUser({
-            userId: userId,
+            userId: user.id,
             username: updatedUser.username,
             firstName: updatedUser.firstName,
             lastName: updatedUser.lastName,
             phone: phone,
             email: updatedUser.email
         });
-        console.log(res);
 
-        setUser(res.data.user);
+        setData(res.data.user);
         setUpdatedUser({});
         setIsEditing(false);
     }
 
-    // TODO: make css general for these?
     return (
         <div className='item-page'>
             <div className='item-card'>
@@ -112,7 +99,7 @@ export function UserView() {
                             value={updatedUser.phone}
                             onChange={(e) => setUpdatedUser(prev => ({...prev, phone: e.target.value}))}
                         /> :
-                        <span className='field-details'>{user.phone}</span>
+                        <span className='field-details'>{user.phone ? user.phone : 'N/A'}</span>
                     }
 
                     <span className='field-label'>Email:</span>
@@ -134,6 +121,11 @@ export function UserView() {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete User</button>
+                <button className="action-btn">Create New User</button>
+            </div>    
         </div>
     );
 };

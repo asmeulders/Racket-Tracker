@@ -47,7 +47,7 @@ export function useString() {
 
     const updateString = async ({stringId, brandId, name, pricePerRacket}) => {
         try {
-            const res = await axios.post(`http://localhost:5000/api/strings/${stringId}`, {
+            const res = await axios.patch(`http://localhost:5000/api/strings/${stringId}`, {
                 'stringId': stringId,
                 'brandId': brandId,
                 'name': name,

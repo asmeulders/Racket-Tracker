@@ -15,7 +15,6 @@ import { NewItem } from './NewItem.jsx';
 import './StoreDashboard.css';
 
 // TODO: 
-// other items edit
 // order date range filter
 // add times to order
 // other racket table for specific model specs
@@ -32,7 +31,6 @@ export function StoreDashboard() {
     });   
     const [filters, setFilters] = useState({})
     const tabs = ['orders', 'rackets', 'strings', 'users', 'brands', 'inquiries'];
-    // const [visibleItems, setVisibleItems] = useState([]);
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const[pageData, setPageData] = useState({
         'currentPage': {
@@ -228,7 +226,6 @@ export function StoreDashboard() {
                 <FilterSearch renderFilter={currentTabConfig.renderFilter} onFilterChange={setFilters} />
             </div>
             <div className='content-box'> 
-                {/* TODO: make sure the buttons on the order thing works */}
                 <TabContent
                     items={data[activeTab]}
                     renderItem={currentTabConfig.renderItem}

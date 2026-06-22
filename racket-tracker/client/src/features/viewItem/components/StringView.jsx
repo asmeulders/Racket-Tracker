@@ -3,66 +3,56 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useString } from '../../string/useString';
 import { BrandSelect } from '../../brand';
-import { useDatabase } from '../../../utils/useDatabase';
+import { useViewItem } from '../useViewItem';
 
-export function StringView() {
-    const { fetchData } = useDatabase();
+export function StringView({data, setData}) {
     const { getString, deleteString, updateString } = useString();
-    const { stringId } = useParams();
+    const { getList } = useViewItem();
 
     const [ string, setString ] = useState({});
     const [ updatedString, setUpdatedString ] = useState({});
-    const [ loading, setLoading ] = useState(true);
-
+    const [ isEditing, setIsEditing ] = useState(false);
     const [editData, setEditData] = useState({
         brands: []
     }); 
 
-    const [ isEditing, setIsEditing ] = useState(false);
-
     useEffect(() => {
-        getString(stringId)
-            .then(data => setString(data))
-            .finally(() => setLoading(false));
-    }, [stringId])
+        setString(data);
+    }, [data]);
 
-    if (loading) return <div>Loading...</div>;
     if (Object.keys(string).length === 0) return <div>String not found.</div>;
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this string?");
         if (confirmed) {
-            deleteString(stringId);
-            navigate('/store-dashboard');
+            await deleteString(string.id);
+            navigate('/store');
         }
     }
 
     const handleEdit = async () => {
-        const data = await fetchData({ table: 'brands' });
-        setEditData(prev => ({ ...prev, brands: data }));
+        const list = await getList('brands');
+        setEditData(prev => ({ ...prev, brands: list }));
         setUpdatedString({...string})
         setIsEditing(true);
     }
 
     const handleSave = async () => {
-        console.log("string saved: ", stringId);
-
         const res = await updateString({
-            stringId: stringId,
+            stringId: string.id,
             brandId: updatedString.brandId,
             name: updatedString.name,
             pricePerRacket: updatedString.pricePerRacket
         });
-        console.log(res);
 
-        setString(res.data.string);
+        setData(res.data.string);
         setUpdatedString({});
         setIsEditing(false);
     }
 
     const handleNewBrand = async () => {
-        const data = await fetchData({ table: 'brands'});
-        setEditData({ brands: data });
+        const list = await getList('brands');
+        setEditData({ brands: list });
     }
 
     // TODO: make css general for these?
@@ -113,6 +103,11 @@ export function StringView() {
                     }
                 </div>
             </div>
+
+            <div className="item-actions">
+                <button className="action-btn" onClick={handleDelete}>Delete String</button>
+                <button className="action-btn">Create New String</button>
+            </div>    
         </div>
     );
 };
