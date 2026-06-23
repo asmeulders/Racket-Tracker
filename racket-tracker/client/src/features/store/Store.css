@@ -1,6 +1,113 @@
 .store-page {
+    height: 100vh;
 }
 
 .store-page-content {
+    height: 100%;
     margin-left: 250px;
+    display: flex;
+    flex-direction: column;
 }
+
+/* Item List */
+
+.list-header {
+    display: flex;
+    height: 150px;
+    padding: 20px 50px;
+    margin: 20px;
+    background-color: lightgrey;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.list-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* New Item Button */
+
+.new-item-btn {
+  width: fit-content;
+  height: fit-content;
+  border-radius: 5pt;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: var(--primary);
+}
+
+/* Pagination settings */
+
+.query-info-container {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--secondary);
+  padding: 10px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.query-info-container select {
+  margin: 5pt;
+}
+
+.query-info-container button {
+  margin: 2pt;
+}
+
+.arrow-btn {
+  color: white;
+  border: solid 1px white;
+  border-radius: 3px;
+}
+
+/* Item Styling */
+
+.item-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  padding-bottom: 10px;
+  padding-right: 40px;
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  text-align: left;
+}
+
+.item-content {
+  width: 90%;
+}
+
+.item-actions-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Filters */
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+
+/* Racket/String Input Boxes */
+/* .brand-item-container {
+  display: flex;
+  width: 100%;
+}
+
+.brand-item-container input {
+  display: flex;
+  width: 100%;
+} */

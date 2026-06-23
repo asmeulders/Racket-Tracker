@@ -24,7 +24,7 @@ export const RacketFilter = ({onFilterChange}) => {
   }, [brandName, racketName, priceMin, priceMax])
 
   return (
-    <div className='filter-container'>
+    <div className='filter-content'>
       <label htmlFor="brandNameFilter">Brand Name:</label>
       <input id="brandNameFilter" className='filter-text-input' type="text" placeholder='Brand Name' onChange={(e) => setBrandName(e.target.value)}/>
       

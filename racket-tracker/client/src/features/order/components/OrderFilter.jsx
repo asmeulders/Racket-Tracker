@@ -40,7 +40,7 @@ export const OrderFilter = ({onFilterChange}) => {
     }, [username, orderDate, dueDate, completed, paid, racketBrand, racketName, stringBrand, stringName])
 
     return (
-        <div className='filter-container'>
+        <div className='filter-content'>
             {/* User Name */}
             <label htmlFor="usernameInput">Customer Name:</label>
             <input id="usernameInput" className="filter-text-input" type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>

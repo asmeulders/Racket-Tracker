@@ -1,49 +1,53 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import Modal from 'react-bootstrap/Modal';
 
-import { useOrder } from '../../order';
-import { useRacket } from '../../racket';
-import { useString } from '../../string';
-import { useUser } from '../../user';
-import { useBrand } from '../../brand';
-import { useInquiry } from '../../inquiry';
 import { useViewItem } from "../../viewItem/useViewItem";
 import { useStore } from "../useStore";
 
-import { Racket } from "../../racket";
-import { Order } from "../../order";
-import { String } from "../../string";
-import { User } from "../../user";
-import { Brand } from "../../brand";
-import { Inquiry } from "../../inquiry";
+import { Racket, RacketFilter, RacketForm } from "../../racket";
+import { Order, OrderFilter, OrderForm } from "../../order";
+import { String, StringFilter, StringForm } from "../../string";
+import { User, UserFilter, UserForm } from "../../user";
+import { Brand, BrandFilter, BrandForm } from "../../brand";
+import { Inquiry, InquiryFilter } from "../../inquiry";
+
+// TODO: 
+// order date range filter
+// add times to order
+// other racket table for specific model specs
 
 export const ItemList = () => {
     const { type } = useParams();
     const navigate = useNavigate();
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
 
-    const { deleteOrder } = useOrder();
-    const { deleteRacket } = useRacket();
-    const { deleteString } = useString();
-    const { deleteUser } = useUser();
-    const { deleteBrand } = useBrand();
-    const { deleteInquiry } = useInquiry();
-    const { getList } = useViewItem();
-    const { deleteItem } = useStore();
+    const { getPage, deleteItem } = useStore();
 
-    const [ items, setItems ] = useState([]);
-    const [ loading, setLoading ] = useState(true);
+    const isFirstRender = useRef(true);
+
+    const [ data, setData ] = useState(null);
+    const [ filters, setFilters ] = useState({});
+    const [ show, setShow ] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-        getList(type)
-            .then(data => {
-                setItems(data);
-                console.log("data: ", data);
-            })
-            .finally(() => setLoading(false));
-    }, [type]);
+        getPage(type, page, limit, filters)
+            .then(data => setData(data))
+    }, [type, page, limit, filters]);
 
-    if (loading) return 'Loading...';
+    if (!data) return <p>Loading...</p>;
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const handleCreateItem = async (type, close) => {
+        await searchPage(type);
+        if (close) {
+            handleClose();
+        }
+    };
 
     const handleDelete = async (item) => {
         const confirmed = window.confirm("Are you sure you want to delete this item?");
@@ -54,39 +58,97 @@ export const ItemList = () => {
         }
     };
 
-    const handleEdit = async (item) => {
+    const handleView = async (item) => {
         const url = `/store/view-item/${type}/${item.id}`;
         await navigate(url);
     };
+
+    const handleSelect = (event) => {
+        setSearchParams({ page, limit: Number(event.target.value) });
+    };    
     
     const itemConfig = {
-        'orders': (item) => <Order order={item} />,
-        'rackets': (item) => <Racket racket={item} />,
-        'strings': (item) => <String string={item} />,
-        'users': (item) => <User user={item} />,
-        'brands': (item) => <Brand brand={item} />,
-        'inquiries': (item) => <Inquiry inquiry={item} />,
-    }
+        orders: {
+            renderItem: (item) => <Order order={item} />,
+            renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={data.rackets} strings={data.strings} users={data.users} />
+        },
+        rackets: {
+            renderItem: (item) => <Racket racket={item} />,
+            renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
+        },
+        strings: {
+            renderItem: (item) => <String string={item} />,
+            renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
+        },
+        users: {
+            renderItem: (item) => <User user={item} />,
+            renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <UserForm onDataCreated={handleCreateItem} handleClose={handleClose} />
+        },
+        brands: {
+            renderItem: (item) => <Brand brand={item} />,
+            renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <BrandForm onDataCreated={handleCreateItem} handleClose={handleClose} />
+        },
+        inquiries: {
+            renderItem: (item) => <Inquiry inquiry={item} />,
+            renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />,
+            renderModal: () => <></>
+        }
+    };
 
     return (
-        <div className="list-content">
-            {items.length === 0 ? (
-                <p>No data found.</p>
-            ) : (
-                <ul className="item-list">
-                    {items.map((item) => (
-                        <li key={item.id} className="item">
-                            <div className="item-content">
-                                {itemConfig[type](item)}
-                            </div>
-                            <div className='item-actions-btn'>
-                                <button type='button' onClick={() => handleDelete(item)}>Delete</button>
-                                <button type='button' onClick={() => handleEdit(item)}>Edit</button>      
-                            </div>          
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+        <>
+            <div className="list-header">
+                <h1>{type}</h1>
+                <button className="new-item-btn" type="button">New {type}</button>
+            </div>
+            <div className="filter-container">
+                {itemConfig[type].renderFilter(setFilters)}
+            </div>
+            <div className="list-content">
+                {data.items.length === 0 ? (
+                    <p>No data found.</p>
+                ) : (
+                    <ul className="item-list">
+                        {data.items.map((item) => (
+                            <li key={item.id} className="item-container">
+                                <div className="item-content">
+                                    {itemConfig[type].renderItem(item)}
+                                </div>
+                                <div className='item-actions-btn'>
+                                    <button type='button' onClick={() => handleDelete(item)}>Delete</button>
+                                    <button type='button' onClick={() => handleView(item)}>View</button>      
+                                </div>          
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+            <div className='query-info-container'>
+                <p className='query-info'>
+                    Queried {type} - showing
+                    <select name="numResults" id="num-results" value={limit} onChange={handleSelect}>
+                        {/* <option value="1">1</option> */}
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select> 
+                    per page.
+                    <button className='arrow-btn' disabled={!data.hasPrev} onClick={() => setSearchParams({ page: page - 1, limit })}>&laquo;</button>
+                    {page}
+                    <button className='arrow-btn' disabled={!data.hasNext} onClick={() => setSearchParams({ page: page + 1, limit })}>&raquo;</button>
+                    of {data.totalPages !== 0 ? data.totalPages : 1}.
+                </p>
+            </div>
+            <Modal show={show} onHide={handleClose}>
+                {itemConfig[type].renderModal()}
+            </Modal>
+        </>        
     )
 }
