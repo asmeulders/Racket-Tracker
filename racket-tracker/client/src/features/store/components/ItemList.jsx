@@ -109,13 +109,16 @@ export const ItemList = () => {
                 <h1>{type}</h1>
                 <button className="new-item-btn" type="button">New {type}</button>
             </div>
+            <div className="filter-container">
+                {itemConfig[type].renderFilter(setFilters)}
+            </div>
             <div className="list-content">
                 {data.items.length === 0 ? (
                     <p>No data found.</p>
                 ) : (
                     <ul className="item-list">
                         {data.items.map((item) => (
-                            <li key={item.id} className="item">
+                            <li key={item.id} className="item-container">
                                 <div className="item-content">
                                     {itemConfig[type].renderItem(item)}
                                 </div>

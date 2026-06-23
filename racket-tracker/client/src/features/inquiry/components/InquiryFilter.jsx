@@ -19,7 +19,7 @@ export const InquiryFilter = ({onFilterChange}) => {
   }, [username, inqDate])
 
   return (
-    <div className='filter-container'>
+    <div className='filter-content'>
       <label htmlFor="usernameFilter">Inquirer Name:</label>
       <input id="usernameFilter" className='filter-text-input' type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
       

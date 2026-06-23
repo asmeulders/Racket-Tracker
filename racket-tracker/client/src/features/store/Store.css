@@ -65,3 +65,49 @@
   border: solid 1px white;
   border-radius: 3px;
 }
+
+/* Item Styling */
+
+.item-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  padding-bottom: 10px;
+  padding-right: 40px;
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  text-align: left;
+}
+
+.item-content {
+  width: 90%;
+}
+
+.item-actions-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Filters */
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+
+/* Racket/String Input Boxes */
+/* .brand-item-container {
+  display: flex;
+  width: 100%;
+}
+
+.brand-item-container input {
+  display: flex;
+  width: 100%;
+} */

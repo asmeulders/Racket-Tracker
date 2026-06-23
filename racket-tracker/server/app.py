@@ -1546,7 +1546,7 @@ PAGE_HANDLERS = {
 }
 
 
-@app.route('/api/list/<string:table>', methods=['GET'])
+@app.route('/api/<string:table>', methods=['GET'])
 def get_list(table: str):
     handler = LIST_HANDLERS.get(table)
     if handler is None:

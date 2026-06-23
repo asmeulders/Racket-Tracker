@@ -24,7 +24,7 @@ export const StringFilter = ({onFilterChange}) => {
   }, [brandName, stringName, priceMin, priceMax])
 
   return (
-    <div className='filter-container'>
+    <div className='filter-content'>
       <label htmlFor="brandFilter">Brand Name:</label>
       <input id="brandFilter" className="filter-text-input" type="text" placeholder='Brand Name' onChange={(e) => setBrandName(e.target.value)}/>
       
