@@ -33,11 +33,8 @@ export const ItemList = () => {
     const [ show, setShow ] = useState(false);
 
     useEffect(() => {
-        getPage(type, page, limit)
-            .then(data => {
-                setData(data);
-                console.log("data: ", data);
-            })
+        getPage(type, page, limit, filters)
+            .then(data => setData(data))
     }, [type, page, limit, filters]);
 
     if (!data) return <p>Loading...</p>;

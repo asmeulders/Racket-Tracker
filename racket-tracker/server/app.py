@@ -1601,7 +1601,7 @@ def get_page(table):
     Search the database and return a pagination object. Filters can be applied and will
     be applied programmatically based on the current tab.
     """
-    # data = request.get_json()
+    data = request.get_json()
 
     # if not data or 'tableName' not in data or 'page' not in data or 'perPage' not in data:
     #     return jsonify({"error": "Missing required fields 'page' or 'perPage'"}), 400
@@ -1611,13 +1611,13 @@ def get_page(table):
     page = max(page, 1)
     limit = min(max(limit, 1), 100)
 
-    # filters = data.get('filters')
+    filters = data.get('filters')
 
     handler = PAGE_HANDLERS.get(table)
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404
     
-    return handler(page, limit, filters=None) # filters are none for right now
+    return handler(page, limit, filters=filters) # filters are none for right now
 
 # ================================================================
 # TODO: Assign a racket to a user by querying for the racket and 
