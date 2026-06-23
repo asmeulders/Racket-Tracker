@@ -18,7 +18,7 @@ export const OrderFilter = ({onFilterChange}) => {
         'name': '',
         'orderDate': '',
         'dueDate': '',
-        'completed': '',
+        'completed': 'uncompleted',
         'paid': '',
         'racketBrand': '',
         'racketName': '',

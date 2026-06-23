@@ -25,25 +25,34 @@ export const ItemList = () => {
     const limit = Number(searchParams.get("limit")) || 10;
 
     const { getPage, deleteItem } = useStore();
+    const { getList } = useViewItem();
 
     const isFirstRender = useRef(true);
 
     const [ data, setData ] = useState(null);
     const [ filters, setFilters ] = useState({});
     const [ show, setShow ] = useState(false);
+    const [ modalData, setModalData ] = useState(null);
 
     useEffect(() => {
         getPage(type, page, limit, filters)
-            .then(data => setData(data))
+            .then(data => setData(data));
     }, [type, page, limit, filters]);
 
     if (!data) return <p>Loading...</p>;
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = async () => {
+        setShow(true);
+        for (let i = 0; i < modalConfig[type].length; i++) {
+            const items = await getList(modalConfig[type][i]);
+            setModalData(prev => ({...prev, [modalConfig[type][i]]: items}));
+        }
+    }
 
-    const handleCreateItem = async (type, close) => {
-        await searchPage(type);
+    const handleCreateItem = (type, close) => {
+        getPage(type, page, limit, filters)
+            .then(data => setData(data));
         if (close) {
             handleClose();
         }
@@ -71,17 +80,17 @@ export const ItemList = () => {
         orders: {
             renderItem: (item) => <Order order={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={data.rackets} strings={data.strings} users={data.users} />
+            renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={modalData?.rackets} strings={modalData?.strings} users={modalData?.users} />
         },
         rackets: {
             renderItem: (item) => <Racket racket={item} />,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
+            renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         strings: {
             renderItem: (item) => <String string={item} />,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
-            renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={data.brands} />
+            renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         users: {
             renderItem: (item) => <User user={item} />,
@@ -99,12 +108,21 @@ export const ItemList = () => {
             renderModal: () => <></>
         }
     };
+    
+    const modalConfig = {
+        orders: ['rackets', 'strings', 'users'],
+        rackets: ['brands'],
+        strings: ['brands'],
+        users: [],
+        brands: [],
+        inquiries: []
+    }
 
     return (
         <>
             <div className="list-header">
                 <h1>{type}</h1>
-                <button className="new-item-btn" type="button">New {type}</button>
+                <button className="new-item-btn" type="button" onClick={handleShow}>New {type}</button>
             </div>
             <div className="filter-container">
                 {itemConfig[type].renderFilter(setFilters)}
