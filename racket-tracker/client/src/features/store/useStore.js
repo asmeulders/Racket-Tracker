@@ -1,6 +1,20 @@
 import axios from 'axios';
 
 export function useStore() {
+    const getPage = async (type, page, limit) => {
+        try {
+            const res = await axios.post(`http://127.0.0.1:5000/api/${type}/search?page=${page}&limit=${limit}`, {});
+            return res.data;
+        } catch (error) {
+            console.log("caught error: ", error);
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else {
+                console.error("Could not connect to server");
+            }
+        } 
+    }
+
     const deleteItem = async (type, id) => { 
         try {
             await axios.delete(`http://localhost:5000/api/${type}/${id}`);
@@ -13,5 +27,5 @@ export function useStore() {
         }
     };
 
-    return { deleteItem };
+    return { getPage, deleteItem };
 }

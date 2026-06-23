@@ -14,11 +14,6 @@ import { useDatabase } from '../../../utils/useDatabase.js';
 import { NewItem } from './NewItem.jsx';
 import './StoreDashboard.css';
 
-// TODO: 
-// order date range filter
-// add times to order
-// other racket table for specific model specs
-
 export function StoreDashboard() {
     const { searchTable } = useDatabase();
     const [data, setData] = useState({

@@ -1335,9 +1335,219 @@ DELETE_HANDLERS = {
     'inquiries': delete_inquiry
 }
 
+# PAGE HANDLERS
 
-@app.route('/api/<string:table>', methods=['GET'])
-def get_entries(table: str):
+def search_order_page(page: int, limit: int, filters):
+    stmt = db.select(Order)
+
+    if filters:
+        username = filters.get('username')
+        orderDate = filters.get('orderDate')
+        dueDate = filters.get('dueDate')
+        completed = filters.get('completed')
+        paid = filters.get('paid')
+        racketBrand = filters.get('racketBrand')
+        racketName = filters.get('racketName')
+        stringBrand = filters.get('stringBrand')
+        stringName = filters.get('stringName')
+
+        if username:
+            stmt = stmt.where(Order.user.has(User.username.ilike(f"%{username}%")))
+        
+        if orderDate:
+            stmt = stmt.where(Order.orderDate == orderDate)
+
+        if dueDate:
+            stmt = stmt.where(Order.due == dueDate)
+
+        if completed:
+            if completed == 'completed':
+                stmt = stmt.where(Order.complete == True)
+            elif completed == 'uncompleted':
+                stmt = stmt.where(Order.complete == False)
+
+        if paid:
+            if paid == 'paid':
+                stmt = stmt.where(Order.paid == True)
+            elif paid == 'unpaid':
+                stmt = stmt.where(Order.paid == False)                
+
+        if racketBrand:
+            stmt = stmt.where(Order.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racketBrand}%"))))
+
+        if racketName:
+            stmt = stmt.where(Order.racket.has(Racket.name.ilike(f"%{racketName}%")))
+    
+        if stringBrand:
+            stmt = stmt.where(Order.strungWithRecords.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{stringBrand}%")))))
+
+        if stringName:
+            stmt = stmt.where(Order.strungWithRecords.any(StrungWith.string.has(String.name.ilike(f"%{stringName}%"))))
+
+    # Default Ordering
+    stmt = stmt.order_by(Order.due.desc()).order_by(Order.id.asc())
+
+    pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "page": pagination.page,
+        "limit": pagination.per_page,
+        "total": pagination.total,
+        "totalPages": pagination.pages,
+        "hasNext": pagination.has_next,
+        "hasPrev": pagination.has_prev
+    }
+
+def search_racket_page(page: int, limit: int, filters):
+    stmt = db.select(Racket)
+
+    if filters:
+        brandName = filters.get('brandName')
+        racketName = filters.get('racketName')
+        priceMin = filters.get('priceMin')
+        priceMax = filters.get('priceMax')
+
+        if brandName:
+            stmt = stmt.where(Racket.brand.has(Brand.name.ilike(f"%{brandName}%")))
+
+        if racketName:
+            stmt = stmt.where(Racket.name.ilike(f"%{racketName}%"))
+        
+        if priceMin:
+            stmt = stmt.where(Racket.price >= float(priceMin))
+
+        if priceMax:
+            stmt = stmt.where(Racket.price <= float(priceMax))
+
+    stmt = stmt.order_by(db.func.lower(Racket.name).asc())
+
+    pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "page": pagination.page,
+        "limit": pagination.per_page,
+        "total": pagination.total,
+        "totalPages": pagination.pages,
+        "hasNext": pagination.has_next,
+        "hasPrev": pagination.has_prev
+    }
+
+def search_string_page(page: int, limit: int, filters):
+    stmt = db.select(String)
+
+    if filters:
+        brandName = filters.get('brandName')
+        stringName = filters.get('stringName')
+        priceMin = filters.get('priceMin')
+        priceMax = filters.get('priceMax')
+
+        if brandName:
+            stmt = stmt.where(String.brand.has(Brand.name.ilike(f"%{brandName}%")))
+
+        if stringName:
+            stmt = stmt.where(String.name.ilike(f"%{stringName}%"))
+        
+        if priceMin:
+            stmt = stmt.where(String.pricePerRacket >= float(priceMin))
+
+        if priceMax:
+            stmt = stmt.where(String.pricePerRacket <= float(priceMax))
+
+    stmt = stmt.order_by(db.func.lower(String.name).asc())
+
+    pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "page": pagination.page,
+        "limit": pagination.per_page,
+        "total": pagination.total,
+        "totalPages": pagination.pages,
+        "hasNext": pagination.has_next,
+        "hasPrev": pagination.has_prev
+    }
+
+def search_user_page(page: int, limit: int, filters):
+    stmt = db.select(User)
+
+    if filters:
+        username = filters.get('username')
+
+        if username:
+            stmt = stmt.where(User.username.ilike(f"%{username}%"))
+
+    stmt = stmt.order_by(db.func.lower(User.username).asc())
+
+    pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "page": pagination.page,
+        "limit": pagination.per_page,
+        "total": pagination.total,
+        "totalPages": pagination.pages,
+        "hasNext": pagination.has_next,
+        "hasPrev": pagination.has_prev
+    }
+
+def search_brand_page(page: int, limit: int, filters):
+    stmt = db.select(Brand)
+
+    if filters:
+        brandName = filters.get('brandName')
+
+        if brandName:
+            stmt = stmt.where(Brand.name.ilike(f"%{brandName}%"))
+
+    stmt = stmt.order_by(db.func.lower(Brand.name).asc())
+
+    pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "page": pagination.page,
+        "limit": pagination.per_page,
+        "total": pagination.total,
+        "totalPages": pagination.pages,
+        "hasNext": pagination.has_next,
+        "hasPrev": pagination.has_prev
+    }
+
+def search_inquiry_page(page: int, limit: int, filters):
+    stmt = db.select(Inquiry)
+
+    if filters:
+        username = filters.get('username')
+        inqDate = filters.get('inqDate')
+
+        if username:
+            stmt = stmt.where(Inquiry.name.ilike(f"%{username}%"))
+        
+        if inqDate:
+            stmt = stmt.where(Inquiry.date == inqDate)
+    
+    stmt = stmt.order_by(Inquiry.date.desc()).order_by(db.func.lower(Inquiry.name).asc()) 
+
+    pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
+    return {
+        "items": [p.to_json() for p in pagination.items],
+        "page": pagination.page,
+        "limit": pagination.per_page,
+        "total": pagination.total,
+        "totalPages": pagination.pages,
+        "hasNext": pagination.has_next,
+        "hasPrev": pagination.has_prev
+    } 
+
+PAGE_HANDLERS = {
+    'orders': search_order_page,
+    'rackets': search_racket_page,
+    'strings': search_string_page,
+    'users': search_user_page,
+    'brands': search_brand_page,
+    'inquiries': search_inquiry_page
+}
+
+
+@app.route('/api/list/<string:table>', methods=['GET'])
+def get_list(table: str):
     handler = LIST_HANDLERS.get(table)
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404
@@ -1385,161 +1595,29 @@ def delete_entry(table: str, id: int):
     return handler(id)
 
 
-@app.route('/api/search-table', methods=['POST'])
-def get_page():
+@app.route('/api/<string:table>/search', methods=['POST'])
+def get_page(table):
     """
     Search the database and return a pagination object. Filters can be applied and will
     be applied programmatically based on the current tab.
     """
-    data = request.get_json()
+    # data = request.get_json()
 
-    if not data or 'tableName' not in data or 'page' not in data or 'perPage' not in data:
-        return jsonify({"error": "Missing required fields 'page' or 'perPage'"}), 400
+    # if not data or 'tableName' not in data or 'page' not in data or 'perPage' not in data:
+    #     return jsonify({"error": "Missing required fields 'page' or 'perPage'"}), 400
     
-    tableName = data.get('tableName')
-    table = MODEL_MAP[tableName]
+    page = request.args.get("page", default=1, type=int) or 1
+    limit = request.args.get("limit", default=10, type=int) or 10
+    page = max(page, 1)
+    limit = min(max(limit, 1), 100)
 
-    page = data.get('page')
-    perPage = data.get('perPage')
-    filters = data.get('filters')
+    # filters = data.get('filters')
 
-    # Basic query
-    stmt = db.select(table)
-
-    # ==================== Applying Filters ============================
-    # Order Filtering
-    if filters and table == Order:
-        if filters:
-            username = filters.get('username')
-            orderDate = filters.get('orderDate')
-            dueDate = filters.get('dueDate')
-            completed = filters.get('completed')
-            paid = filters.get('paid')
-            racketBrand = filters.get('racketBrand')
-            racketName = filters.get('racketName')
-            stringBrand = filters.get('stringBrand')
-            stringName = filters.get('stringName')
-
-            if username:
-                stmt = stmt.where(table.user.has(User.username.ilike(f"%{username}%")))
-            
-            if orderDate:
-                stmt = stmt.where(table.orderDate == orderDate)
-
-            if dueDate:
-                stmt = stmt.where(table.due == dueDate)
-
-            if completed:
-                if completed == 'completed':
-                    stmt = stmt.where(table.complete == True)
-                elif completed == 'uncompleted':
-                    stmt = stmt.where(table.complete == False)
-
-            if paid:
-                if paid == 'paid':
-                    stmt = stmt.where(table.paid == True)
-                elif paid == 'unpaid':
-                    stmt = stmt.where(table.paid == False)                
-
-            if racketBrand:
-                stmt = stmt.where(table.racket.has(Racket.brand.has(Brand.name.ilike(f"%{racketBrand}%"))))
-
-            if racketName:
-                stmt = stmt.where(table.racket.has(Racket.name.ilike(f"%{racketName}%")))
-        
-            if stringBrand:
-                stmt = stmt.where(table.strungWithRecords.any(StrungWith.string.has(String.brand.has(Brand.name.ilike(f"%{stringBrand}%")))))
-
-            if stringName:
-                stmt = stmt.where(table.strungWithRecords.any(StrungWith.string.has(String.name.ilike(f"%{stringName}%"))))
-
-        # Default Ordering
-        stmt = stmt.order_by(table.due.desc()).order_by(table.id.asc())
-    # Racket Filtering
-    elif table == Racket:
-        if filters:
-            brandName = filters.get('brandName')
-            racketName = filters.get('racketName')
-            priceMin = filters.get('priceMin')
-            priceMax = filters.get('priceMax')
-
-            if brandName:
-                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brandName}%")))
-
-            if racketName:
-                stmt = stmt.where(table.name.ilike(f"%{racketName}%"))
-            
-            if priceMin:
-                stmt = stmt.where(table.price >= float(priceMin))
-
-            if priceMax:
-                stmt = stmt.where(table.price <= float(priceMax))
-
-        stmt = stmt.order_by(db.func.lower(table.name).asc())
-    # String Filtering
-    elif table == String:
-        if filters:
-            brandName = filters.get('brandName')
-            stringName = filters.get('stringName')
-            priceMin = filters.get('priceMin')
-            priceMax = filters.get('priceMax')
-
-            if brandName:
-                stmt = stmt.where(table.brand.has(Brand.name.ilike(f"%{brandName}%")))
-
-            if stringName:
-                stmt = stmt.where(table.name.ilike(f"%{stringName}%"))
-            
-            if priceMin:
-                stmt = stmt.where(table.pricePerRacket >= float(priceMin))
-
-            if priceMax:
-                stmt = stmt.where(table.pricePerRacket <= float(priceMax))
-
-        stmt = stmt.order_by(db.func.lower(table.name).asc())
-    # User Filtering
-    elif table == User:
-        if filters:
-            username = filters.get('username')
-
-            if username:
-                stmt = stmt.where(table.username.ilike(f"%{username}%"))
-
-        stmt = stmt.order_by(db.func.lower(table.username).asc())
-    # Brand Filtering
-    elif table == Brand:
-        if filters:
-            brandName = filters.get('brandName')
-
-            if brandName:
-                stmt = stmt.where(table.name.ilike(f"%{brandName}%"))
-
-        stmt = stmt.order_by(db.func.lower(table.name).asc())
-    # Inquiry Filtering
-    elif table == Inquiry:
-        if filters:
-            username = filters.get('username')
-            inqDate = filters.get('inqDate')
-
-            if username:
-                stmt = stmt.where(table.name.ilike(f"%{username}%"))
-            
-            if inqDate:
-                stmt = stmt.where(table.date == inqDate)
-        
-        stmt = stmt.order_by(table.date.desc()).order_by(db.func.lower(table.name).asc())   
+    handler = PAGE_HANDLERS.get(table)
+    if handler is None:
+        return jsonify({"error": "Unknown table"}), 404
     
-    pagination = db.paginate(select=stmt, page=page, per_page=perPage)
-
-    return {
-        "items": [p.to_json() for p in pagination.items],
-        "totalPages": pagination.pages,
-        "currentPage": pagination.page,
-        "hasNext": pagination.has_next,
-        "perPage": pagination.per_page
-        # "iter_pages": pagination.iter_pages(left_edge=2, left_current=1, right_current=2, right_edge=2)
-    }
-
+    return handler(page, limit, filters=None) # filters are none for right now
 
 # ================================================================
 # TODO: Assign a racket to a user by querying for the racket and 
