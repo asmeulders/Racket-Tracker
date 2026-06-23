@@ -14,62 +14,64 @@ export const OrderFilter = ({onFilterChange}) => {
      *  - String Brand
      *  - String Name
      */
-    const [username, setUsername] = useState('');
-    const [orderDate, setOrderDate] = useState('');
-    const [dueDate, setDueDate] = useState('');
-    const [completed, setCompleted] = useState('');
-    const [paid, setPaid] = useState('');
-    const [racketBrand, setRacketBrand] = useState('')
-    const [racketName, setRacketName] = useState('');
-    const [stringBrand, setStringBrand] = useState('')
-    const [stringName, setStringName] = useState('');
+    const [ filters, setFilters ] = useState({
+        'name': '',
+        'orderDate': '',
+        'dueDate': '',
+        'completed': '',
+        'paid': '',
+        'racketBrand': '',
+        'racketName': '',
+        'stringNrand': '',
+        'stringName': ''
+    })
 
     // Whenever these are changed by the user update the search
     useEffect(() => {
         onFilterChange({
-        'username': username,
-        'orderDate': orderDate,
-        'dueDate': dueDate,
-        'completed': completed,
-        'paid': paid,
-        'racketBrand': racketBrand,
-        'racketName': racketName,
-        'stringNrand': stringBrand,
-        'stringName': stringName
+        'name': filters.name,
+        'orderDate': filters.orderDate,
+        'dueDate': filters.dueDate,
+        'completed': filters.completed,
+        'paid': filters.paid,
+        'racketBrand': filters.racketBrand,
+        'racketName': filters.racketName,
+        'stringNrand': filters.stringBrand,
+        'stringName': filters.stringName
         })
-    }, [username, orderDate, dueDate, completed, paid, racketBrand, racketName, stringBrand, stringName])
+    }, [filters])
 
     return (
         <div className='filter-content'>
             {/* User Name */}
-            <label htmlFor="usernameInput">Customer Name:</label>
-            <input id="usernameInput" className="filter-text-input" type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
+            <label htmlFor="nameInput">Customer Username/First Name/Last Name:</label>
+            <input id="nameInput" className="filter-text-input" type="text" placeholder='Name' onChange={(e) => setFilters(prev => ({...prev, name: e.target.value}))}/>
             
             {/* Order Date */}
             <label htmlFor="orderDate">Order Date:</label>
-            <input className="filter-date-input" type="date" id='orderDate' onChange={(e) => setOrderDate(e.target.value)}/>
+            <input className="filter-date-input" type="date" id='orderDate' onChange={(e) => setFilters(prev => ({...prev, orderDate: e.target.value}))}/>
             
             {/* Order Due Date */}
             <label htmlFor="orderDate">Order Due:</label>
-            <input className="filter-date-input" type="date" id='dueDate' onChange={(e) => setDueDate(e.target.value)}/>
+            <input className="filter-date-input" type="date" id='dueDate' onChange={(e) => setFilters(prev => ({...prev, dueDate: e.target.value}))}/>
             
             {/* Racket */}
             <label htmlFor="racketFilter">Racket:</label>
             <div id="racketFilter" className='brand-item-container'>
-                <input className="filter-text-input" type="text" placeholder='Racket Brand' onChange={(e) => setRacketBrand(e.target.value)}/>
-                <input className="filter-text-input" type="text" placeholder='Racket Name' onChange={(e) => setRacketName(e.target.value)}/>
+                <input className="filter-text-input" type="text" placeholder='Racket Brand' onChange={(e) => setFilters(prev => ({...prev, racketBrand: e.target.value}))}/>
+                <input className="filter-text-input" type="text" placeholder='Racket Name' onChange={(e) => setFilters(prev => ({...prev, racketName: e.target.value}))}/>
             </div>
             
             {/* String */}
             <label htmlFor="stringFilter">String:</label>
             <div id="stringFilter" className='brand-item-container'>
-                <input className="filter-text-input" type="text" placeholder='String Brand' onChange={(e) => setStringBrand(e.target.value)}/>
-                <input className="filter-text-input" type="text" placeholder='String Name' onChange={(e) => setStringName(e.target.value)}/>
+                <input className="filter-text-input" type="text" placeholder='String Brand' onChange={(e) => setFilters(prev => ({...prev, stringBrand: e.target.value}))}/>
+                <input className="filter-text-input" type="text" placeholder='String Name' onChange={(e) => setFilters(prev => ({...prev, stringName: e.target.value}))}/>
             </div>
             
             {/* Paid */}
             <label htmlFor="isPaidFilter">Payment Status:</label>
-            <select id="isCompleteFilter" onChange={(e) => setPaid(e.target.value)} value={paid}>
+            <select id="isCompleteFilter" onChange={(e) => setFilters(prev => ({...prev, paid: e.target.value}))} value={filters.paid}>
                 <option value="">Show All</option>
                 <option value="unpaid">Show Only Unpaid</option>
                 <option value="paid">Show Only Paid</option>
@@ -77,7 +79,7 @@ export const OrderFilter = ({onFilterChange}) => {
             
             {/* Completed */}
             <label htmlFor="isCompleteFilter">Order Progress:</label>
-            <select id="isCompleteFilter" onChange={(e) => setCompleted(e.target.value)} value={completed}>
+            <select id="isCompleteFilter" onChange={(e) => setFilters(prev => ({...prev, completed: e.target.value}))} value={filters.completed}>
                 <option value="">Show All</option>
                 <option value="uncompleted">Show Only Uncompleted</option>
                 <option value="completed">Show Only Completed</option>
