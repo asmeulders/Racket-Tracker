@@ -4,27 +4,29 @@ export const InquiryFilter = ({onFilterChange}) => {
   /**
    * The filter component for an inquiry in the dashboard.
    * Filters:
-   *  - User Name
+   *  - Name
    *  - Inquiry Date
    */
-  const [username, setUsername] = useState('')
-  const [inqDate, setInqDate] = useState('');
+  const [ filters, setFilters ] = useState({
+    name: '',
+    inqDate: ''
+  })
 
   // Whenever these are changed by the user update the search
   useEffect(() => {
     onFilterChange({
-      'username': username,
-      'inq_date': inqDate
+      'name': filters.name,
+      'inq_date': filters.inqDate
     })
-  }, [username, inqDate])
+  }, [filters])
 
   return (
     <div className='filter-content'>
-      <label htmlFor="usernameFilter">Inquirer Name:</label>
-      <input id="usernameFilter" className='filter-text-input' type="text" placeholder='User Name' onChange={(e) => setUsername(e.target.value)}/>
+      <label htmlFor="nameFilter">Name:</label>
+      <input id="nameFilter" className='filter-text-input' type="text" placeholder='Name' onChange={(e) => setFilters(prev => ({...prev, name: e.target.value}))}/>
       
-      <label htmlFor="orderDateFilter">Inquiry Date:</label>
-      <input id="orderDateFilter" className="filter-date-input" type="date" onChange={(e) => setInqDate(e.target.value)}/>
+      <label htmlFor="orderDateFilter">Date:</label>
+      <input id="orderDateFilter" className="filter-date-input" type="date" onChange={(e) => setFilters(prev => ({...prev, inqDate: e.target.value}))}/>
     </div>
   )
 }

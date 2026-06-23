@@ -8,34 +8,36 @@ export const StringFilter = ({onFilterChange}) => {
    *  - String Name
    *  - Price range
    */
-  const [brandName, setBrandName] = useState('')
-  const [stringName, setStringName] = useState('');
-  const [priceMin, setPriceMin] = useState('');
-  const [priceMax, setPriceMax] = useState('');
+  const [ filters, setFilters ] = useState({
+    brandName: '',
+    stringName: '',
+    priceMin: '',
+    priceMax: ''
+  })
 
   // Whenever these are changed by the user update the search
   useEffect(() => {
     onFilterChange({
-      'brandName': brandName,
-      'stringName': stringName,
-      'priceMin': priceMin,
-      'priceMax': priceMax
+      'brandName': filters.brandName,
+      'stringName': filters.stringName,
+      'priceMin': filters.priceMin,
+      'priceMax': filters.priceMax
     })
-  }, [brandName, stringName, priceMin, priceMax])
+  }, [filters])
 
   return (
     <div className='filter-content'>
       <label htmlFor="brandFilter">Brand Name:</label>
-      <input id="brandFilter" className="filter-text-input" type="text" placeholder='Brand Name' onChange={(e) => setBrandName(e.target.value)}/>
+      <input id="brandFilter" className="filter-text-input" type="text" placeholder='Brand Name' onChange={(e) => setFilters(prev => ({...prev, brandName: e.target.value}))}/>
       
       <label htmlFor="stringFilter">String Name:</label>
-      <input id="stringFilter" className='filter-text-input' type="text" placeholder='String Name' onChange={(e) => setStringName(e.target.value)}/>
+      <input id="stringFilter" className='filter-text-input' type="text" placeholder='String Name' onChange={(e) => setFilters(prev => ({...prev, stringName: e.target.value}))}/>
       
       <label htmlFor="priceFilterMin">Price Minimum:</label>
-      <input id='priceFilterMin' className='filter-num-input' type="number" placeholder='Price Min' onChange={(e) => setPriceMin(e.target.value)}/>
+      <input id='priceFilterMin' className='filter-num-input' type="number" placeholder='Price Min' onChange={(e) => setFilters(prev => ({...prev, priceMin: e.target.value}))}/>
       
       <label htmlFor="priceFilterMax">Price Maximum:</label>
-      <input id='priceFilterMax' className='filter-num-input' type="number" placeholder='Price Max' onChange={(e) => setPriceMax(e.target.value)}/>
+      <input id='priceFilterMax' className='filter-num-input' type="number" placeholder='Price Max' onChange={(e) => setFilters(prev => ({...prev, priceMax: e.target.value}))}/>
     </div>
   );
 };

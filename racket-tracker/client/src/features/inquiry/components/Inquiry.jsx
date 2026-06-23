@@ -6,18 +6,18 @@ export function Inquiry({inquiry}) {
   const displayDate = inquiry.date ? format(parseISO(inquiry.date), 'MM/dd/yyyy') : null;
   
   return (
-      <div className='inquiry-container'>
-        <div className='inquiry-header'>
-          {displayDate ? `${displayDate}:` : ''} {inquiry.name}
-        </div>
-        <div className='contact-information'>
-          <ul>
-            <li>Phone number: {inquiry.phone}</li>
-            <li>Email: {inquiry.email}</li>
-          </ul>
-        </div>
-        <div className='message-container'>Message: {inquiry.message}</div>
+    <div className='inquiry-container'>
+      <div className='inquiry-header'>
+        {displayDate ? `${displayDate}:` : ''} {inquiry.name}
       </div>
+      <div className='contact-information'>
+        <ul>
+          <li>Phone number: {inquiry.phone}</li>
+          <li>Email: {inquiry.email}</li>
+        </ul>
+      </div>
+      <div className='message-container'>Message: {inquiry.message}</div>
+    </div>
   )
 }
 

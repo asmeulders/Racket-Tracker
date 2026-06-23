@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
+from sqlalchemy.sql.functions import concat
 from flask_cors import CORS
 from sqlalchemy.exc import OperationalError, IntegrityError, SQLAlchemyError
 from datetime import datetime, timedelta
@@ -1341,7 +1343,7 @@ def search_order_page(page: int, limit: int, filters):
     stmt = db.select(Order)
 
     if filters:
-        username = filters.get('username')
+        name = filters.get('name')
         orderDate = filters.get('orderDate')
         dueDate = filters.get('dueDate')
         completed = filters.get('completed')
@@ -1351,8 +1353,13 @@ def search_order_page(page: int, limit: int, filters):
         stringBrand = filters.get('stringBrand')
         stringName = filters.get('stringName')
 
-        if username:
-            stmt = stmt.where(Order.user.has(User.username.ilike(f"%{username}%")))
+        if name:
+            stmt = stmt.where(Order.user.has(or_(
+                User.username.ilike(f"%{name}%"),
+                User.firstName.ilike(f"%{name}%"),
+                User.lastName.ilike(f"%{name}%"),
+                concat(User.firstName, ' ', User.lastName).ilike(f"%{name}%")
+            )))
         
         if orderDate:
             stmt = stmt.where(Order.orderDate == orderDate)
@@ -1470,10 +1477,15 @@ def search_user_page(page: int, limit: int, filters):
     stmt = db.select(User)
 
     if filters:
-        username = filters.get('username')
+        name = filters.get('name')
 
-        if username:
-            stmt = stmt.where(User.username.ilike(f"%{username}%"))
+        if name:
+            stmt = stmt.where(or_(
+                User.username.ilike(f"%{name}%"),
+                User.firstName.ilike(f"%{name}%"),
+                User.lastName.ilike(f"%{name}%"),
+                concat(User.firstName, ' ', User.lastName).ilike(f"%{name}%")
+            ))
 
     stmt = stmt.order_by(db.func.lower(User.username).asc())
 
@@ -1514,11 +1526,11 @@ def search_inquiry_page(page: int, limit: int, filters):
     stmt = db.select(Inquiry)
 
     if filters:
-        username = filters.get('username')
+        name = filters.get('name')
         inqDate = filters.get('inqDate')
 
-        if username:
-            stmt = stmt.where(Inquiry.name.ilike(f"%{username}%"))
+        if name:
+            stmt = stmt.where(Inquiry.name.ilike(f"%{name}%"))
         
         if inqDate:
             stmt = stmt.where(Inquiry.date == inqDate)
