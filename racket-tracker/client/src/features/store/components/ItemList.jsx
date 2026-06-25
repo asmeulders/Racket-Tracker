@@ -11,6 +11,7 @@ import { String, StringFilter, StringForm } from "../../string";
 import { User, UserFilter, UserForm } from "../../user";
 import { Brand, BrandFilter, BrandForm } from "../../brand";
 import { Inquiry, InquiryFilter } from "../../inquiry";
+import { Collapsible } from "../../../components/collapsible/Collapsible";
 
 // TODO: 
 // order date range filter
@@ -125,7 +126,7 @@ export const ItemList = () => {
                 <button className="new-item-btn" type="button" onClick={handleShow}>New {type}</button>
             </div>
             <div className="filter-container">
-                {itemConfig[type].renderFilter(setFilters)}
+                <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
             </div>
             <div className="list-content">
                 {data.items.length === 0 ? (
