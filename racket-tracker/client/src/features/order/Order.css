@@ -1,49 +1,5 @@
-.order-item-header {
-    display: flex;
-    justify-content: space-between;
-    padding-right: 10px;
-    align-items: center;
+.order-container {
     width: 100%;
-}
-
-.order-complete-status {
-    text-align: right;
-}
-
-.job-details-container {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.paid-complete-container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: right;
-    width: 100%;
-    gap: 10px;
-}
-
-.paid-btn {
-    background: none;
-    border: none;
-    line-height: 1;
-    color: var(--secondary);
-}
-
-.paid-btn:hover {
-    text-decoration: underline;
-}
-
-.paid-btn--paid {
-    color: var(--primary);
-}
-
-.paid-btn:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-.complete-btn {
-    line-height: 1;
+    display: grid;
+    grid-template-columns: auto auto auto;
 }

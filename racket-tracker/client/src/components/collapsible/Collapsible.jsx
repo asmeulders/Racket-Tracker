@@ -11,10 +11,9 @@ export const Collapsible = ({renderContent}) => {
     return (
         <div className="collapsible-container">
             <button type="button" className="collapsible" onClick={handleCollapse}>
-                <p>{collapsed ? "Show Filters" : "Hide Filters"}</p>
-                <p>{collapsed ? '\u203A' : '\u2304'}</p>
+                <p>{collapsed ? "\u203A Show Filters" : "\u2304 Hide Filters"}</p>
             </button>
-            <div className="content" style={{ display: collapsed ? "none" : "block"}}>
+            <div className="collapsible-content" style={{ display: collapsed ? "none" : "block"}}>
                 {renderContent()}
             </div> 
         </div>

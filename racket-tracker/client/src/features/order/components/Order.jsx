@@ -27,22 +27,17 @@ export function Order({order}) {
 
   return (
     <div className='order-container'>
-      <div className='order-item-header'>
-        <p className='order-title'>{order?.user?.firstName} {order?.user?.lastName}'s {order?.racketBrand} {order?.racketName}</p> 
-        <p className='order-complete-status'>{!complete ? `Due: ${displayDate ? displayDate : 'Unknown'}` : "Order complete"}</p>
-      </div>
-      <ul className='job-details-container'>
-        {order.jobDetails?.map((job, index) => (
-          <li key={index} className='job-details'>
-            {job.direction ? `${job.direction === 'mains' ? 'Mains' : 'Crosses'}: ` : ''}
-            {job.stringBrand} {job.stringName} at {job.tension}lbs 
-          </li>
-        ))}
-      </ul>
-      <div className='paid-complete-container'>
-        <button className={`paid-btn ${paid && 'paid-btn--paid'}`} onClick={() => handlePay(order)}>{paid ? 'Paid' : 'Unpaid'}</button>
-        {!complete && <button className='complete-btn' onClick={() => handleComplete(order)}>Complete Order</button>}
-      </div>
+      <div>{order?.user.firstName} {order?.user.lastName}</div>
+      <div>{order.complete ? "Done" : "To Do"}</div>
+      <div>{displayDate}</div>
+      <div>Racket: {order.racketBrand} {order.racketName}</div>
+      <div>Strings: {order.sameForCrosses ? 
+        order.jobDetails[0].stringBrand + ' ' + order.jobDetails[0].stringName + ' @' + order.jobDetails[0].tension + 'lbs  '
+        :
+        '(M) ' + order.jobDetails[0].stringBrand + ' ' + order.jobDetails[0].stringName + ' @' + order.jobDetails[0].tension + 'lbs ' +
+        '(C) ' + order.jobDetails[0].stringBrand + ' ' + order.jobDetails[0].stringName + ' @' + order.jobDetails[1].tension + 'lbs'
+      }</div>
+      <div>${order.price} - {order.paid ? 'Paid' : "Unpaid"}</div>
     </div>
   )
 }

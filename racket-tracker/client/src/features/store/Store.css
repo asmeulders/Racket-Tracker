@@ -73,15 +73,16 @@
   flex-direction: row;
   justify-content: space-between;
   position: relative;
+  width: 100%;
+  margin-bottom: 10px;
   padding-bottom: 10px;
   padding-right: 40px;
-  border-top: 1px solid grey;
   border-bottom: 1px solid grey;
   text-align: left;
 }
 
-.item-content {
-  width: 90%;
+.item-container:hover {
+    cursor: pointer;
 }
 
 .item-actions-btn {
