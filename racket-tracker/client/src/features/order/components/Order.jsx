@@ -6,6 +6,9 @@ import '../Order.css';
 
 export function Order({order}) {
   const { completeOrder, orderPaid } = useOrder();
+
+  // if (!order) return <p>Order not found</p>;
+
   const [complete, setComplete] = useState(order.complete);
   const [paid, setPaid] = useState(order.paid);
 
@@ -27,15 +30,15 @@ export function Order({order}) {
 
   return (
     <div className='order-container'>
-      <div>{order?.user.firstName} {order?.user.lastName}</div>
+      <div>{order?.user?.firstName} {order?.user?.lastName}</div>
       <div>{order.complete ? "Done" : "To Do"}</div>
       <div>{displayDate}</div>
       <div>Racket: {order.racketBrand} {order.racketName}</div>
       <div>Strings: {order.sameForCrosses ? 
-        order.jobDetails[0].stringBrand + ' ' + order.jobDetails[0].stringName + ' @' + order.jobDetails[0].tension + 'lbs  '
+        order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs'
         :
-        '(M) ' + order.jobDetails[0].stringBrand + ' ' + order.jobDetails[0].stringName + ' @' + order.jobDetails[0].tension + 'lbs ' +
-        '(C) ' + order.jobDetails[0].stringBrand + ' ' + order.jobDetails[0].stringName + ' @' + order.jobDetails[1].tension + 'lbs'
+        '(M) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs ' +
+        '(C) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[1]?.tension + 'lbs'
       }</div>
       <div>${order.price} - {order.paid ? 'Paid' : "Unpaid"}</div>
     </div>

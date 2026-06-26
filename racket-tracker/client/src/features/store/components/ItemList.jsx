@@ -36,8 +36,11 @@ export const ItemList = () => {
     const [ modalData, setModalData ] = useState(null);
 
     useEffect(() => {
-        getPage(type, page, limit, filters)
-            .then(data => setData(data));
+        let active = true;
+        getPage(type, page, limit, filters).then(data => {
+            if (active) setData(data);
+        });
+        return () => { active = false; };
     }, [type, page, limit, filters]);
 
     if (!data) return <p>Loading...</p>;
