@@ -11,6 +11,7 @@ import { String, StringFilter, StringForm } from "../../string";
 import { User, UserFilter, UserForm } from "../../user";
 import { Brand, BrandFilter, BrandForm } from "../../brand";
 import { Inquiry, InquiryFilter } from "../../inquiry";
+import { Collapsible } from "../../../components/collapsible/Collapsible";
 
 // TODO: 
 // order date range filter
@@ -24,7 +25,7 @@ export const ItemList = () => {
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 10;
 
-    const { getPage, deleteItem } = useStore();
+    const { getPage } = useStore();
     const { getList } = useViewItem();
 
     const isFirstRender = useRef(true);
@@ -35,8 +36,11 @@ export const ItemList = () => {
     const [ modalData, setModalData ] = useState(null);
 
     useEffect(() => {
-        getPage(type, page, limit, filters)
-            .then(data => setData(data));
+        let active = true;
+        getPage(type, page, limit, filters).then(data => {
+            if (active) setData(data);
+        });
+        return () => { active = false; };
     }, [type, page, limit, filters]);
 
     if (!data) return <p>Loading...</p>;
@@ -55,15 +59,6 @@ export const ItemList = () => {
             .then(data => setData(data));
         if (close) {
             handleClose();
-        }
-    };
-
-    const handleDelete = async (item) => {
-        const confirmed = window.confirm("Are you sure you want to delete this item?");
-
-        if (confirmed) {
-            await deleteItem(type, item.id);
-            // onDataDeleted(item.id);
         }
     };
 
@@ -125,7 +120,7 @@ export const ItemList = () => {
                 <button className="new-item-btn" type="button" onClick={handleShow}>New {type}</button>
             </div>
             <div className="filter-container">
-                {itemConfig[type].renderFilter(setFilters)}
+                <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
             </div>
             <div className="list-content">
                 {data.items.length === 0 ? (
@@ -133,14 +128,8 @@ export const ItemList = () => {
                 ) : (
                     <ul className="item-list">
                         {data.items.map((item) => (
-                            <li key={item.id} className="item-container">
-                                <div className="item-content">
-                                    {itemConfig[type].renderItem(item)}
-                                </div>
-                                <div className='item-actions-btn'>
-                                    <button type='button' onClick={() => handleDelete(item)}>Delete</button>
-                                    <button type='button' onClick={() => handleView(item)}>View</button>      
-                                </div>          
+                            <li key={item.id} className="item-container" onClick={() => handleView(item)}>
+                                {itemConfig[type].renderItem(item)}
                             </li>
                         ))}
                     </ul>
