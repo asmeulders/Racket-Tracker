@@ -3,3 +3,22 @@
     display: grid;
     grid-template-columns: auto auto auto;
 }
+
+.order-status {
+    width: fit-content;
+    padding: 5px 7px;
+    color: white;
+    border-radius: 5px;
+}
+
+.order-status--to-do {
+    background-color: var(--primary);
+}
+
+.order-status--done {
+    background-color: green;
+}
+
+.order-status--late {
+    background-color: red;
+}
