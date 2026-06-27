@@ -54,18 +54,26 @@ export function Order({order}) {
   }
 
   return (
-    <div className='order-container'>
-      <div className='order-info' >{order?.user?.firstName} {order?.user?.lastName}</div>
-      <div className={getStatusClassName()} >{getStatusText()}</div>
-      <div className='order-info' >{displayDate}</div>
-      <div className='order-info' >Racket: {order.racketBrand} {order.racketName}</div>
-      <div className='order-info' >Strings: {order.sameForCrosses ? 
-        order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs'
-        :
-        '(M) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs ' +
-        '(C) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[1]?.tension + 'lbs'
-      }</div>
-      <div className='order-info' >${order.price} - {order.paid ? 'Paid' : "Unpaid"}</div>
+    <div className='order-details'>
+      <div className='details-header'>
+        <div className='item-info'>Due: {displayDate}</div>
+        <div className='item-info' >${order.price} - {order.paid ? 'Paid' : "Unpaid"}</div>
+      </div>
+      
+      <div className='details-content'>
+        <div className='item-info item-info--large'>{order?.user?.firstName} {order?.user?.lastName}</div>
+        <div className='job-details'>
+          <div className='item-info'>Racket: {order.racketBrand} {order.racketName}</div>
+          <div className='item-info'>Strings: {order.sameForCrosses ? 
+            order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs'
+            :
+            '(M) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs ' +
+            '(C) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[1]?.tension + 'lbs'
+          }</div>
+        </div>
+      </div>
+      
+      <div className={getStatusClassName()}>{getStatusText()}</div>
     </div>
   )
 }

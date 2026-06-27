@@ -2,8 +2,9 @@ import "../String.css"
 
 export function String({string}) {
   return (
-    <div className='string-container'>
-      {string.brandName} {string.name} - ${string.pricePerRacket} 
+    <div className='string-details'>
+      <div className="item-info item-info--large">{string.brandName} {string.name}</div>
+      <div className="item-info">${string.pricePerRacket} </div>
     </div>
   )
 }
