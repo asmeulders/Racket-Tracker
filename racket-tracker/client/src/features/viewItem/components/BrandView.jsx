@@ -50,18 +50,16 @@ export function BrandView({data, setData}) {
                         <span className='field-details'>{brand.name}</span>
                     }
                 </div>
-                <div className='item-edit-btn'>
-                    {isEditing ? 
-                        <button onClick={() => handleSave()}>Save</button> :
-                        <button onClick={async () => await handleEdit()}>Edit</button>
-                    }
-                </div>
-            </div>
 
-            <div className="item-actions">
-                <button className="action-btn" onClick={handleDelete}>Delete Brand</button>
-                <button className="action-btn">Create New Brand</button>
-            </div>    
+                <div className="item-actions">
+                    {isEditing ? 
+                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
+                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
+                    }
+                    <button className="action-btn" onClick={handleDelete}>Delete Brand</button>
+                    <button className="action-btn">Create New Brand</button>
+                </div>   
+            </div>
         </div>
     );
 };

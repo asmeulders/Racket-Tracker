@@ -48,12 +48,11 @@ export function InquiryView({data, setData}) {
                     <span className='field-details'>{inquiry.message}</span>
 
                 </div>
-            </div>
-
-            <div className="item-actions">
-                <button className="action-btn" onClick={handleDelete}>Delete Inquiry</button>
-                <button className="action-btn">Create New Inquiry</button>
-            </div>    
+                <div className="item-actions">
+                    <button className="action-btn" onClick={handleDelete}>Delete Inquiry</button>
+                    <button className="action-btn">Create New Inquiry</button>
+                </div>  
+            </div>  
         </div>
     );
 };
