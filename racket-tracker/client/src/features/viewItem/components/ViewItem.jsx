@@ -32,8 +32,6 @@ export const ViewItem = () => {
     const Component = views[type] ?? NotFoundView;
 
     return (
-        <div className="view-item-page">
-            <Component data={data} setData={setData}/>
-        </div>
+        <Component data={data} setData={setData}/>
     );
 }

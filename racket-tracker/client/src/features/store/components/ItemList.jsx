@@ -13,6 +13,8 @@ import { Brand, BrandFilter, BrandForm } from "../../brand";
 import { Inquiry, InquiryFilter } from "../../inquiry";
 import { Collapsible } from "../../../components/collapsible/Collapsible";
 
+import './ItemList.css'
+
 // TODO: 
 // order date range filter
 // add times to order

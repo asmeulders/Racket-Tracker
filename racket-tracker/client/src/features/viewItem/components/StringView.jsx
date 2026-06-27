@@ -96,18 +96,15 @@ export function StringView({data, setData}) {
                         <span className='field-details'>{string.pricePerRacket}</span>
                     }
                 </div>
-                <div className='item-edit-btn'>
+                <div className="item-actions">
                     {isEditing ? 
-                        <button onClick={() => handleSave()}>Save</button> :
-                        <button onClick={async () => await handleEdit()}>Edit</button>
+                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
+                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
-                </div>
+                    <button className="action-btn" onClick={handleDelete}>Delete String</button>
+                    <button className="action-btn">Create New String</button>
+                </div>   
             </div>
-
-            <div className="item-actions">
-                <button className="action-btn" onClick={handleDelete}>Delete String</button>
-                <button className="action-btn">Create New String</button>
-            </div>    
         </div>
     );
 };

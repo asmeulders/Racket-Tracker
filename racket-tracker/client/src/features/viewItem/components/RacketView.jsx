@@ -97,18 +97,15 @@ export function RacketView({data, setData}) {
                         <span className='field-details'>{racket.price}</span>
                     }
                 </div>
-                <div className='item-edit-btn'>
+                <div className="item-actions">
                     {isEditing ? 
-                        <button onClick={() => handleSave()}>Save</button> :
-                        <button onClick={async () => await handleEdit()}>Edit</button>
+                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
+                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
-                </div>
+                    <button className="action-btn" onClick={handleDelete}>Delete Racket</button>
+                    <button className="action-btn">Create New Racket</button>
+                </div> 
             </div>
-
-            <div className="item-actions">
-                <button className="action-btn" onClick={handleDelete}>Delete Racket</button>
-                <button className="action-btn">Create New Racket</button>
-            </div>    
         </div>
     );
 };

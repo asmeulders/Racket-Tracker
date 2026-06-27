@@ -1,5 +1,27 @@
-.order-container {
-    width: 100%;
-    display: grid;
-    grid-template-columns: auto auto auto;
+.order-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.order-status {
+    position: absolute;
+    right: 0;
+    top: 35px;
+    width: fit-content;
+    padding: 5px 7px;
+    color: white;
+    border-radius: 5px;
+}
+
+.order-status--to-do {
+    background-color: var(--primary);
+}
+
+.order-status--done {
+    background-color: green;
+}
+
+.order-status--late {
+    background-color: red;
 }

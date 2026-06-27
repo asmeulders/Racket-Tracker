@@ -183,24 +183,21 @@ export const OrderView = ({data, setData}) => {
                         }
                     </div>
                 </div>
-                <div className='item-edit-btn'>
+                <div className="item-actions">
                     {isEditing ? 
-                        <button onClick={() => handleSave()}>Save</button> :
-                        <button onClick={async () => await handleEdit()}>Edit</button>
+                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
+                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
-                </div>
-            </div>
-
-            <div className="item-actions">
-                <button className="action-btn" onClick={handleDelete}>Delete Order</button>
-                <button className="action-btn" onClick={handleComplete}>
-                    {isComplete ? "Mark Incomplete" : "Mark Complete"}
-                </button>
-                <button className="action-btn" onClick={handlePay}>
-                    {isPaid ? "Mark Unpaid" : "Mark Paid"}
-                </button>
-                <button className="action-btn">Create New Order</button>
-            </div>            
+                    <button className="action-btn" onClick={handleDelete}>Delete Order</button>
+                    <button className="action-btn" onClick={handleComplete}>
+                        {isComplete ? "Mark Incomplete" : "Mark Complete"}
+                    </button>
+                    <button className="action-btn" onClick={handlePay}>
+                        {isPaid ? "Mark Unpaid" : "Mark Paid"}
+                    </button>
+                    <button className="action-btn">Create New Order</button>
+                </div>  
+            </div>                      
         </div>
     )
 }
