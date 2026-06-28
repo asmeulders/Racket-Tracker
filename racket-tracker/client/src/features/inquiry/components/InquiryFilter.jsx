@@ -16,7 +16,7 @@ export const InquiryFilter = ({onFilterChange}) => {
   useEffect(() => {
     onFilterChange({
       'name': filters.name,
-      'inq_date': filters.inqDate
+      'inqDate': filters.inqDate
     })
   }, [filters])
 

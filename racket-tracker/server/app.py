@@ -1392,7 +1392,7 @@ def search_order_page(page: int, limit: int, filters):
             stmt = stmt.where(Order.strungWithRecords.any(StrungWith.string.has(String.name.ilike(f"%{stringName}%"))))
 
     # Default Ordering
-    stmt = stmt.order_by(Order.due.desc()).order_by(Order.id.asc())
+    stmt = stmt.order_by(Order.due).order_by(Order.id.asc())
 
     pagination = db.paginate(select=stmt, page=page, per_page=limit, error_out=False)
     return {
