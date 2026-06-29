@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 
 import { useOrder } from '../../order/index';
 import { UserSelect } from '../../user';
@@ -37,6 +38,8 @@ export const OrderView = ({data, setData}) => {
 
     if (Object.keys(order).length === 0) return <div>Order not found.</div>;
 
+    const displayOrderDate = order.orderDate ? format(new Date(order.orderDate), 'MM/dd/yyyy') : null;
+    const displayDueDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
     const isLate = order && order.due && !order.complete && new Date(order.due) < new Date();
 
     const jobDetails = Array.isArray(order.jobDetails) ? order.jobDetails : [order.jobDetails];
@@ -111,7 +114,8 @@ export const OrderView = ({data, setData}) => {
             <div className={`order-header ${isComplete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
                 <div>Status: {isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
                 <div>Paid: {isPaid ? "Paid" : "Unpaid"}</div>
-                <div>Due: {order.due}</div>
+                <div>Ordered on: {displayOrderDate}</div>
+                <div>Due: {displayDueDate}</div>
             </div>
 
             <div className="item-card">
