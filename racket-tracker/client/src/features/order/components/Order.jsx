@@ -12,7 +12,8 @@ export function Order({order}) {
   const [complete, setComplete] = useState(order.complete);
   const [paid, setPaid] = useState(order.paid);
 
-  const displayDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
+  const displayOrderDate = order.orderDate ? format(new Date(order.orderDate), 'MM/dd/yyyy') : null;
+  const displayDueDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
 
   const handleComplete  = async () => {
     const response = await completeOrder(order);
@@ -56,7 +57,7 @@ export function Order({order}) {
   return (
     <div className='order-details'>
       <div className='details-header'>
-        <div className='item-info'>Due: {displayDate}</div>
+        <div className='item-info'>Due: {displayDueDate}</div>
         <div className='item-info' >${order.price} - {order.paid ? 'Paid' : "Unpaid"}</div>
       </div>
       

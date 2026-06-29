@@ -16,8 +16,10 @@ export const OrderFilter = ({onFilterChange}) => {
      */
     const [ filters, setFilters ] = useState({
         'name': '',
-        'orderDate': '',
-        'dueDate': '',
+        'orderDateBefore': '',
+        'orderDateAfter': '',
+        'dueDateBefore': '',
+        'dueDateAfter': '',
         'completed': 'uncompleted',
         'paid': '',
         'racketBrand': '',
@@ -30,8 +32,10 @@ export const OrderFilter = ({onFilterChange}) => {
     useEffect(() => {
         onFilterChange({
         'name': filters.name,
-        'orderDate': filters.orderDate,
-        'dueDate': filters.dueDate,
+        'orderDateBefore': filters.orderDateBefore,
+        'orderDateAfter': filters.orderDateAfter,
+        'dueDateBefore': filters.dueDateBefore,
+        'dueDateAfter': filters.dueDateAfter,
         'completed': filters.completed,
         'paid': filters.paid,
         'racketBrand': filters.racketBrand,
@@ -48,12 +52,18 @@ export const OrderFilter = ({onFilterChange}) => {
             <input id="nameInput" className="filter-text-input" type="text" placeholder='Name' onChange={(e) => setFilters(prev => ({...prev, name: e.target.value}))}/>
             
             {/* Order Date */}
-            <label htmlFor="orderDate">Order Date:</label>
-            <input className="filter-date-input" type="date" id='orderDate' onChange={(e) => setFilters(prev => ({...prev, orderDate: e.target.value}))}/>
+            <label htmlFor="orderDateBefore">Ordered Before:</label>
+            <input className="filter-date-input" type="date" id='orderDateBefore' value={filters.orderDateBefore} onChange={(e) => setFilters(prev => ({...prev, orderDateBefore: e.target.value}))}/>
+
+            <label htmlFor="orderDateAfter">Ordered After:</label>
+            <input className="filter-date-input" type="date" id='orderDateAfter' value={filters.orderDateAfter} onChange={(e) => setFilters(prev => ({...prev, orderDateAfter: e.target.value}))}/>
             
             {/* Order Due Date */}
-            <label htmlFor="orderDate">Order Due:</label>
-            <input className="filter-date-input" type="date" id='dueDate' onChange={(e) => setFilters(prev => ({...prev, dueDate: e.target.value}))}/>
+            <label htmlFor="dueDateBefore">Order Due Before:</label>
+            <input className="filter-date-input" type="date" id='dueDateBefore' value={filters.dueDateBefore} onChange={(e) => setFilters(prev => ({...prev, dueDateBefore: e.target.value}))}/>
+
+            <label htmlFor="dueDateAfter">Order Due After:</label>
+            <input className="filter-date-input" type="date" id='dueDateAfter' value={filters.dueDateAfter} onChange={(e) => setFilters(prev => ({...prev, dueDateAfter: e.target.value}))}/>
             
             {/* Racket */}
             <label htmlFor="racketFilter">Racket:</label>

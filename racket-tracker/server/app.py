@@ -1344,8 +1344,10 @@ def search_order_page(page: int, limit: int, filters):
 
     if filters:
         name = filters.get('name')
-        orderDate = filters.get('orderDate')
-        dueDate = filters.get('dueDate')
+        orderDateBefore = filters.get('orderDateBefore')
+        orderDateAfter = filters.get('orderDateAfter')
+        dueDateBefore = filters.get('dueDateBefore')
+        dueDateAfter = filters.get('dueDateAfter')
         completed = filters.get('completed')
         paid = filters.get('paid')
         racketBrand = filters.get('racketBrand')
@@ -1361,11 +1363,17 @@ def search_order_page(page: int, limit: int, filters):
                 concat(User.firstName, ' ', User.lastName).ilike(f"%{name}%")
             )))
         
-        if orderDate:
-            stmt = stmt.where(Order.orderDate == orderDate)
+        if orderDateBefore:
+            stmt = stmt.where(Order.orderDate <= orderDateBefore)
 
-        if dueDate:
-            stmt = stmt.where(Order.due == dueDate)
+        if orderDateAfter:
+            stmt = stmt.where(Order.orderDate >= orderDateAfter)
+
+        if dueDateBefore:
+            stmt = stmt.where(Order.due <= dueDateBefore)
+
+        if dueDateAfter:
+            stmt = stmt.where(Order.due >= dueDateAfter)
 
         if completed:
             if completed == 'completed':
@@ -1527,13 +1535,17 @@ def search_inquiry_page(page: int, limit: int, filters):
 
     if filters:
         name = filters.get('name')
-        inqDate = filters.get('inqDate')
+        inqDateBefore = filters.get('inqDateBefore')
+        inqDateAfter = filters.get('inqDateAfter')
 
         if name:
             stmt = stmt.where(Inquiry.name.ilike(f"%{name}%"))
         
-        if inqDate:
-            stmt = stmt.where(Inquiry.date == inqDate)
+        if inqDateBefore:
+            stmt = stmt.where(Inquiry.date <= inqDateBefore)
+
+        if inqDateAfter:
+            stmt = stmt.where(Inquiry.date >= inqDateAfter)
     
     stmt = stmt.order_by(Inquiry.date.desc()).order_by(db.func.lower(Inquiry.name).asc()) 
 

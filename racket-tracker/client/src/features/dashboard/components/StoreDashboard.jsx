@@ -19,7 +19,7 @@ export function StoreDashboard() {
         }
         const orders = await getPage('orders', 1, 3, orderFilters);
         const inquiryFilters = {
-            'inqDate': lastWeekDate
+            'inqDateAfter': lastWeekDate
         }
         const inquiries = await getPage('inquiries', 1, 2, inquiryFilters);
         setData(prev => ({ ...prev, orders: orders.items, inquiries: inquiries.items }));
