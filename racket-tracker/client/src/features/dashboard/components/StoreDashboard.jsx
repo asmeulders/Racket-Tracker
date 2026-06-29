@@ -46,7 +46,6 @@ export function StoreDashboard() {
             </div>
             
             <div className='dashboard-content'>
-                {/* Apply filter for not done */}
                 <div className='active-orders'>
                     {data?.orders.length === 0 ? (
                         <p>No active orders.</p>
@@ -61,7 +60,6 @@ export function StoreDashboard() {
                     )}
                 </div>
 
-                {/* Apply filter for within the past week */}
                 <div className='recent-inquiries'>
                     {data?.inquiries.length === 0 ? (
                         <p>No recent inquiries.</p>
@@ -81,7 +79,6 @@ export function StoreDashboard() {
             <div className='dashboard-quick-links'>
                 <button type='button'>New Order</button>
                 <button type='button'>New Customer</button>
-                <button type='button'>Settings</button>
             </div>
         </div>  
     )

@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError, IntegrityError, SQLAlchemyError
 from datetime import datetime, timedelta
 
 from db import db
-from models import User, Racket, Order, String, StrungWith, Owns, Brand, Inquiry
+from models import User, Racket, Order, String, StrungWith, Owns, Brand, Inquiry, StoreSettings
 
 from datetime import date
 
@@ -31,7 +31,61 @@ MODEL_MAP = {
 }
 
 # =======================================================================================================================
-# ----------------------------Databse Funcitons--------------------------------------------------------------------------
+# ----------------------------Store Settings-----------------------------------------------------------------------------
+# =======================================================================================================================
+
+_settings_cache = None
+
+
+def seed_store_settings():
+    if db.session.get(StoreSettings, 1) is not None:
+        return
+    try:
+        db.session.add(StoreSettings(id=1))
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+
+
+def get_store_settings():
+    global _settings_cache
+    if _settings_cache is None:
+        settings = db.session.get(StoreSettings, 1)
+        _settings_cache = settings.to_json()
+    return _settings_cache
+
+
+def update_store_settings(**kwargs):
+    global _settings_cache
+    settings = db.session.get(StoreSettings, 1)
+    for k, v in kwargs.items():
+        setattr(settings, k, v)
+    db.session.commit()
+    _settings_cache = settings.to_json()
+    return _settings_cache
+
+
+@app.route('/api/store-settings', methods=['GET'])
+def get_store_settings_route():
+    return jsonify(get_store_settings()), 200
+
+
+ALLOWED_FIELDS = {"laborCost", "laborDays"}
+@app.route('/api/store-settings', methods=['PUT'])
+def update_store_settings_route():
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    unknown_fields = set(data.keys()) - ALLOWED_FIELDS
+    if unknown_fields:
+        return jsonify({"error": f"Unknown fields: {unknown_fields}"}), 400
+
+    return jsonify(update_store_settings(**data)), 200
+
+
+# =======================================================================================================================
+# ----------------------------Database Functions-------------------------------------------------------------------------
 # =======================================================================================================================
 
 def _seed_db():
@@ -119,6 +173,8 @@ def _seed_db():
 def init_db():
     with app.app_context():
         db.create_all()
+        seed_store_settings()
+
 
 # =======================================================================================================================
 # ----------------------------General Routes-----------------------------------------------------------------------------
@@ -402,8 +458,9 @@ def create_order(body):
     - keep service fee separate from strings so you can adjust more easily?
     ================================================================================
     """
-    laborCost = 25
-    laborDays = 4
+    settings = get_store_settings()
+    laborCost = settings.laborCost
+    laborDays = settings.laborDays
 
     if "racketId" not in body or "userId" not in body or "mainsId" not in body or "mainsTension" not in body or "sameForCrosses" not in body or 'paid' not in body:
         return jsonify({"error": "Missing required fields 'racketId', 'userId', 'mainsId', 'mainsTension', 'sameForCrosses', or 'paid'"}), 400
@@ -1592,7 +1649,7 @@ def create_entry(table: str):
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404
     
-    body = request.get_json()
+    body = request.get_json(silent=True)
     if body is None:
         return jsonify({"error": "Missing request body"}), 400
     
@@ -1604,7 +1661,7 @@ def update_entry(table: str, id: int):
     if handler is None:
         return jsonify({"error": "Unknown table"}), 404
 
-    body = request.get_json()
+    body = request.get_json(silent=True)
     if body is None:
         return jsonify({"error": "Missing request body"}), 400
 
@@ -1625,17 +1682,16 @@ def get_page(table):
     Search the database and return a pagination object. Filters can be applied and will
     be applied programmatically based on the current tab.
     """
-    data = request.get_json()
-
-    # if not data or 'tableName' not in data or 'page' not in data or 'perPage' not in data:
-    #     return jsonify({"error": "Missing required fields 'page' or 'perPage'"}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"error": "Missing request body"}), 400
     
     page = request.args.get("page", default=1, type=int) or 1
     limit = request.args.get("limit", default=10, type=int) or 10
     page = max(page, 1)
     limit = min(max(limit, 1), 100)
 
-    filters = data.get('filters')
+    filters = body.get('filters')
 
     handler = PAGE_HANDLERS.get(table)
     if handler is None:

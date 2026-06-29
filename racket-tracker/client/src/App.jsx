@@ -11,7 +11,9 @@ import { StoreDashboard } from './features/dashboard/components/StoreDashboard';
 import { Store } from './features/store/Store';
 import { ItemList } from './features/store';
 import { ViewItem } from './features/viewItem/components/ViewItem';
+import { StoreSettings } from './features/store/components/StoreSettings';
 import './App.css'
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
             <Route index element={<StoreDashboard />} />
             <Route path="view-list/:type" element={<ItemList />} />
             <Route path="view-item/:type/:id" element={<ViewItem />} /> 
+            <Route path="settings" element={<StoreSettings />} /> 
           </Route>
         </Routes>
       </Router>

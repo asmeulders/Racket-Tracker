@@ -14,6 +14,7 @@ export const Sidebar = () => {
             <NavLink to="/store/view-list/brands" className="sidebar-link">Brands</NavLink>
             <NavLink to="/store/view-list/users" className="sidebar-link">Users</NavLink>
             <NavLink to="/store/view-list/inquiries" className="sidebar-link">Inquiries</NavLink>
+            <NavLink to="/store/settings" className="sidebar-link">Settings</NavLink>
         </div>
     )
 }

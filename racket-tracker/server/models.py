@@ -265,6 +265,28 @@ class Inquiry(db.Model):
             "date": self.date.strftime('%Y-%m-%d')
         }
     
+
+class StoreSettings(db.Model):
+    """
+    Settings for the store side:
+        - Service price
+        - Default turn around time
+        - TODO: Rush order time
+        -       Rush order fee
+    """
+    __tablename__ = "store_settings"
+    __table_args__ = (db.CheckConstraint("id = 1"),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    laborCost = db.Column(db.Float, nullable=False, default=25)
+    laborDays = db.Column(db.Integer, nullable=False, default=4)
+
+    def to_json(self):
+        return {
+            "laborCost": self.laborCost,
+            "laborDays": self.laborDays
+        }
+    
 # ===================================================================
 # --------Create Snapshot Data---------------------------------------
 # ===================================================================
