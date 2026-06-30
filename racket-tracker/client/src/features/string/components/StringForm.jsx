@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BrandSelect } from '../../brand';
 import { useString } from '../index';
 
-export const StringForm = ({ onDataCreated, handleClose, brands }) => {
+export const StringForm = ({ onDataCreated, brands }) => {
     const { createString } = useString(); // TODO: use nmbers for defaults and not all empty strings??
     const [fields, setFields] = useState({
         name: '',
@@ -54,41 +54,33 @@ export const StringForm = ({ onDataCreated, handleClose, brands }) => {
     };
 
     return(
-        <>
-            <Modal.Header closeButton>
-                <Modal.Title>Create a String</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated}/>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated}/>
 
-                    <Form.Group>
-                        <Form.Label>
-                            String Name:
-                        </Form.Label>
-                        <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
+            <Form.Group>
+                <Form.Label>
+                    String Name:
+                </Form.Label>
+                <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
 
-                        </Form.Control>
-                    </Form.Group>
+                </Form.Control>
+            </Form.Group>
 
-                    <Form.Group>
-                        <Form.Label>
-                            Price per Racket:
-                        </Form.Label>
-                        <Form.Control 
-                            id='price'
-                            type='number'  
-                            step='0.01'
-                            min='0'
-                            value={fields.pricePerRacket} 
-                            onChange={(e) => setFields(prev => ({ ...prev, pricePerRacket: e.target.value }))} 
-                        />
-                    </Form.Group>
+            <Form.Group>
+                <Form.Label>
+                    Price per Racket:
+                </Form.Label>
+                <Form.Control 
+                    id='price'
+                    type='number'  
+                    step='0.01'
+                    min='0'
+                    value={fields.pricePerRacket} 
+                    onChange={(e) => setFields(prev => ({ ...prev, pricePerRacket: e.target.value }))} 
+                />
+            </Form.Group>
 
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
-                    <Button type='submit' variant="primary">Create</Button>
-                </Form>
-            </Modal.Body>
-        </>
+            <Button type='submit' variant="primary">Create</Button>
+        </Form>
     )
 }

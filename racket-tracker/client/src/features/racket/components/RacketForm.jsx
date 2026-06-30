@@ -54,41 +54,34 @@ export const RacketForm = ({ onDataCreated, brands }) => {
     };
 
     return(
-        <>
-            <Modal.Header closeButton>
-                <Modal.Title>Create a Racket</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                
-                    <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated} />
-                
-                    <Form.Group>
-                        <Form.Label>
-                            Racket Name:
-                        </Form.Label>
-                        <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        
+            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated} />
+        
+            <Form.Group>
+                <Form.Label>
+                    Racket Name:
+                </Form.Label>
+                <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
 
-                        </Form.Control>
-                    </Form.Group>
+                </Form.Control>
+            </Form.Group>
 
-                    <Form.Group>
-                        <Form.Label>
-                            Price:
-                        </Form.Label>
-                        <Form.Control 
-                            id='price' 
-                            type='number' 
-                            step='0.01' 
-                            min='0'
-                            value={fields.price} 
-                            onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value }))} 
-                        />
-                    </Form.Group>
+            <Form.Group>
+                <Form.Label>
+                    Price:
+                </Form.Label>
+                <Form.Control 
+                    id='price' 
+                    type='number' 
+                    step='0.01' 
+                    min='0'
+                    value={fields.price} 
+                    onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value }))} 
+                />
+            </Form.Group>
 
-                    <Button type='submit' variant="primary">Create</Button>
-                </Form>
-            </Modal.Body>
-        </>
+            <Button type='submit' variant="primary">Create</Button>
+        </Form>
     )
 }

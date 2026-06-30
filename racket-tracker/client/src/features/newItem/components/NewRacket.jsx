@@ -17,7 +17,7 @@ export const NewRacket = ({ onNewItem }) => {
     //  TODO: Make modals for the other fields in case i want new options
     return (
         <>
-            <h1>Create a new order</h1>
+            <h1>Create a new racket</h1>
             <RacketForm onDataCreated={onNewItem} brands={data.brands} />
         </>
     )
