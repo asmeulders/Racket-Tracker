@@ -6,6 +6,7 @@ import { BrandSelect } from '../../brand';
 import { useViewItem } from '../useViewItem';
 
 export function StringView({data, setData}) {
+    const navigate = useNavigate();
     const { getString, deleteString, updateString } = useString();
     const { getList } = useViewItem();
 
@@ -26,7 +27,7 @@ export function StringView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this string?");
         if (confirmed) {
             await deleteString(string.id);
-            navigate('/store');
+            navigate('/store/view-list/strings');
         }
     }
 
@@ -102,7 +103,7 @@ export function StringView({data, setData}) {
                         <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
                     <button className="action-btn" onClick={handleDelete}>Delete String</button>
-                    <button className="action-btn">Create New String</button>
+                    <button className="action-btn" onClick={() => navigate('/store/new-item/strings')}>Create New String</button>
                 </div>   
             </div>
         </div>

@@ -19,7 +19,7 @@ export function InquiryView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this inquiry?");
         if (confirmed) {
             await deleteInquiry(inquiry.id);
-            navigate('/store');
+            navigate('/store/view-list/inquiries');
         }
     }
 
