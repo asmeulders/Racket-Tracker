@@ -13,7 +13,7 @@ export function useOrder() {
                 "sameForCrosses": sameForCrosses,
                 "paid": paid
             });
-            return res;
+            return res.data.order;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);

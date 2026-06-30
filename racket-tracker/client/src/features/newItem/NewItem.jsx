@@ -8,6 +8,7 @@ export const NewItem = () => {
     const { type } = useParams();
 
     const handleNewItem = (id) => {
+        console.log(`/store/view-item/${type}/${id}`);
         navigate(`/store/view-item/${type}/${id}`);
     }
 

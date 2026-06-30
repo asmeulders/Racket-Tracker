@@ -9,7 +9,7 @@ export function useString() {
                 "pricePerRacket": pricePerRacket,
                 "brandId": brandId
             });
-            return res;
+            return res.data.string;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);

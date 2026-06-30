@@ -7,7 +7,7 @@ export function useBrand() {
             const res = await axios.post("http://localhost:5000/api/brands", {
                 "name": name
             })
-            return res;
+            return res.data.brand;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
