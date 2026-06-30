@@ -5,6 +5,7 @@ import { useUser } from '../../user/useUser';
 import { BrandSelect } from '../../brand';
 
 export function UserView({data, setData}) {
+    const navigate = useNavigate();
     const { deleteUser, updateUser } = useUser();
 
     const [ user, setUser ] = useState({});
@@ -22,7 +23,7 @@ export function UserView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this user?");
         if (confirmed) {
             await deleteUser(user.id);
-            navigate('/store');
+            navigate('/store/view-list/users');
         }
     }
 
@@ -120,7 +121,7 @@ export function UserView({data, setData}) {
                         <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
                     <button className="action-btn" onClick={handleDelete}>Delete User</button>
-                    <button className="action-btn">Create New User</button>
+                    <button className="action-btn" onClick={() => navigate('/store/new-item/user')}>Create New User</button>
                 </div>  
             </div>
 

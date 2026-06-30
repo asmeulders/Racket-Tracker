@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import { useBrand } from '../useBrand';
 
-export const BrandForm = ({ onDataCreated, handleClose }) => {
+export const BrandForm = ({ onDataCreated }) => {
     const { createBrand } = useBrand()
     const [name, setName] = useState('');
 
@@ -20,28 +20,20 @@ export const BrandForm = ({ onDataCreated, handleClose }) => {
             e.stopPropagation();
             console.log("Please fill in all required fields");
         } else {
-            await createBrand({ name });
+            const brand = await createBrand({ name });
             setName('');
-            onDataCreated('brands', true);
+            onDataCreated(brand.id);
         }
         setValidated(true); // triggers visual feedback
     }
 
     return(
-        <>
-            <Modal.Header closeButton>
-                <Modal.Title>Create a Brand</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Form.Group>
-                        <Form.Label>Brand Name:</Form.Label>
-                        <Form.Control type='text' id='name' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
-                    </Form.Group>
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
-                    <Button type='submit' variant="primary">Create</Button>
-                </Form>
-            </Modal.Body>
-        </>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <Form.Group>
+                <Form.Label>Brand Name:</Form.Label>
+                <Form.Control type='text' id='name' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Button type='submit' variant="primary">Create</Button>
+        </Form>
     )
 }

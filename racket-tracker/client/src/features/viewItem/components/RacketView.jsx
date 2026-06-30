@@ -7,6 +7,7 @@ import { useDatabase } from '../../../utils/useDatabase';
 import { useViewItem } from '../useViewItem';
 
 export function RacketView({data, setData}) {
+    const navigate = useNavigate();
     const { getRacket, deleteRacket, updateRacket } = useRacket();
     const { getList } = useViewItem();
 
@@ -28,7 +29,7 @@ export function RacketView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this racket?");
         if (confirmed) {
             await deleteRacket(racket.id);
-            navigate('/store');
+            navigate('/store/view-list/rackets');
         }
     }
 
@@ -103,7 +104,7 @@ export function RacketView({data, setData}) {
                         <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
                     <button className="action-btn" onClick={handleDelete}>Delete Racket</button>
-                    <button className="action-btn">Create New Racket</button>
+                    <button className="action-btn" onClick={() => navigate('/store/new-item/rackets')}>Create New Racket</button>
                 </div> 
             </div>
         </div>

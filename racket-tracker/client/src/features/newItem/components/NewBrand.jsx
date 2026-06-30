@@ -1,6 +1,10 @@
-export const NewBrand = () => {
+import { BrandForm } from "../../brand";
 
+export const NewBrand = ({ onNewItem }) => {
     return (
-        <p>New Brand</p>
+        <>
+            <h1>Create a new Brand</h1>
+            <BrandForm onDataCreated={onNewItem} />
+        </>
     )
 }

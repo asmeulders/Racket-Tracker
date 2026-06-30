@@ -11,7 +11,7 @@ export function useUser() {
                 'phone': phone,
                 'email': email
             });
-            return res;
+            return res.data.user;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);

@@ -8,7 +8,7 @@ import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 
-export const OrderForm = ({ onDataCreated, handleClose, rackets, strings, users }) => {
+export const OrderForm = ({ onDataCreated, rackets, strings, users }) => {
     const { createOrder } = useOrder();
 
     const [fields, setFields] = useState({
@@ -38,7 +38,7 @@ export const OrderForm = ({ onDataCreated, handleClose, rackets, strings, users 
             console.dir(errors)
         } else {
             setErrors({});
-            await createOrder({ 
+            const order = await createOrder({ 
                 racketId: fields.racketId, 
                 userId: fields.userId, 
                 mainsId: fields.mainsId,
@@ -48,7 +48,7 @@ export const OrderForm = ({ onDataCreated, handleClose, rackets, strings, users 
                 sameForCrosses: fields.sameForCrosses, 
                 paid: fields.paid 
             });
-            onDataCreated('orders', true);
+            onDataCreated(order.id);
         }     
         setValidated(true);   
     };
@@ -66,63 +66,57 @@ export const OrderForm = ({ onDataCreated, handleClose, rackets, strings, users 
 
     return(
         <>
-            <Modal.Header closeButton>
-                <Modal.Title>Create an Order</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                
-                   <UserSelect onUserChange={setFields} value={fields.userId} users={users} />
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        
+            <UserSelect onUserChange={setFields} value={fields.userId} users={users} />
 
-                   <RacketSelect onRacketChange={setFields} value={fields.racketId} rackets={rackets}/>
-                
-                   <StringSelect onStringChange={setFields} value={fields.mainsId} strings={strings} direction='mains'/>
-                
-                    <Form.Group>
-                        <Form.Label>
-                            Mains Tension:
-                        </Form.Label>
-                        <Form.Control type='number' id='tension' value={fields.mainsTension} onChange={(e) => setFields(prev => ({ ...prev, mainsTension: e.target.value }))} >
+            <RacketSelect onRacketChange={setFields} value={fields.racketId} rackets={rackets}/>
+        
+            <StringSelect onStringChange={setFields} value={fields.mainsId} strings={strings} direction='mains'/>
+        
+            <Form.Group>
+                <Form.Label>
+                    Mains Tension:
+                </Form.Label>
+                <Form.Control type='number' id='tension' value={fields.mainsTension} onChange={(e) => setFields(prev => ({ ...prev, mainsTension: e.target.value }))} >
 
-                        </Form.Control>
-                    </Form.Group>
+                </Form.Control>
+            </Form.Group>
 
-                    <Form.Check 
-                        type='checkbox'
-                        id="sameForCrosses"
-                        onChange={(e) => setFields(prev => ({ ...prev, sameForCrosses: e.target.checked}))}
-                        checked={fields.sameForCrosses}
-                        label={fields.sameForCrosses ? 'Same for crosses' : 'Different for crosses'}
-                    />
-                
-                    {!fields.sameForCrosses && 
-                    <div>
-                        <StringSelect onStringChange={setFields} value={fields.crossesId} strings={strings} direction='crosses'/>
-                    
-                        <Form.Group>
-                            <Form.Label>
-                                Crosses Tension:
-                            </Form.Label>
-                            <Form.Control type='number' id='crossesTension' value={fields.crossesTension} onChange={(e) => setFields(prev => ({ ...prev, crossesTension: e.target.value }))} >
+            <Form.Check 
+                type='checkbox'
+                id="sameForCrosses"
+                onChange={(e) => setFields(prev => ({ ...prev, sameForCrosses: e.target.checked}))}
+                checked={fields.sameForCrosses}
+                label={fields.sameForCrosses ? 'Same for crosses' : 'Different for crosses'}
+            />
+        
+            {!fields.sameForCrosses && 
+            <div>
+                <StringSelect onStringChange={setFields} value={fields.crossesId} strings={strings} direction='crosses'/>
+            
+                <Form.Group>
+                    <Form.Label>
+                        Crosses Tension:
+                    </Form.Label>
+                    <Form.Control type='number' id='crossesTension' value={fields.crossesTension} onChange={(e) => setFields(prev => ({ ...prev, crossesTension: e.target.value }))} >
 
-                            </Form.Control>
-                        </Form.Group>
-                    </div>
-                    }
+                    </Form.Control>
+                </Form.Group>
+            </div>
+            }
 
-                    <Form.Check 
-                        type='checkbox'
-                        id="paid"
-                        onChange={(e) => setFields(prev => ({ ...prev, paid: e.target.checked }))}
-                        checked={fields.paid}
-                        label="Paid"
-                    />
+            <Form.Check 
+                type='checkbox'
+                id="paid"
+                onChange={(e) => setFields(prev => ({ ...prev, paid: e.target.checked }))}
+                checked={fields.paid}
+                label="Paid"
+            />
 
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
-                    <Button type='submit' variant="primary">Create</Button>
+            <Button type='submit' variant="primary">Create</Button>
 
-                    </Form>
-            </Modal.Body>
+            </Form>
         </>
     )
 }

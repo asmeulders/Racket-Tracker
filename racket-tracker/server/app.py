@@ -459,8 +459,8 @@ def create_order(body):
     ================================================================================
     """
     settings = get_store_settings()
-    laborCost = settings.laborCost
-    laborDays = settings.laborDays
+    laborCost = settings.get("laborCost")
+    laborDays = settings.get("laborDays")
 
     if "racketId" not in body or "userId" not in body or "mainsId" not in body or "mainsTension" not in body or "sameForCrosses" not in body or 'paid' not in body:
         return jsonify({"error": "Missing required fields 'racketId', 'userId', 'mainsId', 'mainsTension', 'sameForCrosses', or 'paid'"}), 400

@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BrandSelect } from '../../brand/';
 import { useRacket } from '../useRacket';
 
-export const RacketForm = ({ onDataCreated, handleClose, brands }) => {
+export const RacketForm = ({ onDataCreated, brands }) => {
     const { createRacket } = useRacket();
     const [fields, setFields] = useState({
         name: '',
@@ -30,7 +30,7 @@ export const RacketForm = ({ onDataCreated, handleClose, brands }) => {
             console.dir(errors)
         } else {
             setErrors({});
-            await createRacket({ 
+            const racket = await createRacket({ 
                 name: fields.name,
                 price: fields.price, 
                 brandId: fields.brandId
@@ -40,7 +40,7 @@ export const RacketForm = ({ onDataCreated, handleClose, brands }) => {
                 price: '',
                 brandId: ''
             });
-            onDataCreated('rackets', true);
+            onDataCreated(racket.id);
         }
         setValidated(true);
     }
@@ -54,43 +54,34 @@ export const RacketForm = ({ onDataCreated, handleClose, brands }) => {
     };
 
     return(
-        <>
-            <Modal.Header closeButton>
-                <Modal.Title>Create a Racket</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                
-                    <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated} />
-                
-                    <Form.Group>
-                        <Form.Label>
-                            Racket Name:
-                        </Form.Label>
-                        <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        
+            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated} />
+        
+            <Form.Group>
+                <Form.Label>
+                    Racket Name:
+                </Form.Label>
+                <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
 
-                        </Form.Control>
-                    </Form.Group>
+                </Form.Control>
+            </Form.Group>
 
-                    <Form.Group>
-                        <Form.Label>
-                            Price:
-                        </Form.Label>
-                        <Form.Control 
-                            id='price' 
-                            type='number' 
-                            step='0.01' 
-                            min='0'
-                            value={fields.price} 
-                            onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value }))} 
-                        />
-                    </Form.Group>
+            <Form.Group>
+                <Form.Label>
+                    Price:
+                </Form.Label>
+                <Form.Control 
+                    id='price' 
+                    type='number' 
+                    step='0.01' 
+                    min='0'
+                    value={fields.price} 
+                    onChange={(e) => setFields(prev => ({ ...prev, price: e.target.value }))} 
+                />
+            </Form.Group>
 
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
-                    <Button type='submit' variant="primary">Create</Button>
-
-                    </Form>
-            </Modal.Body>
-        </>
+            <Button type='submit' variant="primary">Create</Button>
+        </Form>
     )
 }

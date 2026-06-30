@@ -52,7 +52,7 @@ export const OrderView = ({data, setData}) => {
 
         if (confirmed) {
             await deleteOrder(order.id);
-            navigate('/store');
+            navigate('/store/view-list/orders');
         }
     }
 
@@ -199,7 +199,7 @@ export const OrderView = ({data, setData}) => {
                     <button className="action-btn" onClick={handlePay}>
                         {isPaid ? "Mark Unpaid" : "Mark Paid"}
                     </button>
-                    <button className="action-btn">Create New Order</button>
+                    <button className="action-btn" onClick={() => navigate('/store/new-item/orders')}>Create New Order</button>
                 </div>  
             </div>                      
         </div>

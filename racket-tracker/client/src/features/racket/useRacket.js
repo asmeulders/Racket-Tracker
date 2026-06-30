@@ -6,7 +6,7 @@ export function useRacket() {
       const res = await axios.post("http://localhost:5000/api/rackets", {
         name, price, brandId: brandId
       });
-      return res;
+      return res.data.racket;
     } catch (error) {
       if (error.response) {
         console.error(error.response.data.error);

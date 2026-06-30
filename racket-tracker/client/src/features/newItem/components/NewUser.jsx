@@ -1,6 +1,10 @@
-export const NewUser = () => {
+import { UserForm } from "../../user";
 
+export const NewUser = ({ onNewItem }) => {
     return (
-        <p>New User</p>
+        <>
+            <h1>Create a new User</h1>
+            <UserForm onDataCreated={onNewItem} />
+        </>
     )
 }

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useBrand } from '../../brand/useBrand';
 
 export function BrandView({data, setData}) {
+    const navigate = useNavigate();
     const { getBrand, deleteBrand, updateBrand } = useBrand();
 
     const [ brand, setBrand ] = useState({});
@@ -20,7 +21,7 @@ export function BrandView({data, setData}) {
         const confirmed = window.confirm("Are you sure you want to delete this brand?");
         if (confirmed) {
             await deleteBrand(brand.id);
-            navigate('/store');
+            navigate('/store/view-list/brands');
         }
     }
 
@@ -57,7 +58,7 @@ export function BrandView({data, setData}) {
                         <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
                     <button className="action-btn" onClick={handleDelete}>Delete Brand</button>
-                    <button className="action-btn">Create New Brand</button>
+                    <button className="action-btn" onClick={() => navigate('/store/new-item/brands')}>Create New Brand</button>
                 </div>   
             </div>
         </div>
