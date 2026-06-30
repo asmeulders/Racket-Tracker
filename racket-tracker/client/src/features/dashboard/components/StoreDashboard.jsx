@@ -78,8 +78,8 @@ export function StoreDashboard() {
             </div>
 
             <div className='dashboard-quick-links'>
-                <button type='button'>New Order</button>
-                <button type='button'>New Customer</button>
+                <button type='button' onClick={() => navigate('/store/new-item/orders')}>New Order</button>
+                <button type='button' onClick={() => navigate('/store/new-item/users')}>New Customer</button>
             </div>
         </div>  
     )
