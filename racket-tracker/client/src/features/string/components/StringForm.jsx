@@ -30,7 +30,7 @@ export const StringForm = ({ onDataCreated, brands }) => {
             console.dir(errors);
         } else {
             setErrors({});
-            await createString({ 
+            const string = await createString({ 
                 name: fields.name,
                 pricePerRacket: fields.pricePerRacket, 
                 brandId: fields.brandId
@@ -40,7 +40,7 @@ export const StringForm = ({ onDataCreated, brands }) => {
                 pricePerRacket: '',
                 brandId: ''
             });
-            onDataCreated('strings', true);
+            onDataCreated(string.id);
         }       
         setValidated(true);
     }

@@ -20,9 +20,9 @@ export const BrandForm = ({ onDataCreated }) => {
             e.stopPropagation();
             console.log("Please fill in all required fields");
         } else {
-            await createBrand({ name });
+            const brand = await createBrand({ name });
             setName('');
-            onDataCreated('brands', true);
+            onDataCreated(brand.id);
         }
         setValidated(true); // triggers visual feedback
     }
