@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { NewOrder } from './index';
+import { NewOrder, NewRacket, NewString, NewBrand, NewUser } from './index';
 
 export const NewItem = () => {
     const navigate = useNavigate();
@@ -13,11 +13,10 @@ export const NewItem = () => {
 
     const page = {
         orders: NewOrder,
-        // brands: BrandView,
-        // users: UserView,
-        // rackets: RacketView,
-        // inquiries: InquiryView,
-        // strings: StringView
+        brands: NewBrand,
+        users: NewUser,
+        rackets: NewRacket,
+        strings: NewString
     };
     const Component = page[type] ?? <p>Unknown type</p>;
 

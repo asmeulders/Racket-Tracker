@@ -17,6 +17,7 @@ export const NewOrder = ({ onNewItem }) => {
 
     if (data === null) return <p>Loading...</p>
 
+    //  TODO: Make modals for the other fields in case i want new options
     return (
         <>
             <h1>Create a new order</h1>
