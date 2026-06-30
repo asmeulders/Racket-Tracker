@@ -10,9 +10,10 @@ import Layout from './components/layout/Layout';
 import { StoreDashboard } from './features/dashboard/components/StoreDashboard';
 import { Store } from './features/store/Store';
 import { ItemList } from './features/store';
-import { ViewItem } from './features/viewItem/components/ViewItem';
+import { ViewItem } from './features/viewItem/ViewItem';
 import { StoreSettings } from './features/store/components/StoreSettings';
 import './App.css'
+import { NewItem } from './features/newItem/NewItem';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="view-list/:type" element={<ItemList />} />
             <Route path="view-item/:type/:id" element={<ViewItem />} /> 
             <Route path="settings" element={<StoreSettings />} /> 
+            <Route path="new-item/:type" element={<NewItem />}/>
           </Route>
         </Routes>
       </Router>

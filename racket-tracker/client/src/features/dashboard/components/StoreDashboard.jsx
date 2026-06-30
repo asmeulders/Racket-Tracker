@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
-import { Order } from '../../order';
+import { Order, OrderForm } from '../../order';
+import { UserForm } from '../../user';
 import { Inquiry } from '../../inquiry';
 import { useStore } from '../../store/useStore';
 import './StoreDashboard.css';

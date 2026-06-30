@@ -119,7 +119,7 @@ export const ItemList = () => {
         <>
             <div className="list-header">
                 <h1>{type}</h1>
-                <button className="new-item-btn" type="button" onClick={handleShow}>New {type}</button>
+                <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>
             </div>
             <div className="filter-container">
                 <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
