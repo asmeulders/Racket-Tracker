@@ -8,11 +8,12 @@ export function useOrder() {
                 "userId": fields.userId,
                 "mainsId": fields.mainsId,
                 "mainsTension": fields.mainsTension,
-                "crossesId": !sameForCrosses ? fields.crossesId : null,
-                "crossesTension": !sameForCrosses ? fields.crossesTension : null,
+                "crossesId": !fields.sameForCrosses ? fields.crossesId : null,
+                "crossesTension": !fields.sameForCrosses ? fields.crossesTension : null,
                 "sameForCrosses": fields.sameForCrosses,
                 "paid": fields.paid
             });
+            console.log(res.data.order);
             return res.data.order;
         } catch (error) {
             if (error.response) {

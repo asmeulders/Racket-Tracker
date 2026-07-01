@@ -17,7 +17,7 @@ export const NewItem = () => {
         brands: NewBrand,
         users: NewUser,
         rackets: NewRacket,
-        strings: NewString
+        strings: NewString,
     };
     const Component = page[type] ?? <p>Unknown type</p>;
 

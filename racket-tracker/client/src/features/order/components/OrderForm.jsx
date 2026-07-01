@@ -10,11 +10,6 @@ import { StringSelect } from '../../string';
 
 export const OrderForm = ({ onDataCreated, order, rackets, strings, users }) => {
     const { createOrder, updateOrder } = useOrder();
-    const APIConfig = {
-        create: createOrder,
-        update: updateOrder
-    }
-    const APIMethod = order === null ? 'create' : 'update';
 
     const [fields, setFields] = useState({
         orderId: order ? order.id : null,
@@ -41,7 +36,7 @@ export const OrderForm = ({ onDataCreated, order, rackets, strings, users }) => 
             e.stopPropagation();
             console.log("Please fill in all required fields");
         } else {
-            const newOrder = await APIConfig[APIMethod](fields);
+            const newOrder = await (order === null ? createOrder : updateOrder)(fields);
             onDataCreated(newOrder.id);
         }     
         setValidated(true);   
