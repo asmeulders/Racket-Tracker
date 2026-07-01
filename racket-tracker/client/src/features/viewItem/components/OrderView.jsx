@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { format } from 'date-fns';
 
 import { useOrder } from '../../order/index';
@@ -10,20 +12,22 @@ import { useViewItem } from '../useViewItem';
 
 export const OrderView = ({data, setData}) => {
     const navigate = useNavigate();
-    const { getOrder, deleteOrder, updateOrder, completeOrder, orderPaid } = useOrder();
+    const { getOrder, deleteOrder, updateOrder, completeOrder, orderPaid, orderPickUp } = useOrder();
     const { getList } = useViewItem();
 
     const [ order, setOrder ] = useState({});
     const [ updatedOrder, setUpdatedOrder ] = useState({});
     const [ isComplete, setIsComplete ] = useState(false);
     const [ isPaid, setIsPaid ] = useState(false);
+    const [ isPickedUp, setIsPickedUp ] = useState(false);
     const [ isEditing, setIsEditing ] = useState(false);
     const [editData, setEditData] = useState({
         orders: [],
         users: [],
         rackets: [],
         strings: []
-    });  
+    });
+    const [ show, setShow ] = useState(false);
 
     useEffect(() => {
         setOrder(data);
@@ -33,7 +37,10 @@ export const OrderView = ({data, setData}) => {
         if (order !== null) {
             setIsComplete(order.complete);
             setIsPaid(order.paid);
+            setIsPickedUp(order.pickedUp);
+            console.log(order.jobDetails?.[0]);
         }
+        
     }, [order]);
 
     if (Object.keys(order).length === 0) return <div>Order not found.</div>;
@@ -66,6 +73,12 @@ export const OrderView = ({data, setData}) => {
         const res = await orderPaid(order);
         console.log(res);
         setIsPaid(res);
+    }
+
+    const handlePickUp = async () => {
+        const res = await orderPickUp(order);
+        console.log(res);
+        setIsPickedUp(res);
     }
 
     const handleEdit = async (field) => {
@@ -111,11 +124,45 @@ export const OrderView = ({data, setData}) => {
     return(
         <div className="item-page">
 
-            <div className={`order-header ${isComplete ? "order-header--complete" : isLate ? "order-header--late" : ""}`}>
-                <div>Status: {isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
-                <div>Paid: {isPaid ? "Paid" : "Unpaid"}</div>
-                <div>Ordered on: {displayOrderDate}</div>
+            <div className="view-item-header">
+                <button type="button" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
+                <h1>Order #{order.id}</h1>
+                <div>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
+                <button className="action-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"}</button>
+            </div>
+
+            <div className='view-item-section'>
+                <h2>{order.user.firstName} {order.user.lastName}</h2>
+                {/* edit user button */}
                 <div>Due: {displayDueDate}</div>
+                {/* edit date button */}
+                <div>Ordered on: {displayOrderDate}</div>
+            </div>
+            
+            <div className='view-item-section'>
+                <div>
+                    <span>Payment: {isPaid ? 'Paid' : 'Unpaid'}</span>
+                    <button className="action-btn" onClick={handlePay}>{isPaid ? "Mark Unpaid" : "Mark Paid"}</button>
+                </div>
+                
+                <div>
+                    <span>Picked Up: {isPickedUp ? 'Picked Up' : 'Not Picked Up'}</span>
+                    <button className="action-btn" onClick={handlePickUp}>{isPickedUp ? "Mark Not Picked Up" : "Mark Picked Up"}</button>
+                </div>
+            </div>
+
+            <div className='view-item-section'>
+                <h3>{order.racketBrand} {order.racketName}</h3>
+                {/* edit racket button */}
+            </div>
+
+            <div className='view-item-section'>
+                <h3>Stringing</h3>
+                <div className='stringing-section'>
+                    <StringDetails jobDetails={order.jobDetails[0]} sameForCrosses={order.sameForCrosses}/>
+                    {!order.sameForCrosses && 
+                        <StringDetails jobDetails={order.jobDetails[1]} sameForCrosses={order.sameForCrosses}/>}
+                </div>
             </div>
 
             <div className="item-card">
@@ -162,10 +209,14 @@ export const OrderView = ({data, setData}) => {
                                 } 
                             </div> : 
                             <div className='field-details'>
-                                <span>(Mains) {mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span>
-                                {crosses 
-                                    ? <span> (Crosses) {crosses.stringBrand} {crosses.stringName} @ {crosses.tension}lbs</span>
-                                    : <span> (Same for crosses)</span>
+                                {
+                                    !crosses ?
+                                    <span>{mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span>
+                                    :
+                                    <>
+                                        <span>Mains: {mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span><br />
+                                        <span>Crosses: {crosses.stringBrand} {crosses.stringName} @ {crosses.tension}lbs</span>
+                                    </>
                                 }
                             </div> 
                         }
@@ -192,16 +243,26 @@ export const OrderView = ({data, setData}) => {
                         <button className="action-btn" onClick={() => handleSave()}>Save</button> :
                         <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
                     }
-                    <button className="action-btn" onClick={handleDelete}>Delete Order</button>
-                    <button className="action-btn" onClick={handleComplete}>
-                        {isComplete ? "Mark Incomplete" : "Mark Complete"}
-                    </button>
-                    <button className="action-btn" onClick={handlePay}>
-                        {isPaid ? "Mark Unpaid" : "Mark Paid"}
-                    </button>
+                    <button className="action-btn" onClick={handleDelete}>Delete Order</button>                    
                     <button className="action-btn" onClick={() => navigate('/store/new-item/orders')}>Create New Order</button>
                 </div>  
             </div>                      
+        </div>
+    )
+}
+
+
+const StringDetails = ({jobDetails, sameForCrosses}) => {
+    const price = sameForCrosses ? jobDetails.pricePerRacket : jobDetails.pricePerRacket / 2;
+
+    return (
+        <div className='stringing-details'>
+            {!sameForCrosses && <h4>{jobDetails.direction}</h4>}
+            <ul>
+                <li>String: {jobDetails.stringBrand} {jobDetails.stringName}</li>
+                <li>Tension: {jobDetails.tension}</li>
+                <li>Price: {price}</li>
+            </ul>
         </div>
     )
 }

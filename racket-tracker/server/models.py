@@ -122,9 +122,10 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     orderDate = db.Column(db.Date, nullable=False)
     due = db.Column(db.Date, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    complete = db.Column(db.Boolean, nullable=False)
-    paid = db.Column(db.Boolean, nullable=False)
+    price = db.Column(db.Float, nullable=False, default=25)
+    complete = db.Column(db.Boolean, nullable=False, default=False)
+    pickedUp = db.Column(db.Boolean, nullable=False, default=False)
+    paid = db.Column(db.Boolean, nullable=False, default=False)
     # Snapshot data
     snapshotName = db.Column(db.String(50), nullable=False)
     snapshotRacketName = db.Column(db.String(50), nullable=False)
@@ -149,6 +150,7 @@ class Order(db.Model):
             "sameForCrosses": len(self.strungWithRecords) == 1,
             "price": self.price,
             "complete": self.complete,
+            "pickedUp": self.pickedUp,
             "paid": self.paid,
             "userId": self.userId,
             "user": {
@@ -168,14 +170,15 @@ class Order(db.Model):
                     "stringName": record.string.name if record.string else None, 
                     "stringBrand": record.string.brand.name if record.string and record.string.brand else None,
                     "tension": record.tension,         
-                    "direction": record.direction      
+                    "direction": record.direction,
+                    "pricePerRacket": record.string.pricePerRacket
                 } 
                 for record in self.strungWithRecords
             ],
-            "snapshotData": [
-                {
-                    "snapshotName": self.snapshotName,
-                    "snapshotRacketName": self.snapshotRacketName,
+            # "snapshotData": [
+            #     {
+            #         "snapshotName": self.snapshotName,
+            #         "snapshotRacketName": self.snapshotRacketName,
                     # "snapshot_jobDetails": [
                     #     {
                     #         "mains_name": self.snapshot_mains_name,
@@ -184,8 +187,8 @@ class Order(db.Model):
                     #         "crosses_tension": None,
                     #     }
                     # ]
-                }
-            ]
+            #     }
+            # ]
         }
 
 class String(db.Model):

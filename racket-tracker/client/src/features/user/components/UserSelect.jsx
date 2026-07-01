@@ -14,7 +14,7 @@ export const UserSelect = ({ onUserChange, value, users }) => {
             <Form.Select name="users" id="user" value={value} onChange={handleSelect} required >
                 <option value="">--Please choose a user--</option>
                 {users?.map(user => (
-                <option key={user.id} value={user.id}>{user.username}</option>
+                    <option key={user.id} value={user.id}>{user.firstName} {user.lastName} | {user.username}</option>
                 ))}
             </Form.Select>
         </Form.Group>
