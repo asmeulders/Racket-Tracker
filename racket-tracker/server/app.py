@@ -549,7 +549,7 @@ def create_order(body):
         
         if sameForCrosses:
             # Single string setup
-            order = Order(orderDate=orderDate, due=dueDate, price=laborCost, complete=False, paid=paid, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=dueDate, laborCost=laborCost, complete=False, paid=paid, racket=racket, user=user)
             
             racketStrungWith = StrungWith(tension=mainsTension, direction="Mains", string=mains)
             order.strungWithRecords.append(racketStrungWith)
@@ -558,7 +558,7 @@ def create_order(body):
             db.session.commit()
         else:
             # Hybrid setup
-            order = Order(orderDate=orderDate, due=dueDate, price=laborCost, complete=False, paid=paid, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=dueDate, laborCost=laborCost, complete=False, paid=paid, racket=racket, user=user)
 
             mainsStrungWith = StrungWith(tension=mainsTension, direction="Mains", string=mains)
             crossesStrungWith = StrungWith(tension=crossesTension, direction="Crosses", string=crosses)
@@ -904,6 +904,9 @@ def update_order(id, body):
             return jsonify({"error": "Invalid price input"}), 400
         if price < 0:
             return jsonify({"error": "Price must be a non-negative number"}), 400
+        
+    # Recalculate sameForCrosses in case user input error
+    sameForCrosses =  crossesId == mainsId and crossesTension == mainsTension
 
     try:
         order = db.session.get(Order, id)
@@ -934,7 +937,7 @@ def update_order(id, body):
         else:
             if len(order.strungWithRecords) == 2:
 
-                for record in order.strungWithRecords:
+                for record in order.strungWithRecords: # this could be a separate function
                     if record.direction == 'Mains':
                         if mainsId:
                             mains = db.session.get(String, mainsId)
