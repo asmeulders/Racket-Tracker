@@ -1,17 +1,17 @@
 import axios from 'axios';
 
 export function useOrder() {
-    const createOrder = async ({ racketId, userId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, paid }) => {
+    const createOrder = async (fields) => {
         try {
             const res = await axios.post("http://localhost:5000/api/orders", {
-                "racketId": racketId,
-                "userId": userId,
-                "mainsId": mainsId,
-                "mainsTension": mainsTension,
-                "crossesId": !sameForCrosses ? crossesId : null,
-                "crossesTension": !sameForCrosses ? crossesTension : null,
-                "sameForCrosses": sameForCrosses,
-                "paid": paid
+                "racketId": fields.racketId,
+                "userId": fields.userId,
+                "mainsId": fields.mainsId,
+                "mainsTension": fields.mainsTension,
+                "crossesId": !sameForCrosses ? fields.crossesId : null,
+                "crossesTension": !sameForCrosses ? fields.crossesTension : null,
+                "sameForCrosses": fields.sameForCrosses,
+                "paid": fields.paid
             });
             return res.data.order;
         } catch (error) {
@@ -49,19 +49,20 @@ export function useOrder() {
         }
     };
 
-    const updateOrder = async ({orderId, userId, racketId, mainsId, mainsTension, crossesId, crossesTension, sameForCrosses, due, price }) => {
+    const updateOrder = async (fields) => {
         try {
             const res = await axios.patch(`http://localhost:5000/api/orders/${orderId}`, {
-                'orderId': orderId,
-                'userId': userId,
-                'racketId': racketId,
-                'mainsId': mainsId,
-                'mainsTension': mainsTension,
-                'crossesId': crossesId,
-                'crossesTension': crossesTension,
-                'sameForCrosses': sameForCrosses,
-                'due': due,
-                'price': price
+                'orderId': fields.orderId,
+                'userId': fields.userId,
+                'racketId': fields.racketId,
+                'mainsId': fields.mainsId,
+                'mainsTension': fields.mainsTension,
+                'crossesId': fields.crossesId,
+                'crossesTension': fields.crossesTension,
+                'sameForCrosses': fields.sameForCrosses,
+                'paid': fields.paid,
+                'due': fields.due,
+                'price': fields.price
             });
             return res;
         } catch (error) {
@@ -101,5 +102,21 @@ export function useOrder() {
         }
     }
 
-    return { createOrder, getOrder, deleteOrder, updateOrder, completeOrder, orderPaid };
+    const orderPickUp = async (order) => {
+        try{
+            console.log("Paying for order: ", order.id);
+            const response = await axios.patch(`http://localhost:5000/api/pick-up-order/${order.id}`);
+            return response.data.order.pickedUp;
+            } catch (error) {
+            if (error.response) {
+                console.error(error.response.data.error);
+            } else{
+                console.error("Could not connect to server.");
+            }
+        }
+    }
+
+
+
+    return { createOrder, getOrder, deleteOrder, updateOrder, completeOrder, orderPaid, orderPickUp };
 }

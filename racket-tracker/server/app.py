@@ -156,8 +156,8 @@ def _seed_db():
 
     if not StrungWith.query.first():
         db.session.add(StrungWith(order=order1, string=aluPower, tension=50))
-        db.session.add(StrungWith(order=order2, string=hyperG, tension=52, direction="mains"))
-        db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="crosses"))
+        db.session.add(StrungWith(order=order2, string=hyperG, tension=52, direction="Mains"))
+        db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="Crosses"))
         db.session.commit()
 
     if not Owns.query.first():
@@ -231,7 +231,29 @@ def pay_for_order(orderId: int):
         db.session.rollback()
         app.logger.error(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
-    
+
+
+@app.route('/api/pick-up-order/<int:orderId>', methods=['PATCH'])
+def pick_up_order(orderId: int):
+    """
+    Marks and order as picked up/not picked up. Is toggled from the store dashboard.
+    """    
+    try:
+        order = db.session.get(Order, orderId)
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+        
+        order.pickedUp = not order.pickedUp
+
+        db.session.add(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order toggled picking up for an order", "order": order.to_json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Server error: {str(e)}")
+        return jsonify({"error": "An internal error has occurred."}), 500
     
 
 def list_orders():
@@ -527,23 +549,19 @@ def create_order(body):
         
         if sameForCrosses:
             # Single string setup
-            price = laborCost + mains.pricePerRacket
-
-            order = Order(orderDate=orderDate, due=dueDate, price=price, complete=False, paid=paid, racket=racket, user=user)
+            order = Order(orderDate=orderDate, due=dueDate, price=laborCost, complete=False, paid=paid, racket=racket, user=user)
             
-            racketStrungWith = StrungWith(tension=mainsTension, direction=None, string=mains)
+            racketStrungWith = StrungWith(tension=mainsTension, direction="Mains", string=mains)
             order.strungWithRecords.append(racketStrungWith)
             
             db.session.add(order)
             db.session.commit()
         else:
             # Hybrid setup
-            price = laborCost + (mains.pricePerRacket + crosses.pricePerRacket)/2
+            order = Order(orderDate=orderDate, due=dueDate, price=laborCost, complete=False, paid=paid, racket=racket, user=user)
 
-            order = Order(orderDate=orderDate, due=dueDate, price=price, complete=False, paid=paid, racket=racket, user=user)
-
-            mainsStrungWith = StrungWith(tension=mainsTension, direction="mains", string=mains)
-            crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
+            mainsStrungWith = StrungWith(tension=mainsTension, direction="Mains", string=mains)
+            crossesStrungWith = StrungWith(tension=crossesTension, direction="Crosses", string=crosses)
 
             order.strungWithRecords.extend([mainsStrungWith, crossesStrungWith])
             db.session.add(order)
@@ -902,8 +920,7 @@ def update_order(id, body):
             order.userId = userId
         if sameForCrosses:
             for record in order.strungWithRecords:
-                if record.direction == None or record.direction == 'mains':
-                    record.direction = None
+                if record.direction == 'Mains':
                     if mainsId:
                         string = db.session.get(String, mainsId)
                         if not string:
@@ -918,8 +935,7 @@ def update_order(id, body):
             if len(order.strungWithRecords) == 2:
 
                 for record in order.strungWithRecords:
-                    if record.direction == None or record.direction == 'mains':
-                        record.direction = 'mains'
+                    if record.direction == 'Mains':
                         if mainsId:
                             mains = db.session.get(String, mainsId)
                             if not mains:
@@ -954,7 +970,7 @@ def update_order(id, body):
                     if not crosses:
                         db.session.rollback()
                         return jsonify({"error": "String does not exist"}), 404
-                    crossesStrungWith = StrungWith(tension=crossesTension, direction="crosses", string=crosses)
+                    crossesStrungWith = StrungWith(tension=crossesTension, direction="Crosses", string=crosses)
                     order.strungWithRecords.append(crossesStrungWith)
 
         if due:

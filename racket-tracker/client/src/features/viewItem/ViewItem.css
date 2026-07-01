@@ -7,35 +7,17 @@
     overflow-x: hidden;
 }
 
-.order-header {
+.view-item-header {
     box-sizing: border-box;
     width: auto;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    border: 5px solid;
-    border-radius: 10pt;
-    border-color: rgb(0, 0, 0, 0.9);
-    background-color: rgb(0, 0, 0, 0.2);
     margin: 15pt;
     padding: 20pt;
-    font-size: x-large;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 700;
 }
 
-.order-header--complete {
-    border-color: rgb(51, 81, 51);
-    background-color: rgb(95, 143, 95);;
-}
-
-.order-header--late {
-    color: white;
-    border-color: rgba(157, 40, 38, 0.804);
-    background-color: rgb(62, 9, 9);;
-}
-
-.order-header div {
+.view-item-header div {
     margin: 15pt;
 }
 
