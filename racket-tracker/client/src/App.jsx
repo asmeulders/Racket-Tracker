@@ -11,9 +11,10 @@ import { StoreDashboard } from './features/dashboard/components/StoreDashboard';
 import { Store } from './features/store/Store';
 import { ItemList } from './features/store';
 import { ViewItem } from './features/viewItem/ViewItem';
+import { NewItem } from './features/newItem/NewItem';
+import { EditItem } from './features/editItem/EditItem';
 import { StoreSettings } from './features/store/components/StoreSettings';
 import './App.css'
-import { NewItem } from './features/newItem/NewItem';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="view-item/:type/:id" element={<ViewItem />} /> 
             <Route path="settings" element={<StoreSettings />} /> 
             <Route path="new-item/:type" element={<NewItem />}/>
+            <Route path="edit-item/:type/:id" element={<EditItem />}/>
           </Route>
         </Routes>
       </Router>

@@ -88,19 +88,8 @@ export const OrderView = ({data, setData}) => {
             const data = await getList(tables[i]);
             setEditData(prev => ({ ...prev, [tables[i]]: data }));
         }
-        if (order.sameForCrosses) {
-            setUpdatedOrder({...order, mainsId: order.jobDetails[0].stringId, mainsTension: order.jobDetails[0].tension});
-        } else {
-            setUpdatedOrder({
-                ...order, 
-                mainsId: order.jobDetails[0].stringId, 
-                mainsTension: order.jobDetails[0].tension,
-                crossesId: order.jobDetails[1].stringId, 
-                crossesTension: order.jobDetails[1].tension,
-            });
-        }
-        
-        setIsEditing(true);
+
+        navigate(`/store/edit-item/orders/${order.id}`)
     }
 
     const handleSave = async (field) => {
