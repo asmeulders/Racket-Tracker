@@ -22,7 +22,7 @@ export const OrderForm = ({ onDataCreated, order, rackets, strings, users }) => 
         sameForCrosses: order ? order.sameForCrosses : true,
         paid: order ? order.paid : false,
         due: order ? order.due : null,
-        price: order ? order.price : null
+        laborCost: order ? order.laborCost : null
     });
 
     const [show, setShow] = useState(false);

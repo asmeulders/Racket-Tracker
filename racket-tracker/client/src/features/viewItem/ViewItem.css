@@ -2,23 +2,55 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     overflow-x: hidden;
+    padding: 40px;
 }
 
 .view-item-header {
-    box-sizing: border-box;
+    flex-shrink: 0;
+    position: relative;
+    height: 100px;
     width: auto;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
-    margin: 15pt;
-    padding: 20pt;
+    align-items: center;
+    border-bottom: 1px solid darkgrey;
 }
 
-.view-item-header div {
-    margin: 15pt;
+.view-item-header h1 {
+    margin: 10px 20px;
+}
+
+.status {
+    position: absolute;
+    left: 50%;
+    padding: 10px;
+    height: 50px;
+    width: 100px;
+    color: white;
+    border-radius: 15px;
+    text-align: center;
+    font-size: large;
+}
+.status-complete { background: green; }
+.status-late     { background: red; }
+.status-to-do    { background: blue; }
+
+.back-btn {
+    margin: 10px;
+    font-size: x-large;
+}
+
+.complete-btn {
+    position: absolute;
+    right: 0;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    background-color: var(--secondary);
+    font-weight: bold;
 }
 
 /* .string-directions {

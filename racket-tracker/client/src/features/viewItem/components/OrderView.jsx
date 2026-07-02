@@ -92,14 +92,16 @@ export const OrderView = ({data, setData}) => {
         navigate(`/store/edit-item/orders/${order.id}`)
     }
 
+    const statusClass = isComplete ? "status-complete" : isLate ? "status-late" : "status-to-do";
+
     return(
         <div className="item-page">
 
             <div className="view-item-header">
-                <button type="button" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
+                <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
                 <h1>Order #{order.id}</h1>
-                <div>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
-                <button className="action-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"}</button>
+                <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
+                <button type="button" className="complete-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"}</button>
             </div>
 
             <div className="item-actions">
@@ -118,7 +120,7 @@ export const OrderView = ({data, setData}) => {
             
             <div className='view-item-section'>
                 <div>
-                    <span>Total Cost: {order.sameForCrosses ? order.price + mains.pricePerRacket : order.price + (mains.pricePerRacket + crosses.pricePerRacket)/2}</span>
+                    <span>Total Cost: {order.totalCost}</span>
                 </div>
                 <div>
                     <span>Payment: {isPaid ? 'Paid' : 'Unpaid'}</span>
@@ -138,7 +140,7 @@ export const OrderView = ({data, setData}) => {
 
             <div className='view-item-section'>
                 <h3>Stringing</h3>
-                <div className='stringing-section'>Service Price: {order.price}</div>
+                <div className='stringing-section'>Service Price: {order.laborCost}</div>
                 <div className='stringing-section'>
                     <StringDetails jobDetails={mains} sameForCrosses={order.sameForCrosses}/>
                     {!order.sameForCrosses && 

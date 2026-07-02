@@ -92,83 +92,83 @@ def _seed_db():
     """
     Generates basic data to test database interactions and front end
     """
-    db.create_all()
+    # db.create_all()
     
-    if not User.query.first():
-        db.session.add(User(username="a1", firstName='Alice', lastName='Marble', phone=None, email='a1@gmail.com'))
-        db.session.add(User(username="b2", firstName='Boris', lastName='Becker', phone='1231231234', email='b2@aol.com'))
-        db.session.commit()
+    # if not User.query.first():
+    #     db.session.add(User(username="a1", firstName='Alice', lastName='Marble', phone=None, email='a1@gmail.com'))
+    #     db.session.add(User(username="b2", firstName='Boris', lastName='Becker', phone='1231231234', email='b2@aol.com'))
+    #     db.session.commit()
     
-    alice = db.session.execute(db.select(User).filter_by(username="a1")).scalar_one()
-    bob = db.session.execute(db.select(User).filter_by(username="b2")).scalar_one()
+    # alice = db.session.execute(db.select(User).filter_by(username="a1")).scalar_one()
+    # bob = db.session.execute(db.select(User).filter_by(username="b2")).scalar_one()
 
-    if not Brand.query.first():
-        db.session.add(Brand(name='Solinco'))
-        db.session.add(Brand(name='Luxilon'))
-        db.session.add(Brand(name='Wilson'))
-        db.session.add(Brand(name='Head'))
-        db.session.commit()
+    # if not Brand.query.first():
+    #     db.session.add(Brand(name='Solinco'))
+    #     db.session.add(Brand(name='Luxilon'))
+    #     db.session.add(Brand(name='Wilson'))
+    #     db.session.add(Brand(name='Head'))
+    #     db.session.commit()
 
-    wilson = db.session.execute(db.select(Brand).filter_by(name="Wilson")).scalar_one()
-    solinco = db.session.execute(db.select(Brand).filter_by(name="Solinco")).scalar_one()
-    luxilon = db.session.execute(db.select(Brand).filter_by(name="Luxilon")).scalar_one()
-    head = db.session.execute(db.select(Brand).filter_by(name="Head")).scalar_one()
+    # wilson = db.session.execute(db.select(Brand).filter_by(name="Wilson")).scalar_one()
+    # solinco = db.session.execute(db.select(Brand).filter_by(name="Solinco")).scalar_one()
+    # luxilon = db.session.execute(db.select(Brand).filter_by(name="Luxilon")).scalar_one()
+    # head = db.session.execute(db.select(Brand).filter_by(name="Head")).scalar_one()
         
-    if not Racket.query.first():
-        db.session.add(Racket(name="Pro Staff", price=300, brand=wilson))
-        db.session.add(Racket(name="Speed", price=315, brand=head))
-        db.session.commit()
+    # if not Racket.query.first():
+    #     db.session.add(Racket(name="Pro Staff", price=300, brand=wilson))
+    #     db.session.add(Racket(name="Speed", price=315, brand=head))
+    #     db.session.commit()
 
-    prostaff = db.session.execute(db.select(Racket).filter_by(name="Pro Staff")).scalar_one()
-    speed = db.session.execute(db.select(Racket).filter_by(name="Speed")).scalar_one()
+    # prostaff = db.session.execute(db.select(Racket).filter_by(name="Pro Staff")).scalar_one()
+    # speed = db.session.execute(db.select(Racket).filter_by(name="Speed")).scalar_one()
 
-    if not Order.query.first():
-        db.session.add(Order(
-            orderDate=date(2025, 12, 25), 
-            due=date(2025, 12, 27), 
-            price=100, 
-            complete=False,
-            paid=False,
-            racket=prostaff,
-            user=alice
-        ))
-        db.session.add(Order(
-            orderDate=date(2025, 11, 25), 
-            due=date(2025, 11, 27), 
-            price=120, 
-            complete=False,
-            paid=True,
-            racket=speed,
-            user=bob
-        ))
-        db.session.commit()
+    # if not Order.query.first():
+    #     db.session.add(Order(
+    #         orderDate=date(2025, 12, 25), 
+    #         due=date(2025, 12, 27), 
+    #         price=100, 
+    #         complete=False,
+    #         paid=False,
+    #         racket=prostaff,
+    #         user=alice
+    #     ))
+    #     db.session.add(Order(
+    #         orderDate=date(2025, 11, 25), 
+    #         due=date(2025, 11, 27), 
+    #         price=120, 
+    #         complete=False,
+    #         paid=True,
+    #         racket=speed,
+    #         user=bob
+    #     ))
+    #     db.session.commit()
 
-    order1 = db.session.execute(db.select(Order).filter_by(user=alice)).scalar_one()
-    order2 = db.session.execute(db.select(Order).filter_by(user=bob)).scalar_one()
+    # order1 = db.session.execute(db.select(Order).filter_by(user=alice)).scalar_one()
+    # order2 = db.session.execute(db.select(Order).filter_by(user=bob)).scalar_one()
 
-    if not String.query.first():
-        db.session.add(String(name="ALU Power", pricePerRacket=22, brand=luxilon))
-        db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
-        db.session.commit()
+    # if not String.query.first():
+    #     db.session.add(String(name="ALU Power", pricePerRacket=22, brand=luxilon))
+    #     db.session.add(String(name="Hyper G", pricePerRacket=20, brand=solinco))
+    #     db.session.commit()
 
-    aluPower = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
-    hyperG = db.session.execute(db.select(String).filter_by(name="Hyper G")).scalar_one()
+    # aluPower = db.session.execute(db.select(String).filter_by(name="ALU Power")).scalar_one()
+    # hyperG = db.session.execute(db.select(String).filter_by(name="Hyper G")).scalar_one()
 
-    if not StrungWith.query.first():
-        db.session.add(StrungWith(order=order1, string=aluPower, tension=50))
-        db.session.add(StrungWith(order=order2, string=hyperG, tension=52, direction="Mains"))
-        db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="Crosses"))
-        db.session.commit()
+    # if not StrungWith.query.first():
+    #     db.session.add(StrungWith(orderId=order1.id, stringId=aluPower.id, tension=50, stringName=aluPower.name, stringBrand=aluPower.brandName, pricePerRacket=aluPower.pricePerRacket))
+    #     db.session.add(StrungWith(orderId=order2, string=hyperG, tension=52, direction="Mains", stringName=aluPower.name, stringBrand=aluPower.brandName, pricePerRacket=aluPower.pricePerRacket))
+    #     db.session.add(StrungWith(order=order2, string=aluPower, tension=50, direction="Crosses"))
+    #     db.session.commit()
 
-    if not Owns.query.first():
-        db.session.add(Owns(user=alice, racket=prostaff, quantity=1))
-        db.session.add(Owns(user=bob, racket=speed, quantity=1))
-        db.session.commit()  
+    # if not Owns.query.first():
+    #     db.session.add(Owns(user=alice, racket=prostaff, quantity=1))
+    #     db.session.add(Owns(user=bob, racket=speed, quantity=1))
+    #     db.session.commit()  
 
-    if not Inquiry.query.first():
-        inquiryDate = date.today()
-        db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
-        db.session.commit()     
+    # if not Inquiry.query.first():
+    #     inquiryDate = date.today()
+    #     db.session.add(Inquiry(name="Alex", email="example@ex.com", phone="5555555555", message='hello', date=inquiryDate)) 
+    #     db.session.commit()     
 
 def init_db():
     with app.app_context():
@@ -181,10 +181,10 @@ def init_db():
 # =======================================================================================================================
 
 
-@app.route('/api/seed_db', methods=['POST'])
-def seed_db_route():
-    _seed_db()
-    return jsonify({"message": "Database initialized!"})    
+# @app.route('/api/seed_db', methods=['POST'])
+# def seed_db_route():
+#     _seed_db()
+#     return jsonify({"message": "Database initialized!"})    
     
 
 @app.route('/api/toggle-complete/<int:orderId>', methods=['PATCH'])
@@ -547,25 +547,34 @@ def create_order(body):
             # recompute sameForCrosses in case input error
             sameForCrosses = crosses.id == mains.id and crossesTension == mainsTension
         
+        mainsRecord = StrungWith(
+            stringId=mains.id, tension=mainsTension, direction="Mains",
+            stringName=mains.name, stringBrand=mains.brand.name,
+            pricePerRacket=mains.pricePerRacket
+        )
+
+        totalCost = laborCost
+
         if sameForCrosses:
-            # Single string setup
-            order = Order(orderDate=orderDate, due=dueDate, laborCost=laborCost, complete=False, paid=paid, racket=racket, user=user)
-            
-            racketStrungWith = StrungWith(tension=mainsTension, direction="Mains", string=mains)
-            order.strungWithRecords.append(racketStrungWith)
-            
-            db.session.add(order)
-            db.session.commit()
+            strungWithRecords = [mainsRecord]
+            totalCost += mains.pricePerRacket
         else:
-            # Hybrid setup
-            order = Order(orderDate=orderDate, due=dueDate, laborCost=laborCost, complete=False, paid=paid, racket=racket, user=user)
+            crossesRecord = StrungWith(
+                stringId=crosses.id, tension=crossesTension, direction="Crosses",
+                stringName=crosses.name, stringBrand=crosses.brand.name,
+                pricePerRacket=crosses.pricePerRacket
+            )
+            strungWithRecords = [mainsRecord, crossesRecord]
+            totalCost += (mains.pricePerRacket + crossesRecord.pricePerRacket) / 2
 
-            mainsStrungWith = StrungWith(tension=mainsTension, direction="Mains", string=mains)
-            crossesStrungWith = StrungWith(tension=crossesTension, direction="Crosses", string=crosses)
+        order = Order(
+            orderDate=orderDate, due=dueDate, laborCost=laborCost, totalCost=totalCost,
+            complete=False, paid=paid, racket=racket, user=user,
+            strungWithRecords=strungWithRecords,
+        )
 
-            order.strungWithRecords.extend([mainsStrungWith, crossesStrungWith])
-            db.session.add(order)
-            db.session.commit()
+        db.session.add(order)
+        db.session.commit()
 
         return jsonify({"message": "Order successfully created", "order": order.to_json()}), 201
     
@@ -852,7 +861,7 @@ def update_order(id, body):
         'crossesTension': crossesTension,
         'sameForCrosses': sameForCrosses,
         'due': due,
-        'price: price
+        'laborCost': price
     }
     """
     if "orderId" not in body or "sameForCrosses" not in body:
@@ -895,21 +904,23 @@ def update_order(id, body):
     if 'due' in body:
         dateString = body.get('due')
         due = datetime.strptime(dateString, '%Y-%m-%d').date()
-    if 'price' in body:
-        price = body.get('price')
+    if 'laborCost' in body:
+        laborCost = body.get('laborCost')
         try:
-            price = float(price)
+            laborCost = float(laborCost)
         except ValueError as e:
-            app.logger.error(f"Invalid price input: {e}")
-            return jsonify({"error": "Invalid price input"}), 400
-        if price < 0:
-            return jsonify({"error": "Price must be a non-negative number"}), 400
+            app.logger.error(f"Invalid laborCost input: {e}")
+            return jsonify({"error": "Invalid laborCost input"}), 400
+        if laborCost < 0:
+            return jsonify({"error": "laborCost must be a non-negative number"}), 400
         
     # Recalculate sameForCrosses in case user input error
     sameForCrosses =  crossesId == mainsId and crossesTension == mainsTension
 
     try:
         order = db.session.get(Order, id)
+        if order == None:
+            return jsonify({"error": "Order does not exist"}), 404
         if racketId:
             racket = db.session.get(Racket, racketId)
             if racket == None:
@@ -921,68 +932,39 @@ def update_order(id, body):
                 db.session.rollback()
                 return jsonify({"error": "User does not exist"}), 404
             order.userId = userId
-        if sameForCrosses:
-            for record in order.strungWithRecords:
-                if record.direction == 'Mains':
-                    if mainsId:
-                        string = db.session.get(String, mainsId)
-                        if not string:
-                            db.session.rollback()
-                            return jsonify({"error": "String does not exist"}), 404
-                        record.string = string
-                    if mainsTension:
-                        record.tension = mainsTension
-                else:
-                    order.strungWithRecords.remove(record)
+        if sameForCrosses: # Single String
+            order.strungWithRecords = [r for r in order.strungWithRecords if r.direction == 'Mains']
+            strungWith = order.strungWithRecords[0]
+            apply_string_update(strungWith, mainsId, mainsTension, strungWith.stringId)
         else:
-            if len(order.strungWithRecords) == 2:
+            if len(order.strungWithRecords) == 2: # Hybrid => Hybrid
 
-                for record in order.strungWithRecords: # this could be a separate function
+                for record in order.strungWithRecords:
                     if record.direction == 'Mains':
-                        if mainsId:
-                            mains = db.session.get(String, mainsId)
-                            if not mains:
-                                db.session.rollback()
-                                return jsonify({"error": "String does not exist"}), 404
-                            record.string = mains
-                        if mainsTension:
-                            record.tension = mainsTension
+                        apply_string_update(record, mainsId, mainsTension, record.stringId)
                     else:
-                        if crossesId:
-                            crosses = db.session.get(String, crossesId)
-                            if not crosses:
-                                db.session.rollback()
-                                return jsonify({"error": "String does not exist"}), 404
-                            record.string = crosses
-                        if crossesTension:
-                            record.tension = crossesTension
-            else:
+                        apply_string_update(record, crossesId, crossesTension, record.stringId)
+            else: # Single string => Hybrid
                 mainsStrungWith = order.strungWithRecords[0]
-                if mainsId:
-                    mains = db.session.get(String, mainsId)
-                    if not mains:
-                        db.session.rollback()
-                        return jsonify({"error": "String does not exist"}), 404
-                    mainsStrungWith.string = mains
-                if mainsTension:
-                    mainsStrungWith.tension = mainsTension
+                apply_string_update(mainsStrungWith, mainsId, mainsTension, mainsStrungWith.stringId)
                 
-                crossesStrungWith = None
                 if crossesId and crossesTension:
                     crosses = db.session.get(String, crossesId)
                     if not crosses:
                         db.session.rollback()
                         return jsonify({"error": "String does not exist"}), 404
-                    crossesStrungWith = StrungWith(tension=crossesTension, direction="Crosses", string=crosses)
+                    crossesStrungWith = StrungWith(tension=crossesTension, direction="Crosses", stringId=crossesId, stringName=crosses.name, stringBrand=crosses.brand.name, pricePerRacket=crosses.pricePerRacket)
                     order.strungWithRecords.append(crossesStrungWith)
 
         if due:
             order.due = due
-        if price:
-            order.price = price
+        if laborCost:
+            order.laborCost = laborCost
+
+        order.totalCost = order.laborCost + order.strungWithRecords[0].pricePerRacket if sameForCrosses else order.laborCost + order.strungWithRecords[0].pricePerRacket / 2 + order.stringWithRecords[1].pricePerRacket / 2
 
         db.session.commit()
-        return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 201
+        return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 200
     
     except OperationalError as e:
         db.session.rollback()
@@ -993,6 +975,21 @@ def update_order(id, body):
         db.session.rollback()
         app.logger.error(f"Server error: {str(e)}")
         return jsonify({"error": "An internal error has occurred."}), 500
+    
+
+def apply_string_update(record, string_id, tension, current_string_id):
+    if string_id and string_id != current_string_id:
+        string = db.session.get(String, string_id)
+        if not string:
+            return None, "String does not exist"
+        record.stringId = string.id
+        record.stringName = string.name
+        record.stringBrand = string.brand.name
+        record.pricePerRacket = string.pricePerRacket
+    if tension:
+        record.tension = tension
+    return record, None
+
 
 def update_racket(id, body):
     """    

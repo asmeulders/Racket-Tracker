@@ -65,19 +65,23 @@ class StrungWith(db.Model):
     tension = db.Column(db.Integer, nullable=False)
     direction = db.Column(db.String(7), nullable=True)
     # Snapshot data
-    snapshotStringName = db.Column(db.String(100))
+    stringName = db.Column(db.String(20), nullable=False)
+    stringBrand = db.Column(db.String(20), nullable=False)
+    pricePerRacket = db.Column(db.Float, nullable=False)
 
-    string = db.relationship("String", back_populates="orderRecords")
+    string = db.relationship("String")
     order = db.relationship("Order", back_populates="strungWithRecords")
 
     def to_json(self):
         return {
             "id": self.id, 
-            "order": self.order.to_json(),
-            "string": self.string.to_json() if self.string else None,
+            "orderId": self.order.id,
+            "stringId": self.stringId,
             "tension": self.tension,
             "direction": self.direction,
-            "snapshotStringName": self.snapshotStringName
+            "stringName": self.stringName,
+            "stringBrand": self.stringBrand,
+            "pricePerRacket": self.pricePerRacket
         }
     
 class Racket(db.Model):
@@ -142,7 +146,8 @@ class Order(db.Model):
             "orderDate": self.orderDate.strftime('%Y-%m-%d') if self.orderDate else None, 
             "due": self.due.strftime('%Y-%m-%d') if self.due else None,
             "sameForCrosses": len(self.strungWithRecords) == 1,
-            "price": self.price,
+            "laborCost": self.laborCost,
+            "totalCost": self.totalCost,
             "complete": self.complete,
             "pickedUp": self.pickedUp,
             "paid": self.paid,
