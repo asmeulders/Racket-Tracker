@@ -58,7 +58,7 @@ export function Order({order}) {
     <div className='order-details'>
       <div className='details-header'>
         <div className='item-info'>Due: {displayDueDate}</div>
-        <div className='item-info' >${order.price} - {order.paid ? 'Paid' : "Unpaid"}</div>
+        <div className='item-info' >${order.totalCost} - {order.paid ? 'Paid' : "Unpaid"}</div>
       </div>
       
       <div className='details-content'>

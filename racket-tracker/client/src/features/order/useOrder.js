@@ -13,7 +13,6 @@ export function useOrder() {
                 "sameForCrosses": fields.sameForCrosses,
                 "paid": fields.paid
             });
-            console.log(res.data.order);
             return res.data.order;
         } catch (error) {
             if (error.response) {
@@ -63,15 +62,13 @@ export function useOrder() {
                 sameForCrosses: fields.sameForCrosses,
                 paid: fields.paid,
                 due: fields.due,
-                price: fields.price
+                laborCost: fields.laborCost
             });
-            console.log(res);
             return res.data.order;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
             } else{
-                console.log(error);
                 console.error("Could not connect to server.");
             }
         }
