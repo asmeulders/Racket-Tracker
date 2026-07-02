@@ -122,17 +122,11 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     orderDate = db.Column(db.Date, nullable=False)
     due = db.Column(db.Date, nullable=False)
-    price = db.Column(db.Float, nullable=False, default=25)
+    laborCost = db.Column(db.Float, nullable=False, default=25)
+    totalCost = db.Column(db.Float, nullable=False)
     complete = db.Column(db.Boolean, nullable=False, default=False)
     pickedUp = db.Column(db.Boolean, nullable=False, default=False)
     paid = db.Column(db.Boolean, nullable=False, default=False)
-    # Snapshot data
-    snapshotName = db.Column(db.String(50), nullable=False)
-    snapshotRacketName = db.Column(db.String(50), nullable=False)
-    # snapshot_mains_name = db.Column(db.String(50), nullable=False)
-    # snapshot_mains_tension = db.Column(db.Integer, nullable=False)
-    # snapshot_crosses_name = db.Column(db.String(50), nullable=True)
-    # snapshot_crosses_tension = db.Column(db.Integer, nullable=True)
     # Foreign Keys
     racketId = db.Column(db.Integer, db.ForeignKey('rackets.id', ondelete='SET NULL'), nullable=True)
     userId = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
@@ -140,8 +134,8 @@ class Order(db.Model):
     user = db.relationship('User', back_populates='orders')
     racket = db.relationship('Racket', back_populates='orders')
 
-    strungWithRecords = db.relationship('StrungWith', back_populates='order', cascade="all, delete-orphan")
-
+    strungWithRecords = db.relationship('StrungWith', back_populates='order', cascade="all, delete-orphan")        
+    
     def to_json(self):
         return {
             "id": self.id, 
@@ -175,20 +169,6 @@ class Order(db.Model):
                 } 
                 for record in self.strungWithRecords
             ],
-            # "snapshotData": [
-            #     {
-            #         "snapshotName": self.snapshotName,
-            #         "snapshotRacketName": self.snapshotRacketName,
-                    # "snapshot_jobDetails": [
-                    #     {
-                    #         "mains_name": self.snapshot_mains_name,
-                    #         "mains_tension": None, 
-                    #         "crosses_name": self.snapshot_crosses_name if self.snapshot_crosses_name else None,
-                    #         "crosses_tension": None,
-                    #     }
-                    # ]
-            #     }
-            # ]
         }
 
 class String(db.Model):

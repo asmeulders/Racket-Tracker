@@ -51,8 +51,8 @@ export const OrderView = ({data, setData}) => {
 
     const jobDetails = Array.isArray(order.jobDetails) ? order.jobDetails : [order.jobDetails];
 
-    const mains = jobDetails.find(j => j.direction === "mains") ?? jobDetails.find(j => j.direction === null);
-    const crosses = jobDetails.find(j => j.direction === "crosses");
+    const mains = jobDetails.find(j => j.direction === "Mains");
+    const crosses = jobDetails.find(j => j.direction === "Crosses");
 
     const handleDelete = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this order?");
@@ -88,37 +88,8 @@ export const OrderView = ({data, setData}) => {
             const data = await getList(tables[i]);
             setEditData(prev => ({ ...prev, [tables[i]]: data }));
         }
-        if (order.sameForCrosses) {
-            setUpdatedOrder({...order, mainsId: order.jobDetails[0].stringId, mainsTension: order.jobDetails[0].tension});
-        } else {
-            setUpdatedOrder({
-                ...order, 
-                mainsId: order.jobDetails[0].stringId, 
-                mainsTension: order.jobDetails[0].tension,
-                crossesId: order.jobDetails[1].stringId, 
-                crossesTension: order.jobDetails[1].tension,
-            });
-        }
-        
-        setIsEditing(true);
-    }
 
-    const handleSave = async (field) => {
-        const res = await updateOrder({
-            orderId: order.id,
-            userId: updatedOrder.userId,
-            racketId: updatedOrder.racketId,
-            mainsId: updatedOrder.mainsId,
-            mainsTension: updatedOrder.mainsTension,
-            crossesId: updatedOrder.crossesId,
-            crossesTension: updatedOrder.crossesTension,
-            sameForCrosses: updatedOrder.sameForCrosses,
-            due: updatedOrder.due,
-            price: updatedOrder.price
-        });
-        setData(res.data.order);
-        setUpdatedOrder({});
-        setIsEditing(false);
+        navigate(`/store/edit-item/orders/${order.id}`)
     }
 
     return(
@@ -131,6 +102,12 @@ export const OrderView = ({data, setData}) => {
                 <button className="action-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"}</button>
             </div>
 
+            <div className="item-actions">
+                <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
+                <button className="action-btn" onClick={handleDelete}>Delete Order</button>                    
+                <button className="action-btn" onClick={() => navigate('/store/new-item/orders')}>Create New Order</button>
+            </div>  
+
             <div className='view-item-section'>
                 <h2>{order.user.firstName} {order.user.lastName}</h2>
                 {/* edit user button */}
@@ -140,6 +117,9 @@ export const OrderView = ({data, setData}) => {
             </div>
             
             <div className='view-item-section'>
+                <div>
+                    <span>Total Cost: {order.sameForCrosses ? order.price + mains.pricePerRacket : order.price + (mains.pricePerRacket + crosses.pricePerRacket)/2}</span>
+                </div>
                 <div>
                     <span>Payment: {isPaid ? 'Paid' : 'Unpaid'}</span>
                     <button className="action-btn" onClick={handlePay}>{isPaid ? "Mark Unpaid" : "Mark Paid"}</button>
@@ -158,95 +138,13 @@ export const OrderView = ({data, setData}) => {
 
             <div className='view-item-section'>
                 <h3>Stringing</h3>
+                <div className='stringing-section'>Service Price: {order.price}</div>
                 <div className='stringing-section'>
-                    <StringDetails jobDetails={order.jobDetails[0]} sameForCrosses={order.sameForCrosses}/>
+                    <StringDetails jobDetails={mains} sameForCrosses={order.sameForCrosses}/>
                     {!order.sameForCrosses && 
-                        <StringDetails jobDetails={order.jobDetails[1]} sameForCrosses={order.sameForCrosses}/>}
+                        <StringDetails jobDetails={crosses} sameForCrosses={order.sameForCrosses}/>}
                 </div>
-            </div>
-
-            <div className="item-card">
-
-                {/* <div className="order-photo-section">
-                    <div className="racket-photo">
-                        <img src={order.racket.photo} alt="Racket" />
-                    </div>
-                    <span>Ordered: {order.orderDate}</span>
-                </div> */}
-
-                <div className="item-fields">
-                    <span className='field-label'>Customer:</span>
-                    <div>
-                        {isEditing ? 
-                            <UserSelect onUserChange={setUpdatedOrder} value={updatedOrder?.userId} users={editData.users} /> : 
-                            <span className='field-details'>{order.user.firstName} {order.user.lastName}</span>
-                        }
-                    </div>                      
-
-                    <span className='field-label'>Racket:</span>
-                    <div>
-                        {isEditing ? 
-                            <RacketSelect onRacketChange={setUpdatedOrder} value={updatedOrder?.racketId} rackets={editData.rackets} /> : 
-                            <span className='field-details'>{order.racketBrand} {order.racketName}</span>
-                        }
-                    </div>
-
-                    <label className='field-label'>Stringing:</label>
-                    <div>
-                        {isEditing ? 
-                            <div>
-                                <div>
-                                    <StringSelect onStringChange={setUpdatedOrder} value={updatedOrder?.mainsId} strings={editData.strings} direction={'mains'} />
-                                    <input type="number" value={updatedOrder?.mainsTension} placeholder='Mains Tension' onChange={(e) => setUpdatedOrder(prev => ({...prev, mainsTension: e.target.value}))} />
-                                </div>
-                                
-                                <input type="checkbox" onChange={(e) => setUpdatedOrder(prev => ({ ...prev, sameForCrosses: e.target.checked}))} checked={updatedOrder.sameForCrosses} />
-                                {!updatedOrder?.sameForCrosses ?
-                                    <div>
-                                        <StringSelect onStringChange={setUpdatedOrder} value={updatedOrder?.crossesId} strings={editData.strings} direction={'crosses'} />
-                                        <input type="number" value={updatedOrder?.crossesTension} placeholder='Crosses Tension' onChange={(e) => setUpdatedOrder(prev => ({...prev, crossesTension: e.target.value}))} />
-                                    </div> : null
-                                } 
-                            </div> : 
-                            <div className='field-details'>
-                                {
-                                    !crosses ?
-                                    <span>{mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span>
-                                    :
-                                    <>
-                                        <span>Mains: {mains?.stringBrand} {mains?.stringName} @ {mains?.tension}lbs</span><br />
-                                        <span>Crosses: {crosses.stringBrand} {crosses.stringName} @ {crosses.tension}lbs</span>
-                                    </>
-                                }
-                            </div> 
-                        }
-                    </div>
-
-                    <label className='field-label'>Price:</label>   
-                    <div>
-                        {isEditing ? 
-                            <input type="number" step='0.01' min='0' placeholder='Price' value={updatedOrder.price} onChange={(e) => setUpdatedOrder(prev => ({ ...prev, price: e.target.value }))}/> :
-                            <span className='field-details'>${order.price}</span>
-                        }
-                    </div>
-
-                    <span className='field-label'>Due Date:</span>
-                    <div>
-                        {isEditing ? 
-                            <input type='date' value={updatedOrder.due} onChange={(e) => setUpdatedOrder(prev => ({...prev, due: e.target.value}))} />
-                            : <span className='field-details'>{order.due}</span>
-                        }
-                    </div>
-                </div>
-                <div className="item-actions">
-                    {isEditing ? 
-                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
-                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
-                    }
-                    <button className="action-btn" onClick={handleDelete}>Delete Order</button>                    
-                    <button className="action-btn" onClick={() => navigate('/store/new-item/orders')}>Create New Order</button>
-                </div>  
-            </div>                      
+            </div>             
         </div>
     )
 }

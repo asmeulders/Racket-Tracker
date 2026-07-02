@@ -8,7 +8,6 @@ export const NewItem = () => {
     const { type } = useParams();
 
     const handleNewItem = (id) => {
-        console.log(`/store/view-item/${type}/${id}`);
         navigate(`/store/view-item/${type}/${id}`);
     }
 
@@ -17,7 +16,7 @@ export const NewItem = () => {
         brands: NewBrand,
         users: NewUser,
         rackets: NewRacket,
-        strings: NewString
+        strings: NewString,
     };
     const Component = page[type] ?? <p>Unknown type</p>;
 

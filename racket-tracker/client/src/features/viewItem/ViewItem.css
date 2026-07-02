@@ -21,45 +21,6 @@
     margin: 15pt;
 }
 
-.item-card {
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    border-radius: 5pt;
-    background-color: lightgrey;
-    column-gap: 10px;
-    align-items: start;
-    width: 700px;
-    margin: 25pt;
-    padding: 10pt 25pt;
-    justify-content: space-between;
-}
-
-.item-fields {
-    width: 60%;
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 25px;
-    align-items: center;
-    justify-items: start;
-}
-
-.field-label {
-    display: flex;
-    justify-self: right;
-    width: fit-content;
-    height: fit-content;
-    border-radius: 5pt;
-    padding: 5pt;
-
-    color: black;
-    background-color: var(--primary);
-
-    text-align: right;
-    font-size: large;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
 /* .string-directions {
     display: flex;
     flex-direction: column;

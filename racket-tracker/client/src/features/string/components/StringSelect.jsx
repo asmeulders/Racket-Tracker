@@ -16,13 +16,12 @@ export const StringSelect = ({ onStringChange, value, strings, direction }) => {
         console.log("Unknown direction");
         break;
     }
-    
   }
   
   return (
     <Form.Group>
       <Form.Label>
-        String: 
+        {direction} String: 
       </Form.Label>
       <Form.Select name="strings" id="string" value={value} required onChange={handleSelect} >
         <option value="">--Please choose a string--</option>

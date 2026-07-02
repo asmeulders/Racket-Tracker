@@ -8,11 +8,12 @@ export function useOrder() {
                 "userId": fields.userId,
                 "mainsId": fields.mainsId,
                 "mainsTension": fields.mainsTension,
-                "crossesId": !sameForCrosses ? fields.crossesId : null,
-                "crossesTension": !sameForCrosses ? fields.crossesTension : null,
+                "crossesId": !fields.sameForCrosses ? fields.crossesId : null,
+                "crossesTension": !fields.sameForCrosses ? fields.crossesTension : null,
                 "sameForCrosses": fields.sameForCrosses,
                 "paid": fields.paid
             });
+            console.log(res.data.order);
             return res.data.order;
         } catch (error) {
             if (error.response) {
@@ -51,24 +52,26 @@ export function useOrder() {
 
     const updateOrder = async (fields) => {
         try {
-            const res = await axios.patch(`http://localhost:5000/api/orders/${orderId}`, {
-                'orderId': fields.orderId,
-                'userId': fields.userId,
-                'racketId': fields.racketId,
-                'mainsId': fields.mainsId,
-                'mainsTension': fields.mainsTension,
-                'crossesId': fields.crossesId,
-                'crossesTension': fields.crossesTension,
-                'sameForCrosses': fields.sameForCrosses,
-                'paid': fields.paid,
-                'due': fields.due,
-                'price': fields.price
+            const res = await axios.patch(`http://localhost:5000/api/orders/${fields.orderId}`, {
+                orderId: fields.orderId,
+                userId: fields.userId,
+                racketId: fields.racketId,
+                mainsId: fields.mainsId,
+                mainsTension: fields.mainsTension,
+                crossesId: fields.crossesId,
+                crossesTension: fields.crossesTension,
+                sameForCrosses: fields.sameForCrosses,
+                paid: fields.paid,
+                due: fields.due,
+                price: fields.price
             });
-            return res;
+            console.log(res);
+            return res.data.order;
         } catch (error) {
             if (error.response) {
                 console.error(error.response.data.error);
             } else{
+                console.log(error);
                 console.error("Could not connect to server.");
             }
         }
