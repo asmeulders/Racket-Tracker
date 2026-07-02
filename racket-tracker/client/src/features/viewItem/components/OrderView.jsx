@@ -99,7 +99,7 @@ export const OrderView = ({data, setData}) => {
 
             <div className="view-item-header">
                 <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
-                <h1>Order #{order.id}</h1>
+                <h1>Order #{order.id} | <span className="user-link" onClick={() => navigate(`/store/view-item/users/${order.userId}`)}>{order.user.firstName} {order.user.lastName}</span></h1>
                 <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
                 <button type="button" className="complete-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"}</button>
             </div>
@@ -109,27 +109,21 @@ export const OrderView = ({data, setData}) => {
                 <button className="action-btn" onClick={handleDelete}>Delete Order</button>                    
                 <button className="action-btn" onClick={() => navigate('/store/new-item/orders')}>Create New Order</button>
             </div>  
-
             <div className='view-item-section'>
-                <h2>{order.user.firstName} {order.user.lastName}</h2>
-                {/* edit user button */}
-                <div>Due: {displayDueDate}</div>
-                {/* edit date button */}
-                <div>Ordered on: {displayOrderDate}</div>
-            </div>
-            
-            <div className='view-item-section'>
-                <div>
-                    <span>Total Cost: {order.totalCost}</span>
-                </div>
                 <div>
                     <span>Payment: {isPaid ? 'Paid' : 'Unpaid'}</span>
                     <button className="action-btn" onClick={handlePay}>{isPaid ? "Mark Unpaid" : "Mark Paid"}</button>
+                    <div>
+                        <span>Picked Up: {isPickedUp ? 'Picked Up' : 'Not Picked Up'}</span>
+                        <button className="action-btn" onClick={handlePickUp}>{isPickedUp ? "Mark Not Picked Up" : "Mark Picked Up"}</button>
+                    </div>
                 </div>
-                
                 <div>
-                    <span>Picked Up: {isPickedUp ? 'Picked Up' : 'Not Picked Up'}</span>
-                    <button className="action-btn" onClick={handlePickUp}>{isPickedUp ? "Mark Not Picked Up" : "Mark Picked Up"}</button>
+                    {/* edit user button */}
+                    <div>Due: {displayDueDate}</div>
+                    {/* edit date button */}
+                    <div>Ordered on: {displayOrderDate}</div>
+                    <span>Total Cost: {order.totalCost}</span>
                 </div>
             </div>
 
