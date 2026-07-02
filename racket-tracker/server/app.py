@@ -961,7 +961,7 @@ def update_order(id, body):
         if laborCost:
             order.laborCost = laborCost
 
-        order.totalCost = order.laborCost + order.strungWithRecords[0].pricePerRacket if sameForCrosses else order.laborCost + order.strungWithRecords[0].pricePerRacket / 2 + order.stringWithRecords[1].pricePerRacket / 2
+        order.totalCost = order.laborCost + order.strungWithRecords[0].pricePerRacket if sameForCrosses else order.laborCost + order.strungWithRecords[0].pricePerRacket / 2 + order.strungWithRecords[1].pricePerRacket / 2
 
         db.session.commit()
         return jsonify({"message": "Order successfully updated", "order": order.to_json()}), 200

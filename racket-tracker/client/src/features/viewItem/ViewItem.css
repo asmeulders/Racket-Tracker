@@ -9,6 +9,14 @@
     padding: 40px;
 }
 
+.item-page h1 {
+    margin: 10px 20px;
+}
+
+.item-page h3 {
+    margin: 0px 20px;
+}
+
 .view-item-header {
     flex-shrink: 0;
     position: sticky;
@@ -20,10 +28,6 @@
     border-bottom: 1px solid darkgrey;
 }
 
-.view-item-header h1 {
-    margin: 10px 20px;
-}
-
 .user-link {
     color: var(--primary);
 }
@@ -31,6 +35,7 @@
 .user-link:hover {
     color: var(--primary-transparent);
     cursor: pointer;
+    border-bottom: 2px solid var(--primary-transparent);
 }
 
 .status {
@@ -66,8 +71,42 @@
 .view-item-section {
     display: flex;
     justify-content: space-between;
-    padding: 30px 0px;
-    border-bottom: 1px solid lightgrey;
+    padding: 20px 0px;
+}
+
+.view-item-section-top {
+    width: fit-content;
+    border-top: 1px solid lightgrey;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.view-item-section-bottom {
+    flex-direction: column;
+    min-width: 600px;
+    width: fit-content;
+    border: 1px solid lightgrey;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.stringing-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 40px;
+}
+
+.stringing-header {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 20px;
+}
+
+.stringing-details {
+    margin-top: 25px;
 }
 
 .item-actions {
@@ -87,4 +126,12 @@
 
 .action-btn:hover {
     background-color: var(--primary-transparent);
+}
+
+#edit-racket-btn {
+    margin: 0 20px 0 0;
+}
+
+#edit-stringing-btn {
+    margin: 0;
 }

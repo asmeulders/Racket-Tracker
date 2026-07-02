@@ -127,13 +127,16 @@ export const OrderView = ({data, setData}) => {
                 </div>
             </div>
 
-            <div className='view-item-section'>
+            <div className='view-item-section view-item-section-top'>
                 <h3>{order.racketBrand} {order.racketName}</h3>
-                {/* edit racket button */}
+                <button type="button" id="edit-racket-btn" className='action-btn'>Change Racket</button>
             </div>
 
-            <div className='view-item-section'>
-                <h3>Stringing</h3>
+            <div className='view-item-section view-item-section-bottom'>
+                <div className='stringing-header'>
+                    <h3>Stringing</h3>
+                    <button type="button" id="edit-stringing-btn" className='action-btn'>Edit Stringing</button>
+                </div>
                 <div className='stringing-section'>Service Price: {order.laborCost}</div>
                 <div className='stringing-section'>
                     <StringDetails jobDetails={mains} sameForCrosses={order.sameForCrosses}/>
