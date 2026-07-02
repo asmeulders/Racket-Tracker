@@ -1,4 +1,5 @@
 .item-page {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -10,7 +11,7 @@
 
 .view-item-header {
     flex-shrink: 0;
-    position: relative;
+    position: sticky;
     height: 100px;
     width: auto;
     display: flex;
@@ -21,6 +22,15 @@
 
 .view-item-header h1 {
     margin: 10px 20px;
+}
+
+.user-link {
+    color: var(--primary);
+}
+
+.user-link:hover {
+    color: var(--primary-transparent);
+    cursor: pointer;
 }
 
 .status {
@@ -49,14 +59,16 @@
     padding: 10px;
     border-radius: 5px;
     color: white;
-    background-color: var(--secondary);
+    background-color: var(--primary);
     font-weight: bold;
 }
 
-/* .string-directions {
+.view-item-section {
     display: flex;
-    flex-direction: column;
-} */
+    justify-content: space-between;
+    padding: 30px 0px;
+    border-bottom: 1px solid lightgrey;
+}
 
 .item-actions {
     display: flex;
