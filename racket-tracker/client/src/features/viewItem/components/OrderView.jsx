@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { format } from 'date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { useOrder } from '../../order/index';
 import { UserSelect } from '../../user';
@@ -28,6 +30,7 @@ export const OrderView = ({data, setData}) => {
         strings: []
     });
     const [ show, setShow ] = useState(false);
+    const [ dueDate, setDueDate ] = useState(order.due ? new Date(order.due) : null);
 
     useEffect(() => {
         setOrder(data);
@@ -35,9 +38,11 @@ export const OrderView = ({data, setData}) => {
 
     useEffect(() => {
         if (order !== null) {
+            const localStr = toDatetimeLocalValue(order.due);
             setIsComplete(order.complete);
             setIsPaid(order.paid);
             setIsPickedUp(order.pickedUp);
+            setDueDate(new Date(localStr));
             console.log(order.jobDetails?.[0]);
         }
         
@@ -92,6 +97,17 @@ export const OrderView = ({data, setData}) => {
         navigate(`/store/edit-item/orders/${order.id}`)
     }
 
+    const handleDateChange = async (date) => {
+        const fields = { orderId: order.id, due: date.toISOString() };
+        updateOrder(fields)
+            .then(data => {
+                setOrder(data);
+                console.log(data);
+            });
+
+        console.log(order);
+    }
+
     const statusClass = isComplete ? "status-complete" : isLate ? "status-late" : "status-to-do";
 
     return(
@@ -118,12 +134,21 @@ export const OrderView = ({data, setData}) => {
                         <button className="action-btn" onClick={handlePickUp}>{isPickedUp ? "Mark Not Picked Up" : "Mark Picked Up"}</button>
                     </div>
                 </div>
-                <div>
+                <div className='order-info-section'>
                     {/* edit user button */}
-                    <div>Due: {displayDueDate}</div>
+                    <div><strong>Due:</strong>
+                        <DatePicker
+                            selected={dueDate}
+                            onChange={(date) => { setDueDate(date); handleDateChange(date); }}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            dateFormat="MMM d, yyyy h:mm aa"
+                            customInput={<CustomInput />}
+                        />
+                    </div>
                     {/* edit date button */}
-                    <div>Ordered on: {displayOrderDate}</div>
-                    <span>Total Cost: {order.totalCost}</span>
+                    <div><strong>Ordered on:</strong>{displayOrderDate}</div>
+                    <div><strong>Total Cost:</strong>${order.totalCost}</div>
                 </div>
             </div>
 
@@ -162,4 +187,23 @@ const StringDetails = ({jobDetails, sameForCrosses}) => {
             </ul>
         </div>
     )
+}
+
+const CustomInput = forwardRef(({ value, onClick }, ref) => (
+  <button
+    className="due-date-trigger"
+    onClick={onClick}
+    ref={ref}
+  >
+    <span>{value || 'Set due date'}</span>
+  </button>
+));
+
+function toDatetimeLocalValue(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  // Adjust for local timezone offset so the input shows local time correctly
+  const offset = d.getTimezoneOffset() * 60000;
+  const local = new Date(d.getTime() - offset);
+  return local.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
 }

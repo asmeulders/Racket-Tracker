@@ -6,7 +6,7 @@
     min-height: 100%;
     width: 100%;
     overflow-x: hidden;
-    padding: 40px;
+    padding: 40px 100px;
 }
 
 .item-page h1 {
@@ -71,7 +71,8 @@
 .view-item-section {
     display: flex;
     justify-content: space-between;
-    padding: 20px 0px;
+    margin: 0px 80px;
+    padding: 40px 0px;
 }
 
 .view-item-section-top {
@@ -91,6 +92,33 @@
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+}
+
+.order-info-section {
+    font-size: large;
+}
+
+.order-info-section strong {
+    margin-right: 10px;
+}
+
+.order-info-section span {
+    color: var(--primary);
+}
+
+.order-info-section span:hover {
+    color: var(--primary-transparent);
+    cursor: pointer;
+    border-bottom: 2px solid var(--primary-transparent);
+}
+
+.due-date-trigger {
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 4px;
 }
 
 .stringing-section {

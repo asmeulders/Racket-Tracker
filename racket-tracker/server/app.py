@@ -4,12 +4,10 @@ from sqlalchemy import or_
 from sqlalchemy.sql.functions import concat
 from flask_cors import CORS
 from sqlalchemy.exc import OperationalError, IntegrityError, SQLAlchemyError
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 from db import db
 from models import User, Racket, Order, String, StrungWith, Owns, Brand, Inquiry, StoreSettings
-
-from datetime import date
 
 app = Flask(__name__)
 
@@ -511,8 +509,7 @@ def create_order(body):
     paid = body.get('paid')
 
     # Dates
-    orderDate = date.today()
-    dueDate = date.today() + timedelta(days=laborDays)
+    dueDate = datetime.now(timezone.utc) + timedelta(days=laborDays)
     
     try:
         user = db.session.get(User, userId)
@@ -568,7 +565,7 @@ def create_order(body):
             totalCost += (mains.pricePerRacket + crossesRecord.pricePerRacket) / 2
 
         order = Order(
-            orderDate=orderDate, due=dueDate, laborCost=laborCost, totalCost=totalCost,
+            due=dueDate, laborCost=laborCost, totalCost=totalCost,
             complete=False, paid=paid, racket=racket, user=user,
             strungWithRecords=strungWithRecords,
         )
@@ -864,17 +861,21 @@ def update_order(id, body):
         'laborCost': price
     }
     """
-    if "orderId" not in body or "sameForCrosses" not in body:
-        return jsonify({"error": "Missing required field 'orderId' or 'sameForCrosses'"}), 400
+    if "orderId" not in body:
+        return jsonify({"error": "Missing required field 'orderId'"}), 400
     
-    sameForCrosses = body.get('sameForCrosses')
-
-    if not sameForCrosses:
-        if "crossesId" not in body or 'crossesTension' not in body:
-            return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
+    if "sameForCrosses" not in body and ("mainsId" in body or "mainsTension" in body or "crossesId" in body or "crossesTension" in body):
+        return jsonify({"error": "Missing sameForCrosses when including stringing data"})
+    
+    sameForCrosses = None
+    if "sameForCrosses" in body:
+        sameForCrosses = body.get('sameForCrosses')
+        if not sameForCrosses:
+            if "crossesId" not in body or 'crossesTension' not in body:
+                return jsonify({"error": "Missing required fields 'crossesId' or 'crossesTension'"}), 400
     
     # change to all fields being required??
-    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = due = price = None
+    racketId = userId = mainsId = mainsTension = crossesId = crossesTension = due = laborCost = None
     if 'racketId' in body:
         racketId = body.get('racketId')
     if 'userId' in body:
@@ -903,7 +904,7 @@ def update_order(id, body):
             return jsonify({"error": "crossesTension must be a non-negative number less than 100"}), 400
     if 'due' in body:
         dateString = body.get('due')
-        due = datetime.strptime(dateString, '%Y-%m-%d').date()
+        due = datetime.fromisoformat(dateString.replace('Z', '+00:00'))
     if 'laborCost' in body:
         laborCost = body.get('laborCost')
         try:
