@@ -96,17 +96,18 @@
 .stringing-section {
     display: flex;
     justify-content: space-between;
-    padding: 0px 40px;
+    padding: 25px 40px 0;
 }
 
 .stringing-header {
     display: flex;
     flex-direction: row;
     padding-bottom: 20px;
+    border-bottom: 1px solid lightgrey;
 }
 
 .stringing-details {
-    margin-top: 25px;
+    margin-right: 25px;
 }
 
 .item-actions {
