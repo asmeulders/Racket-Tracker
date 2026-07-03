@@ -1,5 +1,6 @@
 from db import db
 from sqlalchemy import event
+from datetime import date, timezone
 
 class Owns(db.Model):
     """
@@ -124,8 +125,8 @@ class Order(db.Model):
     """
     __tablename__="orders"
     id = db.Column(db.Integer, primary_key=True)
-    orderDate = db.Column(db.Date, nullable=False)
-    due = db.Column(db.Date, nullable=False)
+    orderDate = db.Column(db.Date, nullable=False, default=lambda: date.today())
+    due = db.Column(db.DateTime, nullable=False)
     laborCost = db.Column(db.Float, nullable=False, default=25)
     totalCost = db.Column(db.Float, nullable=False)
     complete = db.Column(db.Boolean, nullable=False, default=False)
@@ -143,8 +144,8 @@ class Order(db.Model):
     def to_json(self):
         return {
             "id": self.id, 
-            "orderDate": self.orderDate.strftime('%Y-%m-%d') if self.orderDate else None, 
-            "due": self.due.strftime('%Y-%m-%d') if self.due else None,
+            "orderDate": self.orderDate.isoformat() if self.orderDate else None, 
+            "due": self.due.replace(tzinfo=timezone.utc).isoformat() if self.due else None,
             "sameForCrosses": len(self.strungWithRecords) == 1,
             "laborCost": self.laborCost,
             "totalCost": self.totalCost,

@@ -13,7 +13,14 @@ export function Order({order}) {
   const [paid, setPaid] = useState(order.paid);
 
   const displayOrderDate = order.orderDate ? format(new Date(order.orderDate), 'MM/dd/yyyy') : null;
-  const displayDueDate = order.due ? format(new Date(order.due), 'MM/dd/yyyy') : null;
+  const dueDate = order.due && new Date(order.due);
+  const dateStr = dueDate.toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  const timeStr = dueDate.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit'
+  });
 
   const handleComplete  = async () => {
     const response = await completeOrder(order);
@@ -57,7 +64,7 @@ export function Order({order}) {
   return (
     <div className='order-details'>
       <div className='details-header'>
-        <div className='item-info'>Due: {displayDueDate}</div>
+        <div className='item-info'>Due: {dateStr} {timeStr}</div>
         <div className='item-info' >${order.totalCost} - {order.paid ? 'Paid' : "Unpaid"}</div>
       </div>
       
