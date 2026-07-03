@@ -38,11 +38,10 @@ export const OrderView = ({data, setData}) => {
 
     useEffect(() => {
         if (order !== null) {
-            const localStr = toDatetimeLocalValue(order.due);
             setIsComplete(order.complete);
             setIsPaid(order.paid);
             setIsPickedUp(order.pickedUp);
-            setDueDate(new Date(localStr));
+            setDueDate(toDatetimeLocalValue(order.due));
             console.log(order.jobDetails?.[0]);
         }
         
@@ -204,6 +203,5 @@ function toDatetimeLocalValue(isoString) {
   const d = new Date(isoString);
   // Adjust for local timezone offset so the input shows local time correctly
   const offset = d.getTimezoneOffset() * 60000;
-  const local = new Date(d.getTime() - offset);
-  return local.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
+  return new Date(d.getTime() - offset);
 }
