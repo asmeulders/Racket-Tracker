@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import { useUser } from '../useUser';
 
-export const UserForm = ({ onDataCreated }) => {
+export const UserForm = ({ onSubmit }) => {
     const { createUser } = useUser();
     const [ fields, setFields ] = useState({
         username: '',
@@ -40,7 +40,7 @@ export const UserForm = ({ onDataCreated }) => {
                 phone: '',
                 email: ''
             });
-            onDataCreated(user.id);
+            onSubmit(user.id);
         }
         setValidated(true); // triggers visual feedback
     }
@@ -100,7 +100,7 @@ export const UserForm = ({ onDataCreated }) => {
                     onChange={(e) => setFields(prev => ({...prev, phone: e.target.value}))}
                 />
             </Form.Group>
-            <Button type='submit' variant="primary">Create</Button>
+            <Button type='submit' variant="primary">Submit</Button>
         </Form>
     )
 }

@@ -18,7 +18,7 @@ export const EditString = ({ onEditItem, item }) => {
     return (
         <>
             <h1>Edit String</h1>
-            <StringForm onDataCreated={onEditItem} brands={data.brands} />
+            <StringForm onSubmit={onEditItem} brands={data.brands} />
         </>
     )
 }

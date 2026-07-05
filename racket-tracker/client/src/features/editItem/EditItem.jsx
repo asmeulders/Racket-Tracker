@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { EditOrder, EditRacket, EditString, EditBrand, EditUser } from './index';
 import { useViewItem } from '../viewItem/useViewItem';
 
+
+// TODO: going to get rid of this because i want to use modals instead
 export const EditItem = () => {
     const navigate = useNavigate();
     const { getItem } = useViewItem();

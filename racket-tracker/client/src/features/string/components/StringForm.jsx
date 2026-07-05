@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BrandSelect } from '../../brand';
 import { useString } from '../index';
 
-export const StringForm = ({ onDataCreated, brands }) => {
+export const StringForm = ({ onSubmit, brands }) => {
     const { createString } = useString(); // TODO: use nmbers for defaults and not all empty strings??
     const [fields, setFields] = useState({
         name: '',
@@ -40,7 +40,7 @@ export const StringForm = ({ onDataCreated, brands }) => {
                 pricePerRacket: '',
                 brandId: ''
             });
-            onDataCreated(string.id);
+            onSubmit(string.id);
         }       
         setValidated(true);
     }
@@ -55,7 +55,7 @@ export const StringForm = ({ onDataCreated, brands }) => {
 
     return(
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated}/>
+            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onSubmit={onSubmit}/>
 
             <Form.Group>
                 <Form.Label>
@@ -80,7 +80,7 @@ export const StringForm = ({ onDataCreated, brands }) => {
                 />
             </Form.Group>
 
-            <Button type='submit' variant="primary">Create</Button>
+            <Button type='submit' variant="primary">Submit</Button>
         </Form>
     )
 }

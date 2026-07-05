@@ -8,7 +8,7 @@ import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 
-export const OrderForm = ({ onDataCreated, order, rackets, strings, users }) => {
+export const OrderForm = ({ onSubmit, order, rackets, strings, users }) => {
     const { createOrder, updateOrder } = useOrder();
 
     const [fields, setFields] = useState({
@@ -37,7 +37,7 @@ export const OrderForm = ({ onDataCreated, order, rackets, strings, users }) => 
             console.log("Please fill in all required fields");
         } else {
             const newOrder = await (order === null ? createOrder : updateOrder)(fields);
-            onDataCreated(newOrder.id);
+            onSubmit(newOrder.id);
         }     
         setValidated(true);   
     };
@@ -98,7 +98,7 @@ export const OrderForm = ({ onDataCreated, order, rackets, strings, users }) => 
                     label="Paid"
                 />
 
-                <Button type='submit' variant="primary">Create</Button>
+                <Button type='submit' variant="primary">Submit</Button>
             </Form>
     )
 }

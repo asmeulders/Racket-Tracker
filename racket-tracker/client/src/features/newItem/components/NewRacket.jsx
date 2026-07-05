@@ -18,7 +18,7 @@ export const NewRacket = ({ onNewItem }) => {
     return (
         <>
             <h1>Create a new racket</h1>
-            <RacketForm onDataCreated={onNewItem} brands={data.brands} />
+            <RacketForm onSubmit={onNewItem} brands={data.brands} />
         </>
     )
 }

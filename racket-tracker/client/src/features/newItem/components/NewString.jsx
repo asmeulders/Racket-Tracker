@@ -18,7 +18,7 @@ export const NewString = ({ onNewItem }) => {
     return (
         <>
             <h1>Create a new String</h1>
-            <StringForm onDataCreated={onNewItem} brands={data.brands} />
+            <StringForm onSubmit={onNewItem} brands={data.brands} />
         </>
     )
 }

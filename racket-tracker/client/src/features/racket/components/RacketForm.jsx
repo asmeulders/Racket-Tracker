@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BrandSelect } from '../../brand/';
 import { useRacket } from '../useRacket';
 
-export const RacketForm = ({ onDataCreated, brands }) => {
+export const RacketForm = ({ onSubmit, brands }) => {
     const { createRacket } = useRacket();
     const [fields, setFields] = useState({
         name: '',
@@ -40,31 +40,19 @@ export const RacketForm = ({ onDataCreated, brands }) => {
                 price: '',
                 brandId: ''
             });
-            onDataCreated(racket.id);
+            onSubmit(racket);
         }
         setValidated(true);
     }
 
-    const validate = () => {
-        const customErrors = {};
-        if (fields.price < 0) {
-            customErrors.price = 'Price must be a positive number.';
-        }
-        return customErrors;
-    };
-
     return(
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        
-            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onDataCreated={onDataCreated} />
-        
+            <BrandSelect value={fields.brandId} brands={brands} onBrandChange={setFields} onSubmit={onSubmit} />
             <Form.Group>
                 <Form.Label>
                     Racket Name:
                 </Form.Label>
-                <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} >
-
-                </Form.Control>
+                <Form.Control type='text' id='name' value={fields.name} onChange={(e) => setFields(prev => ({ ...prev, name: e.target.value }))} />
             </Form.Group>
 
             <Form.Group>
@@ -81,7 +69,7 @@ export const RacketForm = ({ onDataCreated, brands }) => {
                 />
             </Form.Group>
 
-            <Button type='submit' variant="primary">Create</Button>
+            <Button type='submit' variant="primary">Submit</Button>
         </Form>
     )
 }
