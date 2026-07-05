@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 import { useRacket } from '../../racket/useRacket';
 import { BrandSelect } from '../../brand';
 import { useDatabase } from '../../../utils/useDatabase';
 import { useViewItem } from '../useViewItem';
+import { EditRacket } from '../../editItem/components/EditRacket';
 
 export function RacketView({data, setData}) {
     const navigate = useNavigate();
@@ -13,7 +16,7 @@ export function RacketView({data, setData}) {
 
     const [ racket, setRacket ] = useState({});
     const [ updatedRacket, setUpdatedRacket ] = useState({});
-    const [ isEditing, setIsEditing ] = useState(false);
+    const [ show, setShow ] = useState(false);
     const [editData, setEditData] = useState({
         brands: []
     }); 
@@ -37,7 +40,7 @@ export function RacketView({data, setData}) {
         const list = await getList('brands');
         setEditData(prev => ({ ...prev, brands: list }));
         setUpdatedRacket({...racket})
-        setIsEditing(true);
+        handleShow();
     }
 
     const handleSave = async () => {
@@ -50,7 +53,7 @@ export function RacketView({data, setData}) {
 
         setData(res.data.racket);
         setUpdatedRacket({});
-        setIsEditing(false);
+        handleClose();
     }
 
     const handleNewBrand = async () => {
@@ -58,55 +61,43 @@ export function RacketView({data, setData}) {
         setEditData({ brands: list });
     }
 
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
+
     return (
-        <div className='item-page'>
-            <div className='item-card'>
-                <div className='item-fields'>
-                    <span className='field-label'>Brand:</span>
-                    {isEditing ?
-                        <BrandSelect 
-                            value={updatedRacket.brandId} 
-                            brands={editData.brands}
-                            onBrandChange={setUpdatedRacket}
-                            onDataCreated={handleNewBrand}
-                        /> :
-                        <span className='field-details'>{racket.brandName}</span>
-                    }
-
-                    <span className='field-label'>Racket Name:</span>
-                    {isEditing ?
-                        <input 
-                            type='text'
-                            placeholder='Racket Name'
-                            value={updatedRacket.name} 
-                            onChange={(e) => setUpdatedRacket(prev => ({...prev, name: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{racket.name}</span>
-                    }
-
-                    <span className='field-label'>Price:</span>
-                    {isEditing ?
-                        <input
-                            id='price'
-                            type='number' 
-                            step='0.01'
-                            min='0'
-                            placeholder='Racket Price'
-                            value={updatedRacket.price} 
-                            onChange={(e) => setUpdatedRacket(prev => ({...prev, price: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{racket.price}</span>
-                    }
+        <>
+            <div className='item-page'>
+                <div className='view-item-header'>
+                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
+                    <h1>{racket.brandName} {racket.name}</h1>
                 </div>
+
                 <div className="item-actions">
-                    {isEditing ? 
-                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
-                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
-                    }
-                    <button className="action-btn" onClick={handleDelete}>Delete Racket</button>
+                    <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
+                    <button className="action-btn" onClick={handleDelete}>Delete Racket</button>                    
                     <button className="action-btn" onClick={() => navigate('/store/new-item/rackets')}>Create New Racket</button>
-                </div> 
+                </div>
+                <div className='view-item-section'>
+                    Price: ${racket.price}
+                </div>
             </div>
-        </div>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                centered    
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                    Edit Racket Details
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <EditRacket onEditItem={setRacket} item={racket}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 };

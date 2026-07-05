@@ -18,7 +18,7 @@ export const EditRacket = ({ onEditItem, item }) => {
     return (
         <>
             <h1>Edit racket</h1>
-            <RacketForm onDataCreated={onEditItem} brands={data.brands} />
+            <RacketForm onSubmit={onEditItem} brands={data.brands} />
         </>
     )
 }

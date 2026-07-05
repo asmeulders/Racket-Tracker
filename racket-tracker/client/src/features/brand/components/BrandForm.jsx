@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import { useBrand } from '../useBrand';
 
-export const BrandForm = ({ onDataCreated }) => {
+export const BrandForm = ({ onSubmit }) => {
     const { createBrand } = useBrand()
     const [name, setName] = useState('');
 
@@ -22,7 +22,7 @@ export const BrandForm = ({ onDataCreated }) => {
         } else {
             const brand = await createBrand({ name });
             setName('');
-            onDataCreated(brand.id);
+            onSubmit(brand);
         }
         setValidated(true); // triggers visual feedback
     }
@@ -33,7 +33,7 @@ export const BrandForm = ({ onDataCreated }) => {
                 <Form.Label>Brand Name:</Form.Label>
                 <Form.Control type='text' id='name' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
             </Form.Group>
-            <Button type='submit' variant="primary">Create</Button>
+            <Button type='submit' variant="primary">Submit</Button>
         </Form>
     )
 }

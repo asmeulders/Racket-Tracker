@@ -21,7 +21,7 @@ export const NewOrder = ({ onNewItem }) => {
     return (
         <>
             <h1>Create a new order</h1>
-            <OrderForm onDataCreated={onNewItem} order={null} rackets={data.rackets} strings={data.strings} users={data.users} />
+            <OrderForm onSubmit={onNewItem} order={null} rackets={data.rackets} strings={data.strings} users={data.users} />
         </>
     )
 }

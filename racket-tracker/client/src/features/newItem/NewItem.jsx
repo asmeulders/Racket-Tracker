@@ -7,8 +7,8 @@ export const NewItem = () => {
     const navigate = useNavigate();
     const { type } = useParams();
 
-    const handleNewItem = (id) => {
-        navigate(`/store/view-item/${type}/${id}`);
+    const handleNewItem = (item) => {
+        navigate(`/store/view-item/${type}/${item.id}`);
     }
 
     const page = {
