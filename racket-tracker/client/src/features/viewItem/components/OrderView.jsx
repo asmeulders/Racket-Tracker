@@ -92,7 +92,13 @@ export const OrderView = ({data, setData}) => {
             .then(data => setEditData(prev => ({ ...prev, [field]: data })))
             .finally(() => {
                 setShowModal(prev => ({ ...prev, [field]: true })); 
-                setUpdatedOrder(order);
+                setUpdatedOrder({ 
+                    ...order, 
+                    mainsId: order.jobDetails[0].stringId,
+                    mainsTension: order.jobDetails[0].tension,
+                    crossesId: order.jobDetails?.[1]?.stringId,
+                    crossesTension: order.jobDetails?.[1]?.tension
+                });
                 console.log(order);
             });
     };
