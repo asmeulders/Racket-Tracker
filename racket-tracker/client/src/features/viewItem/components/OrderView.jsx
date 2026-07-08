@@ -11,6 +11,7 @@ import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 import { useViewItem } from '../useViewItem';
+import { SplitButton } from '../../../components/splitButton/SplitButton';
 
 export const OrderView = ({data, setData}) => {
     const navigate = useNavigate();
@@ -108,7 +109,17 @@ export const OrderView = ({data, setData}) => {
     }
 
     const statusClass = isComplete ? "status-complete" : isLate ? "status-late" : "status-to-do";
-
+    const dropdownActions = [
+        {
+            label: 'Delete Order',
+            onClick: handleDelete
+        },
+        {
+            label: 'Create New Order',
+            onClick: () => navigate('/store/new-item/orders')
+        }
+    ]
+    
     return(
         <div className="item-page">
 
@@ -116,14 +127,9 @@ export const OrderView = ({data, setData}) => {
                 <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
                 <h1>Order #{order.id} | <span className="user-link" onClick={() => navigate(`/store/view-item/users/${order.userId}`)}>{order.user.firstName} {order.user.lastName}</span></h1>
                 <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
-                <button type="button" className="complete-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"}</button>
+                <div className='complete-btn'><SplitButton className="complete-btn" label={isComplete ? "Mark Incomplete" : "Mark Complete"} onClick={handleComplete} dropdownActions={dropdownActions}></SplitButton></div>
             </div>
 
-            <div className="item-actions">
-                <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
-                <button className="action-btn" onClick={handleDelete}>Delete Order</button>                    
-                <button className="action-btn" onClick={() => navigate('/store/new-item/orders')}>Create New Order</button>
-            </div>  
             <div className='view-item-section'>
                 <div>
                     <span>Payment: {isPaid ? 'Paid' : 'Unpaid'}</span>
