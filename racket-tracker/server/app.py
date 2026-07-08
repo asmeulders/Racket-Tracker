@@ -849,7 +849,6 @@ def update_order(id, body):
 
     Expected JSON Format:
     {
-        'orderId': orderId,
         'userId': userId,
         'racketId': racketId,
         'mainsId': mainsId,
@@ -860,10 +859,7 @@ def update_order(id, body):
         'due': due,
         'laborCost': price
     }
-    """
-    if "orderId" not in body:
-        return jsonify({"error": "Missing required field 'orderId'"}), 400
-    
+    """    
     if "sameForCrosses" not in body and ("mainsId" in body or "mainsTension" in body or "crossesId" in body or "crossesTension" in body):
         return jsonify({"error": "Missing sameForCrosses when including stringing data"})
     
@@ -916,7 +912,7 @@ def update_order(id, body):
             return jsonify({"error": "laborCost must be a non-negative number"}), 400
         
     # Recalculate sameForCrosses in case user input error
-    sameForCrosses =  crossesId == mainsId and crossesTension == mainsTension
+    # sameForCrosses =  crossesId == mainsId and crossesTension == mainsTension
 
     try:
         order = db.session.get(Order, id)
