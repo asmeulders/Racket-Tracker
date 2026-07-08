@@ -51,8 +51,7 @@ export function useOrder() {
 
     const updateOrder = async (fields) => {
         try {
-            const res = await axios.patch(`http://localhost:5000/api/orders/${fields.orderId}`, {
-                orderId: fields.orderId,
+            const res = await axios.patch(`http://localhost:5000/api/orders/${fields.id}`, {
                 userId: fields.userId,
                 racketId: fields.racketId,
                 mainsId: fields.mainsId,

@@ -33,7 +33,7 @@ export const SplitButton = ({ label, onClick, dropdownActions }) => {
             <button type="button" className="dropdown-btn" onClick={handleShow}>&#x25BC;</button>
             <ul className={`dropdown-menu ${show && 'dropdown-menu--visible'}`}>
                 {dropdownActions.map((action) => 
-                    <li onClick={action.onClick}>{action.label}</li>
+                    <li key={action.label} onClick={action.onClick}>{action.label}</li>
                 )}
             </ul>
         </div>
