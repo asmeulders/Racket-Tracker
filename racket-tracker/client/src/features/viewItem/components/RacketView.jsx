@@ -74,13 +74,13 @@ export function RacketView({data, setData}) {
             label: 'New Racket',
             onClick: () => navigate('/store/new-item/rackets')
         }
-    ]
+    ];
 
     return (
         <>
             <div className='item-page'>
                 <div className='view-item-header'>
-                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
+                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/rackets')}>&larr;</button>
                     <h1>{racket.brandName} {racket.name}</h1>
                     <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
                 </div>
