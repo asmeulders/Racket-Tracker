@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 import { useUser } from '../../user/useUser';
 import { BrandSelect } from '../../brand';
+import { SplitButton } from '../../../components/splitButton/SplitButton';
+import { EditUser } from '../../editItem/components/EditUser';
 
 export function UserView({data, setData}) {
     const navigate = useNavigate();
@@ -11,7 +15,7 @@ export function UserView({data, setData}) {
     const [ user, setUser ] = useState({});
     const [ updatedUser, setUpdatedUser ] = useState({});
     const [ loading, setLoading ] = useState(true);
-    const [ isEditing, setIsEditing ] = useState(false);
+    const [ show, setShow ] = useState(false);
 
     useEffect(() => {
         setUser(data);
@@ -32,7 +36,7 @@ export function UserView({data, setData}) {
             ...user,
             phone: user.phone ?? '',
         });
-        setIsEditing(true);
+        handleShow();
     }
 
     const handleSave = async () => {
@@ -48,84 +52,57 @@ export function UserView({data, setData}) {
 
         setData(res.data.user);
         setUpdatedUser({});
-        setIsEditing(false);
+        handleClose();
     }
 
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
+
+    const dropdownActions = [
+        {
+            label: 'Delete User',
+            onClick: handleDelete
+        },
+        {
+            label: 'New User',
+            onClick: () => navigate('/store/new-item/uesrs')
+        }
+    ];
+
     return (
-        <div className='item-page'>
-            <div className='item-card'>
-                <div className='item-fields'>
-                    <span className='field-label'>Username:</span>
-                    {isEditing ?
-                        <input 
-                            id='username'
-                            type='text'
-                            placeholder='Username'
-                            value={updatedUser.username}
-                            onChange={(e) => setUpdatedUser(prev => ({...prev, username: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{user.username}</span>
-                    }
-
-                    <span className='field-label'>First Name:</span>
-                    {isEditing ?
-                        <input 
-                            id='firstName'
-                            type='text'
-                            placeholder='First Name'
-                            value={updatedUser.firstName}
-                            onChange={(e) => setUpdatedUser(prev => ({...prev, firstName: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{user.firstName}</span>
-                    }
-
-                    <span className='field-label'>Last Name:</span>
-                    {isEditing ?
-                        <input 
-                            id='lastName'
-                            type='text'
-                            placeholder='Last Name'
-                            value={updatedUser.lastName}
-                            onChange={(e) => setUpdatedUser(prev => ({...prev, lastName: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{user.lastName}</span>
-                    }
-
-                    <span className='field-label'>Phone Number:</span>
-                    {isEditing ?
-                        <input 
-                            id='phone'
-                            type='tel'
-                            placeholder='Phone Number'
-                            value={updatedUser.phone}
-                            onChange={(e) => setUpdatedUser(prev => ({...prev, phone: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{user.phone ? user.phone : 'N/A'}</span>
-                    }
-
-                    <span className='field-label'>Email:</span>
-                    {isEditing ?
-                        <input 
-                            id='email'
-                            type='text'
-                            placeholder='Email'
-                            value={updatedUser.email}
-                            onChange={(e) => setUpdatedUser(prev => ({...prev, email: e.target.value}))}
-                        /> :
-                        <span className='field-details'>{user.email}</span>
-                    }
+        <>
+            <div className='item-page'>
+                <div className='view-item-header'>
+                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/users')}>&larr;</button>
+                    <h1>{user.firstName} {user.lastName}</h1>
+                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
                 </div>
-                <div className="item-actions">
-                    {isEditing ? 
-                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
-                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
-                    }
-                    <button className="action-btn" onClick={handleDelete}>Delete User</button>
-                    <button className="action-btn" onClick={() => navigate('/store/new-item/user')}>Create New User</button>
-                </div>  
-            </div>
 
-              
-        </div>
+                <div className='view-item-section'>
+                    <ul>
+                        <li>Username: {user.username}</li>
+                        <li>Phone: {user.phone}</li>
+                        <li>Email: {user.email}</li>
+                    </ul>
+                </div>
+            </div>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                centered    
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                    Edit User Details
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <EditUser onEditItem={setUser} item={user}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 };

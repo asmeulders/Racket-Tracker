@@ -52,12 +52,7 @@ export function StringView({data, setData}) {
 
         setData(res.data.string);
         setUpdatedString({});
-        setIsEditing(false);
-    }
-
-    const handleNewBrand = async () => {
-        const list = await getList('brands');
-        setEditData({ brands: list });
+        handleClose();
     }
 
     const handleShow = () => setShow(true);
@@ -84,7 +79,7 @@ export function StringView({data, setData}) {
                 </div>
 
                 <div className='view-item-section'>
-                    Price per Racket: ${string.pricePerRacket}
+                    <p style={'display: block;'}>Price per Racket: ${string.pricePerRacket}</p>
                 </div>
             </div>
             <Modal
