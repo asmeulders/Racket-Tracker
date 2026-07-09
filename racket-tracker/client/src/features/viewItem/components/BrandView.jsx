@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 import { useBrand } from '../../brand/useBrand';
+import { SplitButton } from '../../../components/splitButton/SplitButton';
+import { EditBrand } from '../../editItem/components/EditBrand';
 
 export function BrandView({data, setData}) {
     const navigate = useNavigate();
@@ -9,7 +13,7 @@ export function BrandView({data, setData}) {
 
     const [ brand, setBrand ] = useState({});
     const [ updatedBrand, setUpdatedBrand ] = useState({});
-    const [ isEditing, setIsEditing ] = useState(false);
+    const [ show, setShow ] = useState(false);
 
     useEffect(() => {
         setBrand(data);
@@ -27,7 +31,7 @@ export function BrandView({data, setData}) {
 
     const handleEdit = async () => {
         setUpdatedBrand({...brand})
-        setIsEditing(true);
+        handleShow();
     }
 
     const handleSave = async () => {
@@ -37,30 +41,49 @@ export function BrandView({data, setData}) {
         });
         setData(res.data.brand);
         setUpdatedBrand({});
-        setIsEditing(false);
+        handleShow();
     }
 
-    return (
-        <div className='item-page'>
-            <div className='item-card'>
-                <div className='item-fields'>
-                    <span className='field-label'>Brand Name:</span>
-                    {isEditing ?
-                        <input id='brand-name' type='text' placeholder='Brand Name' value={updatedBrand.name} onChange={(e) => setUpdatedBrand(prev => ({...prev, name: e.target.value}))}>
-                        </input> :
-                        <span className='field-details'>{brand.name}</span>
-                    }
-                </div>
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
 
-                <div className="item-actions">
-                    {isEditing ? 
-                        <button className="action-btn" onClick={() => handleSave()}>Save</button> :
-                        <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
-                    }
-                    <button className="action-btn" onClick={handleDelete}>Delete Brand</button>
-                    <button className="action-btn" onClick={() => navigate('/store/new-item/brands')}>Create New Brand</button>
-                </div>   
+    const dropdownActions = [
+        {
+            label: 'Delete Brand',
+            onClick: handleDelete
+        },
+        {
+            label: 'New Brand',
+            onClick: () => navigate('/store/new-item/brands')
+        }
+    ];
+
+    return (
+        <>
+            <div className='item-page'>
+                <div className='view-item-header'>
+                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/brands')}>&larr;</button>
+                    <h1>{brand.name}</h1>
+                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
+                </div>
             </div>
-        </div>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                centered    
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                    Edit Brand Details
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <EditBrand onEditItem={setBrand} item={brand}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 };

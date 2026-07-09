@@ -910,9 +910,6 @@ def update_order(id, body):
             return jsonify({"error": "Invalid laborCost input"}), 400
         if laborCost < 0:
             return jsonify({"error": "laborCost must be a non-negative number"}), 400
-        
-    # Recalculate sameForCrosses in case user input error
-    # sameForCrosses =  crossesId == mainsId and crossesTension == mainsTension
 
     try:
         order = db.session.get(Order, id)

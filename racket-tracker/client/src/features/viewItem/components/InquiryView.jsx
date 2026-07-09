@@ -25,34 +25,18 @@ export function InquiryView({data, setData}) {
 
     return (
         <div className='item-page'>
-            <div className='item-card'>
-                <div className='item-fields'>
-                    {/* Date */}
-                    <span className='field-label'>Date:</span>
-                    <span className='field-details'>{inquiry.date}</span>
-
-                    {/* Name */}
-                    <span className='field-label'>Name:</span>
-                    <span className='field-details'>{inquiry.name}</span>
-
-                    {/* Phone */}
-                    <span className='field-label'>Phone:</span>
-                    <span className='field-details'>{inquiry.phone}</span>
-
-                    {/* Email */}
-                    <span className='field-label'>Email:</span>
-                    <span className='field-details'>{inquiry.email}</span>
-
-                    {/* Message */}
-                    <span className='field-label'>Name:</span>
-                    <span className='field-details'>{inquiry.message}</span>
-
-                </div>
-                <div className="item-actions">
-                    <button className="action-btn" onClick={handleDelete}>Delete Inquiry</button>
-                    <button className="action-btn">Create New Inquiry</button>
-                </div>  
-            </div>  
+            <div className='view-item-header'>
+                <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/users')}>&larr;</button>
+                <h1>Inquiry #{inquiry.id} - {inquiry.date}</h1>
+            </div>
+            <div className='view-item-section'>
+                <ul>
+                    <li>Name: {inquiry.name}</li>
+                    <li>Email: {inquiry.email}</li>
+                    <li>Phone: {inquiry.phone}</li>
+                    <li>Message: <p>{inquiry.message}</p></li>
+                </ul>
+            </div>
         </div>
     );
 };
