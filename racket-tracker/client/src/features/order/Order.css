@@ -1,7 +1,7 @@
 .order-container {
     width: 100%;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: flex;
+    justify-content: space-between;
     padding: 0 5% 0 5%;
 }
 
@@ -12,10 +12,20 @@
 .order-container h3 {
     grid-row: 1 /span 2;
     align-self: center;
+    margin: 0;
     padding: 0;
 }
 
 .order-container p {
-    text-align: right;
-    color: rgb(87, 87, 87)
+    align-self: right;
+    margin: 0;
+}
+
+.order-date--late {
+    background-color: red;
+    border-radius: 0.25em;
+}
+
+.order-icon {
+    width: 2em;
 }
