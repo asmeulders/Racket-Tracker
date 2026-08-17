@@ -5,10 +5,10 @@
     height: 150px;
     padding: 20px 50px;
     margin: 20px;
-    background-color: lightgrey;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    text-transform: capitalize;
 }
 
 .list-content {

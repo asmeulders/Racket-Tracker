@@ -1,27 +1,21 @@
-.order-details {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+.order-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    padding: 0 5% 0 5%;
 }
 
-.order-status {
-    position: absolute;
-    right: 0;
-    top: 35px;
-    width: fit-content;
-    padding: 5px 7px;
-    color: white;
-    border-radius: 5px;
+.order-container:hover {
+    background-color: lightgrey;
 }
 
-.order-status--to-do {
-    background-color: var(--primary);
+.order-container h3 {
+    grid-row: 1 /span 2;
+    align-self: center;
+    padding: 0;
 }
 
-.order-status--done {
-    background-color: green;
-}
-
-.order-status--late {
-    background-color: red;
+.order-container p {
+    text-align: right;
+    color: rgb(87, 87, 87)
 }

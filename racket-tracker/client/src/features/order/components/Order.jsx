@@ -7,11 +7,6 @@ import '../Order.css';
 export function Order({order}) {
   const { completeOrder, orderPaid } = useOrder();
 
-  // if (!order) return <p>Order not found</p>;
-
-  const [complete, setComplete] = useState(order.complete);
-  const [paid, setPaid] = useState(order.paid);
-
   const displayOrderDate = order.orderDate ? format(new Date(order.orderDate), 'MM/dd/yyyy') : null;
   const dueDate = order.due && new Date(order.due);
   const dateStr = dueDate.toLocaleDateString('en-US', {
@@ -21,20 +16,6 @@ export function Order({order}) {
   const timeStr = dueDate.toLocaleTimeString('en-US', {
     hour: '2-digit', minute: '2-digit'
   });
-
-  const handleComplete  = async () => {
-    const response = await completeOrder(order);
-    if (response !== undefined) {
-      setComplete(response);
-    }
-  }
-
-  const handlePay = async () => {
-    const response = await orderPaid(order);
-    if (response !== undefined) {
-      setPaid(response);
-    }
-  }
 
   const getStatusClassName = () => {
     const className = 'order-status ';
@@ -49,39 +30,12 @@ export function Order({order}) {
     }
   }
 
-  const getStatusText = () => {
-    const now = new Date();
-    const due = new Date(order.due);
-    if (order.complete) {
-      return 'Done';
-    } else if (now < due) {
-      return 'To Do';
-    } else {
-      return 'Late';
-    }
-  }
-
+  // Depending on screen width could show more info
   return (
-    <div className='order-details'>
-      <div className='details-header'>
-        <div className='item-info'>Due: {dateStr} {timeStr}</div>
-        <div className='item-info' >${order.totalCost} - {order.paid ? 'Paid' : "Unpaid"}</div>
-      </div>
-      
-      <div className='details-content'>
-        <div className='item-info item-info--large'>{order?.user?.firstName} {order?.user?.lastName}</div>
-        <div className='job-details'>
-          <div className='item-info'>Racket: {order.racketBrand} {order.racketName}</div>
-          <div className='item-info'>Strings: {order.sameForCrosses ? 
-            order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs'
-            :
-            '(M) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs ' +
-            '(C) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[1]?.tension + 'lbs'
-          }</div>
-        </div>
-      </div>
-      
-      <div className={getStatusClassName()}>{getStatusText()}</div>
+    <div className='order-container'>
+      <h3 className='order-name'>{order?.user?.firstName} {order?.user?.lastName}</h3>
+      <p className='order-due-date'>Due: {dateStr} {timeStr}</p>
+      <p className='order-price' >${order.totalCost} - {order.paid ? 'Paid' : "Unpaid"}</p>
     </div>
   )
 }
