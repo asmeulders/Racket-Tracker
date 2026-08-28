@@ -1,5 +1,12 @@
 /* Item List */
 
+.item-list {
+  margin: 0 10%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 2em; 
+}
+
 .list-header {
     display: flex;
     height: 150px;
@@ -59,18 +66,14 @@
 /* Item Styling */
 
 .item-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   position: relative;
   width: 100%;
-  /* padding: 10px 0px; */
-  /* margin: 5px 0px; */
-  /* border-bottom: 1px solid grey; */
+  aspect-ratio: 1;
+  background-color: var(--primary-transparent);
 }
 
 .item-container:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .item-actions-btn {
@@ -78,14 +81,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-}
-
-.item-info {
-  /* margin: 0px 10px; */
-}
-
-.item-info--large {
-    font-size: large;
 }
 
 .details-header {
@@ -112,15 +107,3 @@
   width: 100%;
   margin-bottom: 25px;
 }
-
-
-/* Racket/String Input Boxes */
-/* .brand-item-container {
-  display: flex;
-  width: 100%;
-}
-
-.brand-item-container input {
-  display: flex;
-  width: 100%;
-} */

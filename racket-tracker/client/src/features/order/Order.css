@@ -1,31 +1,57 @@
-.order-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 5% 0 5%;
+.order-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
 }
 
-.order-container:hover {
-    background-color: lightgrey;
-}
-
-.order-container h3 {
-    grid-row: 1 /span 2;
-    align-self: center;
-    margin: 0;
-    padding: 0;
+.order-info {
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    padding: 1em;
 }
 
 .order-container p {
     align-self: right;
     margin: 0;
+    padding: 0;
 }
 
-.order-date--late {
+/* .order-date--late {
     background-color: red;
     border-radius: 0.25em;
-}
+} */
 
 .order-icon {
-    width: 2em;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0.5em;
+}
+
+.paid-status-box {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border-radius: 1em;
+    margin: auto;
+    padding: 0.5em;
+}
+
+.paid-status-box h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.paid-status-box p {
+    margin: 0;
+    padding: 0;
+}
+
+.order-instructions {
+    margin: 0 0 0 2em;
+    padding: 0;
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
