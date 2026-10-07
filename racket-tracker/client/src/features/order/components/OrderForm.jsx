@@ -37,7 +37,7 @@ export const OrderForm = ({ onSubmit, order, rackets, strings, users }) => {
             console.log("Please fill in all required fields");
         } else {
             const newOrder = await (order === null ? createOrder : updateOrder)(fields);
-            onSubmit(newOrder.id);
+            onSubmit(newOrder);
         }     
         setValidated(true);   
     };

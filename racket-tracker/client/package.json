@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "@fortawesome/react-fontawesome": "^3.5.0",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "date-fns": "^4.4.0",
+    "fontawesome": "^5.6.3",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
     "react-datepicker": "^9.1.0",

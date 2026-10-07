@@ -135,22 +135,15 @@ export const OrderView = ({data, setData}) => {
     return(
         <div className="item-page">
 
-            <div className="view-item-header">
+            <div className="item-header">
                 <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
                 <h1>Order #{order.id} | <span className="user-link" onClick={() => navigate(`/store/view-item/users/${order.userId}`)}>{order.user.firstName} {order.user.lastName}</span></h1>
                 {/* <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div> */}
-                <button className="complete-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
+                <button type="button" className="nav-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
+                <button type="button" className="nav-btn">Edit Order</button>
             </div>
 
-            <div className='view-item-section'>
-                <div>
-                    <span>Payment: {isPaid ? 'Paid' : 'Unpaid'}</span>
-                    <button className="action-btn" onClick={handlePay}>{isPaid ? "Mark Unpaid" : "Mark Paid"}</button>
-                    <div>
-                        <span>Picked Up: {isPickedUp ? 'Picked Up' : 'Not Picked Up'}</span>
-                        <button className="action-btn" onClick={handlePickUp}>{isPickedUp ? "Mark Not Picked Up" : "Mark Picked Up"}</button>
-                    </div>
-                </div>
+            <div className='item-page-content'>
                 <div className='order-info-section'>
                     {/* edit user button */}
                     <div><strong>Due:</strong>
@@ -164,31 +157,29 @@ export const OrderView = ({data, setData}) => {
                         />
                     </div>
                     {/* edit date button */}
-                    <div><strong>Ordered on:</strong>{displayOrderDate}</div>
-                    <div><strong>Total Cost:</strong>${order.totalCost}</div>
+                    <div>
+                        <strong>Ordered on:</strong>
+                        <span>{displayOrderDate}</span>
+                    </div>
+                    <div>
+                        <strong>Total Cost:</strong><span>${order.totalCost}</span>
+                        <button className="action-btn" onClick={handlePay}>{isPaid ? "Paid" : "Unpaid"}</button>
+                    </div>
+                    <button className="action-btn" onClick={handlePickUp}>{isPickedUp ? "Picked Up" : "Not Picked Up"}</button>
                 </div>
+
+                <h3>Job Details</h3>
+                <h4 onClick={() => navigate(`/store/view-item/rackets/${order.racketId}`)}>{order.racketBrand} {order.racketName}</h4>
+
+                {/* make a single edit order button */}
+                <h4>Stringing</h4>
+                <span>Service Price: {order.laborCost}</span>
+                <StringDetails jobDetails={mains} sameForCrosses={order.sameForCrosses}/>
+                {!order.sameForCrosses && 
+                    <StringDetails jobDetails={crosses} sameForCrosses={order.sameForCrosses}/>}
             </div>
-
-            <div className='view-item-section view-item-section-top'>
-                <h3>{order.racketBrand} {order.racketName}</h3>
-                <button type="button" id="edit-racket-btn" className='action-btn' onClick={() => handleEdit('rackets')}>Change Racket</button>
-            </div>
-
-            <div className='view-item-section view-item-section-bottom'>
-                <div className='stringing-header'>
-                    <h3>Stringing</h3>
-                    <button type="button" id="edit-stringing-btn" className='action-btn' onClick={() => handleEdit('strings')}>Edit Stringing</button>
-                </div>
-                <div className='stringing-section'>Service Price: {order.laborCost}</div>
-                <div className='stringing-section'>
-                    <StringDetails jobDetails={mains} sameForCrosses={order.sameForCrosses}/>
-                    {!order.sameForCrosses && 
-                        <StringDetails jobDetails={crosses} sameForCrosses={order.sameForCrosses}/>}
-                </div>
-            </div>   
-
-            <UpdateModal show={showModal.rackets} data={updatedOrder} listData={editData.rackets} handleSave={() => handleSave('rackets')} handleClose={() => setShowModal(prev => ({...prev, rackets: false}))} field='rackets' onChange={setUpdatedOrder}/>    
-            <UpdateModal show={showModal.strings} data={updatedOrder} listData={editData.strings} handleSave={() => handleSave('strings')} handleClose={() => setShowModal(prev => ({...prev, strings: false}))} field='strings' onChange={setUpdatedOrder}/>    
+            {/* <UpdateModal show={showModal.rackets} data={updatedOrder} listData={editData.rackets} handleSave={() => handleSave('rackets')} handleClose={() => setShowModal(prev => ({...prev, rackets: false}))} field='rackets' onChange={setUpdatedOrder}/>    
+            <UpdateModal show={showModal.strings} data={updatedOrder} listData={editData.strings} handleSave={() => handleSave('strings')} handleClose={() => setShowModal(prev => ({...prev, strings: false}))} field='strings' onChange={setUpdatedOrder}/>     */}
         </div>
     )
 }
@@ -295,7 +286,7 @@ const CustomInput = forwardRef(({ value, onClick }, ref) => (
         onClick={onClick}
         ref={ref}
     >
-        <span>{value || 'Set due date'}</span>
+        <span className='date-picker'>{value || 'Set due date'}</span>
     </button>
 ));
 
