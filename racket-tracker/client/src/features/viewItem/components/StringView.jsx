@@ -79,7 +79,7 @@ export function StringView({data, setData}) {
                 </div>
 
                 <div className='view-item-section'>
-                    <p style={'display: block;'}>Price per Racket: ${string.pricePerRacket}</p>
+                    <p>Price per Racket: ${string.pricePerRacket}</p>
                 </div>
             </div>
             <Modal
