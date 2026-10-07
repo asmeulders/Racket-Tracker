@@ -1,13 +1,16 @@
-.order-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-}
-
 .order-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     width: fit-content;
-    height: fit-content;
+    height: 100%;
     margin: auto;
     padding: 1em;
+}
+
+.order-info h2 {
+    margin: 0;
+    padding: 0;
 }
 
 .order-container p {
@@ -16,10 +19,10 @@
     padding: 0;
 }
 
-/* .order-date--late {
-    background-color: red;
-    border-radius: 0.25em;
-} */
+.order-date {
+    display: flex;
+    flex-direction: column;
+}
 
 .order-icon {
     display: inline-flex;
@@ -47,11 +50,4 @@
 .paid-status-box p {
     margin: 0;
     padding: 0;
-}
-
-.order-instructions {
-    margin: 0 0 0 2em;
-    padding: 0;
-    grid-column-start: 1;
-    grid-column-end: 3;
 }
