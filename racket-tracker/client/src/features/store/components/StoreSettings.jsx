@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useStore } from "../useStore";
 import { set } from "date-fns";
+import { StorePageLayout } from "./StorePageLayout";
 
 export const StoreSettings = () => {
     const { getSettings, updateSettings } = useStore();
@@ -29,8 +30,9 @@ export const StoreSettings = () => {
         // Need:
         //  - Default labor cost
         //  - default labor days
-        <div className="store-settings-page">
-            <h1>Settings</h1>
+        <StorePageLayout
+            title={"Settings"}
+        >
             <button onClick={handleClick}>{isEditing ? 'Save' : 'Edit'}</button>
             <div>
                 {
@@ -54,6 +56,6 @@ export const StoreSettings = () => {
                     </div>
                 }
             </div>
-        </div>
+        </StorePageLayout>
     )
 }
