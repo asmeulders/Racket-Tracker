@@ -8,6 +8,7 @@ import { BrandSelect } from '../../brand';
 import { useViewItem } from '../useViewItem';
 import { SplitButton } from '../../../components/splitButton/SplitButton';
 import { EditString } from '../../editItem/components/EditString';
+import { StorePageLayout } from '../../store';
 
 export function StringView({data, setData}) {
     const navigate = useNavigate();
@@ -70,17 +71,12 @@ export function StringView({data, setData}) {
     ];
 
     return (
-        <>
-            <div className='item-page'>
-                <div className='view-item-header'>
-                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/strings')}>&larr;</button>
-                    <h1>{string.brandName} {string.name}</h1>
-                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
-                </div>
-
-                <div className='view-item-section'>
-                    <p style={'display: block;'}>Price per Racket: ${string.pricePerRacket}</p>
-                </div>
+        <StorePageLayout
+            title={`${string.brandName} ${string.name}`}
+            // actions={} edit
+        >
+            <div className='view-item-section'>
+                <p>Price per Racket: ${string.pricePerRacket}</p>
             </div>
             <Modal
                 show={show}
@@ -99,6 +95,6 @@ export function StringView({data, setData}) {
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </StorePageLayout>
     );
 };

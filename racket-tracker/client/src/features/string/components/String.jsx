@@ -2,9 +2,9 @@ import "../String.css"
 
 export function String({string}) {
   return (
-    <div className='string-details'>
-      <div className="item-info item-info--large">{string.brandName} {string.name}</div>
-      <div className="item-info">${string.pricePerRacket} </div>
+    <div className='string-card'>
+      <h2>{string.brandName} {string.name}</h2>
+      <span>${string.pricePerRacket}</span>
     </div>
   )
 }

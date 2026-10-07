@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { useBrand } from '../../brand/useBrand';
 import { SplitButton } from '../../../components/splitButton/SplitButton';
 import { EditBrand } from '../../editItem/components/EditBrand';
+import { StorePageLayout } from '../../store';
 
 export function BrandView({data, setData}) {
     const navigate = useNavigate();
@@ -59,14 +60,11 @@ export function BrandView({data, setData}) {
     ];
 
     return (
-        <>
-            <div className='item-page'>
-                <div className='view-item-header'>
-                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/brands')}>&larr;</button>
-                    <h1>{brand.name}</h1>
-                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
-                </div>
-            </div>
+        <StorePageLayout
+            title={brand.name}
+            // actions - edit
+            // back ?
+        >
             <Modal
                 show={show}
                 onHide={handleClose}
@@ -84,6 +82,6 @@ export function BrandView({data, setData}) {
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </StorePageLayout> 
     );
 };

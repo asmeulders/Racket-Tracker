@@ -1,9 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "./index";
 import Layout from './components/layout/Layout';
@@ -18,23 +14,29 @@ import './App.css'
 
 
 function App() {
-  return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />} >
-            <Route index element={<Home />} />
-          </Route>
-          <Route path="/store" element={<Store />}>
-            <Route index element={<StoreDashboard />} />
-            <Route path="view-list/:type" element={<ItemList />} />
-            <Route path="view-item/:type/:id" element={<ViewItem />} /> 
-            <Route path="settings" element={<StoreSettings />} /> 
-            <Route path="new-item/:type" element={<NewItem />}/>
-            <Route path="edit-item/:type/:id" element={<EditItem />}/>
-          </Route>
-        </Routes>
-      </Router>
-  )
+  const router = createBrowserRouter([
+    {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <Home /> },
+      {
+        path: "store",
+        element: <Store />,
+        children: [
+          { index: true, element: <StoreDashboard /> },
+          { path: "view-list/:type", element: <ItemList /> },
+          { path: "view-item/:type/:id", element: <ViewItem /> },
+          { path: "settings", element: <StoreSettings /> },
+          { path: "new-item/:type", element: <NewItem /> },
+          { path: "edit-item/:type/:id", element: <EditItem /> },
+        ],
+      },
+    ],
+  },
+  ]);
+  
+  return <RouterProvider router={router} />;
 }
 
 export default App

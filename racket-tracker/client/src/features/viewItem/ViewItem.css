@@ -11,24 +11,6 @@
     margin: 2% 4%;
 }
 
-.item-page h3 {
-    margin: 0 4%;
-}
-
-.view-item-header {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    /* overflow: hidden; */
-    
-    padding: 0 5%;
-    height: fit-content;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid darkgrey;
-}
-
 .user-link {
     color: var(--primary);
 }
@@ -59,53 +41,31 @@
     font-size: x-large;
 }
 
-.complete-btn {
-    border: 2px solid black;
-    border-radius: 10px;
-    padding: 1%;
-    width: 17.5%;
-}
-
-.view-item-section {
+.item-page-content {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     margin: 0px 80px;
     padding: 40px 0px;
 }
 
-.view-item-section-top {
-    width: fit-content;
-    border-top: 1px solid lightgrey;
-    border-left: 1px solid lightgrey;
-    border-right: 1px solid lightgrey;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.view-item-section-bottom {
-    flex-direction: column;
-    min-width: 600px;
-    width: fit-content;
-    border: 1px solid lightgrey;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
 
 .order-info-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
     font-size: large;
-    z-index: -1;
 }
 
 .order-info-section strong {
     margin-right: 10px;
 }
 
-.order-info-section span {
+.date-picker {
     color: var(--primary);
 }
 
-.order-info-section span:hover {
+.date-picker:hover {
     color: var(--primary-transparent);
     cursor: pointer;
     border-bottom: 2px solid var(--primary-transparent);

@@ -3,9 +3,9 @@ import '../Racket.css';
 
 export function Racket({racket}) {
   return (
-    <div className='racket-details'>
-      <div className='item-info item-info--large'>{racket.brandName} {racket.name}</div>
-      <div className='item-info'>${racket.price}</div>
+    <div className='racket-card'>
+      <h2>{racket.brandName} {racket.name}</h2>
+      <span>${racket.price}</span>
     </div>
   )
 }

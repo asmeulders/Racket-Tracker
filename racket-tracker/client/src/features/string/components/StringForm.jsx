@@ -40,7 +40,7 @@ export const StringForm = ({ onSubmit, brands }) => {
                 pricePerRacket: '',
                 brandId: ''
             });
-            onSubmit(string.id);
+            onSubmit(string);
         }       
         setValidated(true);
     }

@@ -1,10 +1,44 @@
-.store-page {
-    height: 100vh;
+.store {
+    display: flex;
 }
 
-.store-page-content {
-    height: 100%;
-    margin-left: 250px;
+.store-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.store-content {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
+}
+
+.store-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    /* overflow: hidden; */
+    
+    padding: 1% 5%;
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid darkgrey;
+}
+
+.page-actions {
+    display: flex;
+    width: 20%;
+}
+
+.page-actions button {
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: auto;
+    padding: 1%;
+    width: fit-content;
 }

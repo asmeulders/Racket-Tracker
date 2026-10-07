@@ -40,7 +40,7 @@ export const UserForm = ({ onSubmit }) => {
                 phone: '',
                 email: ''
             });
-            onSubmit(user.id);
+            onSubmit(user);
         }
         setValidated(true); // triggers visual feedback
     }
