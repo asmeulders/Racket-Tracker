@@ -8,6 +8,7 @@ import { BrandSelect } from '../../brand';
 import { useDatabase } from '../../../utils/useDatabase';
 import { useViewItem } from '../useViewItem';
 import { EditRacket } from '../../editItem/components/EditRacket';
+import { SplitButton } from '../../../components/splitButton/SplitButton';
 
 export function RacketView({data, setData}) {
     const navigate = useNavigate();
@@ -64,19 +65,26 @@ export function RacketView({data, setData}) {
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
 
+    const dropdownActions = [
+        {
+            label: 'Delete Racket',
+            onClick: 'handleDelete'
+        },
+        {
+            label: 'New Racket',
+            onClick: () => navigate('/store/new-item/rackets')
+        }
+    ];
+
     return (
         <>
             <div className='item-page'>
                 <div className='view-item-header'>
-                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
+                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/rackets')}>&larr;</button>
                     <h1>{racket.brandName} {racket.name}</h1>
+                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
                 </div>
 
-                <div className="item-actions">
-                    <button className="action-btn" onClick={async () => await handleEdit()}>Edit</button>
-                    <button className="action-btn" onClick={handleDelete}>Delete Racket</button>                    
-                    <button className="action-btn" onClick={() => navigate('/store/new-item/rackets')}>Create New Racket</button>
-                </div>
                 <div className='view-item-section'>
                     Price: ${racket.price}
                 </div>

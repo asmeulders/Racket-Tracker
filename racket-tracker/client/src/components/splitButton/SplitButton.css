@@ -1,0 +1,54 @@
+.split-btn {
+    position: relative;
+    width: fit-content;
+    font: 600 1.25em Arial;
+    color: white;
+    background-color: var(--primary);
+    border-radius: 0.75em;
+}
+
+.split-btn .main-action:hover, .dropdown-btn:hover {
+    background-color: var(--secondary);
+}
+
+.main-action {
+    padding: 0.5em;
+    color: inherit;
+    overflow: hidden;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+}
+
+.dropdown-btn {
+    padding: 0.5em;
+    color: inherit;
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+.dropdown-menu {
+    display: none;
+    width: 80%;
+    position: absolute;
+    left: 10%;
+    background-color: var(--primary);
+    color: white;
+}
+
+.dropdown-menu--visible {
+    display: block;
+}
+
+.dropdown-menu li {
+    width: 100%;
+    float: left;
+    margin: 0;
+    padding: 0.5em;
+    color: inherit;
+}
+
+.dropdown-menu li:hover {
+    background-color: var(--secondary);  
+    cursor: pointer;  
+}
+

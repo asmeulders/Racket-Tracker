@@ -1,21 +1,25 @@
 /* Item List */
 
+.item-list {
+  display: flex;
+  flex-direction: column;
+}
+
 .list-header {
-    display: flex;
-    height: 150px;
-    padding: 20px 50px;
-    margin: 20px;
-    background-color: lightgrey;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
+  display: flex;
+  height: 150px;
+  padding: 20px 50px;
+  margin: 20px;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  text-transform: capitalize;
 }
 
 .list-content {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
-    padding: 0px 80px 10px;
 }
 
 /* New Item Button */
@@ -59,18 +63,15 @@
 /* Item Styling */
 
 .item-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   position: relative;
-  width: 100%;
-  padding: 10px 0px;
-  margin: 5px 0px;
-  border-bottom: 1px solid grey;
+  width: 80%;
+  margin: auto;
+  border-bottom: 1px solid lightgrey;
 }
 
 .item-container:hover {
-    cursor: pointer;
+  cursor: pointer;
+  background-color: var(--primary-transparent);
 }
 
 .item-actions-btn {
@@ -78,14 +79,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-}
-
-.item-info {
-  /* margin: 0px 10px; */
-}
-
-.item-info--large {
-    font-size: large;
 }
 
 .details-header {
@@ -105,21 +98,10 @@
 /* Filters */
 
 .filter-container {
+  position: sticky;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
   margin-bottom: 25px;
 }
-
-
-/* Racket/String Input Boxes */
-/* .brand-item-container {
-  display: flex;
-  width: 100%;
-}
-
-.brand-item-container input {
-  display: flex;
-  width: 100%;
-} */

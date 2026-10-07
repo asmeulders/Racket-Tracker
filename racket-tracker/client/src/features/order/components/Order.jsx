@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
+import { useEffect } from 'react';
+import { format, getDate } from 'date-fns';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useOrder } from '../useOrder';
 import '../Order.css';
@@ -7,81 +9,42 @@ import '../Order.css';
 export function Order({order}) {
   const { completeOrder, orderPaid } = useOrder();
 
-  // if (!order) return <p>Order not found</p>;
+  const complete = order?.complete ? order?.complete : null;
+  const dueDate = order?.due ? new Date(order.due) : null;
+  const dateStr = dueDate 
+    ? dueDate.toLocaleDateString('en-US', {year: 'numeric', month: 'numeric', day: 'numeric'}) 
+    : null;
 
-  const [complete, setComplete] = useState(order.complete);
-  const [paid, setPaid] = useState(order.paid);
+  const timeStr = dueDate
+    ? dueDate.toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric'})
+    : null;
+  const late = dueDate && dueDate < new Date();
 
-  const displayOrderDate = order.orderDate ? format(new Date(order.orderDate), 'MM/dd/yyyy') : null;
-  const dueDate = order.due && new Date(order.due);
-  const dateStr = dueDate.toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric'
-  });
-
-  const timeStr = dueDate.toLocaleTimeString('en-US', {
-    hour: '2-digit', minute: '2-digit'
-  });
-
-  const handleComplete  = async () => {
-    const response = await completeOrder(order);
-    if (response !== undefined) {
-      setComplete(response);
-    }
-  }
-
-  const handlePay = async () => {
-    const response = await orderPaid(order);
-    if (response !== undefined) {
-      setPaid(response);
-    }
-  }
-
-  const getStatusClassName = () => {
-    const className = 'order-status ';
-    const now = new Date();
-    const due = new Date(order.due);
-    if (order.complete) {
-      return className + 'order-status--done';
-    } else if (now < due) {
-      return className + 'order-status--to-do';
-    } else {
-      return className + 'order-status--late';
-    }
-  }
-
-  const getStatusText = () => {
-    const now = new Date();
-    const due = new Date(order.due);
-    if (order.complete) {
-      return 'Done';
-    } else if (now < due) {
-      return 'To Do';
-    } else {
-      return 'Late';
-    }
-  }
-
+  // Depending on screen width could show more info
   return (
-    <div className='order-details'>
-      <div className='details-header'>
-        <div className='item-info'>Due: {dateStr} {timeStr}</div>
-        <div className='item-info' >${order.totalCost} - {order.paid ? 'Paid' : "Unpaid"}</div>
+    <div className='order-card'>
+      <h2 className='order-name'>{order?.user?.firstName} {order?.user?.lastName}</h2>
+
+      <span className='order-racket'>{order.racketBrand} {order.racketName}</span>
+
+      <span className='order-price'>${order.totalCost} {order.paid ? 'Paid' : "Unpaid"}</span>
+
+      <div className='order-date'>
+        <span>{dateStr ? dateStr : 'XX/XX/XXXX'}</span><br />
+        <span>{timeStr ? timeStr : '12:00 AM'}</span>
       </div>
       
-      <div className='details-content'>
-        <div className='item-info item-info--large'>{order?.user?.firstName} {order?.user?.lastName}</div>
-        <div className='job-details'>
-          <div className='item-info'>Racket: {order.racketBrand} {order.racketName}</div>
-          <div className='item-info'>Strings: {order.sameForCrosses ? 
-            order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs'
-            :
-            '(M) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[0]?.tension + 'lbs ' +
-            '(C) ' + order?.jobDetails?.[0]?.stringBrand + ' ' + order?.jobDetails?.[0]?.stringName + ' @' + order?.jobDetails?.[1]?.tension + 'lbs'
-          }</div>
-        </div>
-      </div>
-      
-      <div className={getStatusClassName()}>{getStatusText()}</div>
+      <span className='order-icon'>
+        {
+          complete
+          ? <i class="fa-regular fa-circle-check"></i>
+          : (
+            late
+            ? <i class="fa-regular fa-alarm-clock"></i>
+            : <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+          )
+        }   
+      </span>
     </div>
   )
 }

@@ -16,20 +16,15 @@ export const RacketForm = ({ onSubmit, brands }) => {
 
     const [show, setShow] = useState(false);
     const [validated, setValidated] = useState(false);
-    const [errors, setErrors] = useState({});
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const form = e.currentTarget;
-        const newErrors = validate();
 
-        if (form.checkValidity() === false || Object.keys(newErrors).length > 0) {
+        if (form.checkValidity() === false) {
             e.stopPropagation();
-            setErrors(newErrors);
             console.log("Please fill in all required fields");
-            console.dir(errors)
         } else {
-            setErrors({});
             const racket = await createRacket({ 
                 name: fields.name,
                 price: fields.price, 
