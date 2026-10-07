@@ -29,7 +29,7 @@ export const Navbar = () => {
                 "nav-links" + (isActive ? " activated" : "")
               }
             >
-              Store Dashboard
+              Store
             </NavLink>
           </li>
         </ul>

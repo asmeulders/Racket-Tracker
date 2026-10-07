@@ -1,10 +1,15 @@
-.store-page {
-    height: 100vh;
+.store {
+    display: flex;
 }
 
-.store-page-content {
-    height: 100%;
-    margin-left: 250px;
+.store-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.store-content {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
 }

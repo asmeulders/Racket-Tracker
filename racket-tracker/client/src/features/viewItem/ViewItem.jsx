@@ -32,6 +32,10 @@ export const ViewItem = () => {
     const Component = views[type] ?? NotFoundView;
 
     return (
-        <Component data={data} setData={setData}/>
+        <div>
+            
+            <Component data={data} setData={setData}/>
+        </div>
+        
     );
 }

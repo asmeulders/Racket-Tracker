@@ -5,11 +5,13 @@ import './Store.css';
 
 export const Store = () => {
   return (
-    <div className="store-page">
+    <div className="store">
+      <div className='store-sidebar'>
         <Sidebar />
-        <div className='store-page-content'>
-          <Outlet />
-        </div>
+      </div>
+      <div className='store-content'>
+        <Outlet />
+      </div>
     </div>
   );
 };
