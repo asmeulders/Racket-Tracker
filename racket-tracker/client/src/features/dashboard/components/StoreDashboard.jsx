@@ -7,6 +7,7 @@ import { UserForm } from '../../user';
 import { Inquiry } from '../../inquiry';
 import { useStore } from '../../store/useStore';
 import './StoreDashboard.css';
+import { StorePageLayout } from '../../store';
 
 export function StoreDashboard() {
     const { getPage } = useStore();
@@ -40,12 +41,9 @@ export function StoreDashboard() {
     const lastWeekDate = new Date(todayDate.getTime() - 7*24*60*60*1000);
 
     return (
-        <div className='dashboard-page'>
-            <div className='dashboard-header'>
-                <h1>Dashboard</h1>
-                <p>{todayFormated}</p>
-            </div>
-            
+        <StorePageLayout
+            title={"Dashboard"}
+        >
             <div className='dashboard-content'>
                 <div className='active-orders'>
                     {data?.orders.length === 0 ? (
@@ -81,6 +79,6 @@ export function StoreDashboard() {
                 <button type='button' onClick={() => navigate('/store/new-item/orders')}>New Order</button>
                 <button type='button' onClick={() => navigate('/store/new-item/users')}>New Customer</button>
             </div>
-        </div>  
+        </StorePageLayout>
     )
 }

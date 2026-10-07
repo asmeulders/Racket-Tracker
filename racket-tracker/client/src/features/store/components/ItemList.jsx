@@ -14,6 +14,7 @@ import { Inquiry, InquiryFilter } from "../../inquiry";
 import { Collapsible } from "../../../components/collapsible/Collapsible";
 
 import './ItemList.css'
+import { StorePageLayout } from "./StorePageLayout";
 
 // TODO: 
 // order date range filter
@@ -116,13 +117,10 @@ export const ItemList = () => {
     }
 
     return (
-        <>
-            <div className="list-header">
-                <h1>{type}</h1>
-                {
-                    type !== "inquries" && <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>
-                }
-            </div>
+        <StorePageLayout
+            title={type}
+            actions={type !== "inquries" && <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>}
+        >
             <div className="filter-container">
                 <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
             </div>
@@ -160,6 +158,6 @@ export const ItemList = () => {
             <Modal show={show} onHide={handleClose}>
                 {itemConfig[type].renderModal()}
             </Modal>
-        </>        
+        </StorePageLayout>
     )
 }
