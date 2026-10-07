@@ -1,28 +1,25 @@
 /* Item List */
 
 .item-list {
-  margin: 0 10%;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(200px, 1fr));
-  gap: 2em; 
+  display: flex;
+  flex-direction: column;
 }
 
 .list-header {
-    display: flex;
-    height: 150px;
-    padding: 20px 50px;
-    margin: 20px;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    text-transform: capitalize;
+  display: flex;
+  height: 150px;
+  padding: 20px 50px;
+  margin: 20px;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  text-transform: capitalize;
 }
 
 .list-content {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
-    /* padding: 0px 80px 10px; */
 }
 
 /* New Item Button */
@@ -67,13 +64,14 @@
 
 .item-container {
   position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: var(--primary-transparent);
+  width: 80%;
+  margin: auto;
+  border-bottom: 1px solid lightgrey;
 }
 
 .item-container:hover {
   cursor: pointer;
+  background-color: var(--primary-transparent);
 }
 
 .item-actions-btn {

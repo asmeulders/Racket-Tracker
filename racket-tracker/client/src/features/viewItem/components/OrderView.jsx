@@ -138,8 +138,8 @@ export const OrderView = ({data, setData}) => {
             <div className="view-item-header">
                 <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
                 <h1>Order #{order.id} | <span className="user-link" onClick={() => navigate(`/store/view-item/users/${order.userId}`)}>{order.user.firstName} {order.user.lastName}</span></h1>
-                <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div>
-                <div className='complete-btn'><SplitButton className="complete-btn" label={isComplete ? "Mark Incomplete" : "Mark Complete"} onClick={handleComplete} dropdownActions={dropdownActions}></SplitButton></div>
+                {/* <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div> */}
+                <button className="complete-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
             </div>
 
             <div className='view-item-section'>
