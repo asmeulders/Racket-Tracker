@@ -4,8 +4,8 @@ import '../User.css';
 
 export function User({user}) {
   return (
-    <div key={user.id} className='user-details'>
-      <div className='item-info item-info--large'>{user.firstName} {user.lastName} | {user.username}</div>
+    <div className='user-card'>
+      <h2>{user.firstName} {user.lastName} | {user.username}</h2>
       {/* this stuff should go to the user page */}
       {/* <div className='item-info'>
         Owns:
