@@ -82,8 +82,6 @@ export function BrandView({data, setData}) {
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
-        </StorePageLayout>
-                
-            
+        </StorePageLayout> 
     );
 };

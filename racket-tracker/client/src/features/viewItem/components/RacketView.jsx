@@ -9,6 +9,7 @@ import { useDatabase } from '../../../utils/useDatabase';
 import { useViewItem } from '../useViewItem';
 import { EditRacket } from '../../editItem/components/EditRacket';
 import { SplitButton } from '../../../components/splitButton/SplitButton';
+import { StorePageLayout } from '../../store';
 
 export function RacketView({data, setData}) {
     const navigate = useNavigate();
@@ -77,17 +78,12 @@ export function RacketView({data, setData}) {
     ];
 
     return (
-        <>
-            <div className='item-page'>
-                <div className='view-item-header'>
-                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/rackets')}>&larr;</button>
-                    <h1>{racket.brandName} {racket.name}</h1>
-                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
-                </div>
-
-                <div className='view-item-section'>
-                    Price: ${racket.price}
-                </div>
+        <StorePageLayout
+            title={`${racket.brandName} ${racket.name}`}
+            // actions={} edit
+        >
+            <div className='view-item-section'>
+                Price: ${racket.price}
             </div>
             <Modal
                 show={show}
@@ -106,6 +102,6 @@ export function RacketView({data, setData}) {
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </StorePageLayout>
     );
 };

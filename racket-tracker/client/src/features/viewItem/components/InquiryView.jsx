@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { useInquiry } from '../../inquiry/useInquiry';
+import { StorePageLayout } from '../../store';
 
 export function InquiryView({data, setData}) {
     const { getInquiry, deleteInquiry } = useInquiry();
@@ -24,11 +25,9 @@ export function InquiryView({data, setData}) {
     }
 
     return (
-        <div className='item-page'>
-            <div className='view-item-header'>
-                <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/users')}>&larr;</button>
-                <h1>Inquiry #{inquiry.id} - {inquiry.date}</h1>
-            </div>
+        <StorePageLayout
+            title={`Inquiry #${inquiry.id} - ${inquiry.date}`}
+        >
             <div className='view-item-section'>
                 <ul>
                     <li>Name: {inquiry.name}</li>
@@ -37,6 +36,6 @@ export function InquiryView({data, setData}) {
                     <li>Message: <p>{inquiry.message}</p></li>
                 </ul>
             </div>
-        </div>
+        </StorePageLayout>
     );
 };

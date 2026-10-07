@@ -7,6 +7,7 @@ import { useUser } from '../../user/useUser';
 import { BrandSelect } from '../../brand';
 import { SplitButton } from '../../../components/splitButton/SplitButton';
 import { EditUser } from '../../editItem/components/EditUser';
+import { StorePageLayout } from '../../store';
 
 export function UserView({data, setData}) {
     const navigate = useNavigate();
@@ -70,21 +71,16 @@ export function UserView({data, setData}) {
     ];
 
     return (
-        <>
-            <div className='item-page'>
-                <div className='view-item-header'>
-                    <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/users')}>&larr;</button>
-                    <h1>{user.firstName} {user.lastName}</h1>
-                    <SplitButton label='Edit' onClick={handleEdit} dropdownActions={dropdownActions}/>
-                </div>
-
-                <div className='view-item-section'>
-                    <ul>
-                        <li>Username: {user.username}</li>
-                        <li>Phone: {user.phone}</li>
-                        <li>Email: {user.email}</li>
-                    </ul>
-                </div>
+        <StorePageLayout
+            title={`${user.firstName} ${user.lastName}`}
+            // actions={} edit
+        >
+            <div className='view-item-section'>
+                <ul>
+                    <li>Username: {user.username}</li>
+                    <li>Phone: {user.phone}</li>
+                    <li>Email: {user.email}</li>
+                </ul>
             </div>
             <Modal
                 show={show}
@@ -103,6 +99,6 @@ export function UserView({data, setData}) {
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </StorePageLayout>
     );
 };

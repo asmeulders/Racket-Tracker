@@ -1,9 +1,11 @@
+import { StorePageLayout } from "../../store"
+
 export const NotFoundView = () => {
 
 
     return (
-        <>
-            <p>Not Found</p>
-        </>
+        <StorePageLayout
+            title="Page not found..."
+        ></StorePageLayout>
     )
 }
