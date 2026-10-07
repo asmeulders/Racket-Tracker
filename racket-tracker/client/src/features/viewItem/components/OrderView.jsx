@@ -190,7 +190,7 @@ const StringDetails = ({jobDetails, sameForCrosses}) => {
 
     return (
         <div className='stringing-details'>
-            {!sameForCrosses && <h4>{jobDetails.direction}</h4>}
+            {!sameForCrosses && <h5>{jobDetails.direction}</h5>}
             <ul>
                 <li>String: {jobDetails.stringBrand} {jobDetails.stringName}</li>
                 <li>Tension: {jobDetails.tension}</li>
