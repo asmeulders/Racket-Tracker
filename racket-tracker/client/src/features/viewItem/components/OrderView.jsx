@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -8,11 +8,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { useOrder } from '../../order/index';
-import { UserSelect } from '../../user';
 import { RacketSelect } from '../../racket';
 import { StringSelect } from '../../string';
 import { useViewItem } from '../useViewItem';
-import { SplitButton } from '../../../components/splitButton/SplitButton';
+import { StorePageLayout } from '../../store';
 
 export const OrderView = ({data, setData}) => {
     const navigate = useNavigate();
@@ -120,29 +119,25 @@ export const OrderView = ({data, setData}) => {
         console.log(order);
     };
 
-    const statusClass = isComplete ? "status-complete" : isLate ? "status-late" : "status-to-do";
-    const dropdownActions = [
-        {
-            label: 'Delete Order',
-            onClick: handleDelete
-        },
-        {
-            label: 'Create New Order',
-            onClick: () => navigate('/store/new-item/orders')
-        }
-    ];
-    
     return(
-        <div className="item-page">
-
-            <div className="item-header">
-                <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button>
-                <h1>Order #{order.id} | <span className="user-link" onClick={() => navigate(`/store/view-item/users/${order.userId}`)}>{order.user.firstName} {order.user.lastName}</span></h1>
-                {/* <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div> */}
-                <button type="button" className="nav-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
-                <button type="button" className="nav-btn">Edit Order</button>
-            </div>
-
+        <StorePageLayout 
+            title={
+                <>
+                    Order #{order.id} |{" "}
+                    <Link className="user-link" to={`/store/view-item/users/${order.userId}`}>{order.user.firstName} {order.user.lastName}</Link>
+                </>
+            }
+            actions={
+                <>
+                    <button type="button" className="nav-btn">Edit Order</button>
+                    <button type="button" className="nav-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
+                </>
+            }
+        >
+                
+            {/* <button type="button" className="back-btn" onClick={() => navigate('/store/view-list/orders')}>&larr;</button> */}
+            {/* <div className={`status ${statusClass}`}>{isComplete ? "Complete" : isLate ? "Overdue" : "To Do"}</div> */}
+            
             <div className='item-page-content'>
                 <div className='order-info-section'>
                     {/* edit user button */}
@@ -180,7 +175,7 @@ export const OrderView = ({data, setData}) => {
             </div>
             {/* <UpdateModal show={showModal.rackets} data={updatedOrder} listData={editData.rackets} handleSave={() => handleSave('rackets')} handleClose={() => setShowModal(prev => ({...prev, rackets: false}))} field='rackets' onChange={setUpdatedOrder}/>    
             <UpdateModal show={showModal.strings} data={updatedOrder} listData={editData.strings} handleSave={() => handleSave('strings')} handleClose={() => setShowModal(prev => ({...prev, strings: false}))} field='strings' onChange={setUpdatedOrder}/>     */}
-        </div>
+        </StorePageLayout>
     )
 }
 
