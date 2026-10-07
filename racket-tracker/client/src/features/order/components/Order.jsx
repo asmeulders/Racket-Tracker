@@ -22,18 +22,15 @@ export function Order({order}) {
 
   // Depending on screen width could show more info
   return (
-    <div className='order-info'>
+    <div className='order-card'>
       <h2 className='order-name'>{order?.user?.firstName} {order?.user?.lastName}</h2>
 
-      <span>{order.racketBrand} {order.racketName}</span>
+      <span className='order-racket'>{order.racketBrand} {order.racketName}</span>
 
-      <div className='paid-status-box'>
-        <h4 className='order-price' >${order.totalCost}</h4>
-        <p>{order.paid ? 'Paid' : "Unpaid"}</p>
-      </div>
+      <span className='order-price'>${order.totalCost} {order.paid ? 'Paid' : "Unpaid"}</span>
 
-      <div className='order-name'>
-        <span>Due: {dateStr ? dateStr : 'XX/XX/XXXX'}</span><br />
+      <div className='order-date'>
+        <span>{dateStr ? dateStr : 'XX/XX/XXXX'}</span><br />
         <span>{timeStr ? timeStr : '12:00 AM'}</span>
       </div>
       
