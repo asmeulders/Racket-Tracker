@@ -132,7 +132,7 @@ export const OrderView = ({data, setData}) => {
             }
             actions={
                 <>
-                    <button type="button" className="nav-btn" onClick={handleEdit}>Edit Order</button>
+                    <button type="button" className="nav-btn" onClick={() => navigate(`/store/edit-item/orders/${order.id}`)}>Edit Order</button>
                     <button type="button" className="nav-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
                 </>
             }

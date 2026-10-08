@@ -6,7 +6,6 @@ import Button from 'react-bootstrap/Button';
 import { useUser } from '../../user/useUser';
 import { BrandSelect } from '../../brand';
 import { SplitButton } from '../../../components/splitButton/SplitButton';
-import { EditUser } from '../../editItem/components/EditUser';
 import { StorePageLayout } from '../../store';
 
 export function UserView({data, setData}) {
@@ -82,7 +81,7 @@ export function UserView({data, setData}) {
                     <li>Email: {user.email}</li>
                 </ul>
             </div>
-            <Modal
+            {/* <Modal
                 show={show}
                 onHide={handleClose}
                 centered    
@@ -98,7 +97,7 @@ export function UserView({data, setData}) {
                 <Modal.Footer>
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </StorePageLayout>
     );
 };

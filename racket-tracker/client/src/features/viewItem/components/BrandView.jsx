@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 
 import { useBrand } from '../../brand/useBrand';
 import { SplitButton } from '../../../components/splitButton/SplitButton';
-import { EditBrand } from '../../editItem/components/EditBrand';
 import { StorePageLayout } from '../../store';
 
 export function BrandView({data, setData}) {
@@ -65,7 +64,7 @@ export function BrandView({data, setData}) {
             // actions - edit
             // back ?
         >
-            <Modal
+            {/* <Modal
                 show={show}
                 onHide={handleClose}
                 centered    
@@ -81,7 +80,7 @@ export function BrandView({data, setData}) {
                 <Modal.Footer>
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </StorePageLayout> 
     );
 };

@@ -116,9 +116,11 @@ export const ItemList = () => {
         inquiries: []
     }
 
+    const displayTitle = type.substring(0,1).toUpperCase() + type.substring(1);
+
     return (
         <StorePageLayout
-            title={type}
+            title={displayTitle}
             actions={type !== "inquries" && <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>}
         >
             <div className="filter-container">
