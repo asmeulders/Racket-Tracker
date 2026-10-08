@@ -69,10 +69,6 @@ export const ItemList = () => {
         const url = `/store/view-item/${type}/${item.id}`;
         await navigate(url);
     };
-
-    const handleSelect = (event) => {
-        setSearchParams({ page, limit: Number(event.target.value) });
-    };    
     
     const itemConfig = {
         orders: {
@@ -122,6 +118,14 @@ export const ItemList = () => {
         <StorePageLayout
             title={displayTitle}
             actions={type !== "inquries" && <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>}
+            footer={
+                <QueryInfo 
+                    page={page}
+                    data={data}
+                    limit={limit}
+                    setSearchParams={setSearchParams}
+                />
+            }
         >
             <div className="filter-container">
                 <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
@@ -139,27 +143,43 @@ export const ItemList = () => {
                     </ul>
                 )}
             </div>
-            <div className='query-info-container'>
-                <p className='query-info'>
-                    Queried {type} - showing
-                    <select name="numResults" id="num-results" value={limit} onChange={handleSelect}>
-                        {/* <option value="1">1</option> */}
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select> 
-                    per page.
-                    <button className='arrow-btn' disabled={!data.hasPrev} onClick={() => setSearchParams({ page: page - 1, limit })}>&laquo;</button>
-                    {page}
-                    <button className='arrow-btn' disabled={!data.hasNext} onClick={() => setSearchParams({ page: page + 1, limit })}>&raquo;</button>
-                    of {data.totalPages !== 0 ? data.totalPages : 1}.
-                </p>
-            </div>
+            
             <Modal show={show} onHide={handleClose}>
                 {itemConfig[type].renderModal()}
             </Modal>
         </StorePageLayout>
+    )
+}
+
+const QueryInfo = ({page, data, limit, setSearchParams}) => {
+
+    const handleSelect = (event) => {
+        setSearchParams({ page, limit: Number(event.target.value) });
+    };    
+
+    return (
+        <div className='query-info-container'>
+            <div className="query-info-text">
+                <span>Show</span>
+                <select name="numResults" id="num-results" value={limit} onChange={handleSelect}>
+                    {/* <option value="1">1</option> */}
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 
+                <span>per page.</span>
+
+                <button disabled={!data.hasPrev} onClick={() => setSearchParams({ page: page - 1, limit })}>
+                    <i class="fa-solid fa-arrow-left-long"></i>
+                </button>
+                <span>Page {page} of {data.totalPages !== 0 ? data.totalPages : 1}.</span>
+                <button disabled={!data.hasNext} onClick={() => setSearchParams({ page: page + 1, limit })}>
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </button>
+                
+            </div>
+        </div>
     )
 }

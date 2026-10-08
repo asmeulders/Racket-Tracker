@@ -38,12 +38,19 @@
 /* Pagination settings */
 
 .query-info-container {
+  position: sticky;
+  bottom: 0;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--secondary);
-  padding: 10px;
   color: white;
   flex-shrink: 0;
+}
+
+.query-info-text {
+  margin: 0;
+  padding: 0 0 0 20px;
+  text-align: left;
 }
 
 .query-info-container select {
@@ -51,13 +58,8 @@
 }
 
 .query-info-container button {
-  margin: 2pt;
-}
-
-.arrow-btn {
   color: white;
-  border: solid 1px white;
-  border-radius: 3px;
+  margin: 0 10px;
 }
 
 /* Item Styling */
