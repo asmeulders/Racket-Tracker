@@ -1,11 +1,11 @@
 import '../Racket.css';
 
 
-export function Racket({racket}) {
+export function Racket({ item }) {
   return (
     <div className='racket-card'>
-      <h2>{racket.brandName} {racket.name}</h2>
-      <span>${racket.price}</span>
+      <h2>{item.brandName} {item.name}</h2>
+      <span>${item.price}</span>
     </div>
   )
 }

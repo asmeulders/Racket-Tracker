@@ -24,7 +24,7 @@
 
 /* New Item Button */
 
-.new-item-btn {
+/* .new-item-btn {
   width: fit-content;
   height: fit-content;
   border-radius: 5pt;
@@ -33,7 +33,7 @@
   align-items: center;
   color: white;
   background-color: var(--primary);
-}
+} */
 
 /* Pagination settings */
 

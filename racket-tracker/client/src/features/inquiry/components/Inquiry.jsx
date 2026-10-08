@@ -2,12 +2,12 @@ import { format, parseISO } from 'date-fns';
 
 import '../Inquiry.css';
 
-export function Inquiry({inquiry}) {
-  const displayDate = inquiry.date ? format(parseISO(inquiry.date), 'MM/dd/yyyy') : null;
+export function Inquiry({ item }) {
+  const displayDate = item.date ? format(parseISO(item.date), 'MM/dd/yyyy') : null;
   
   return (
     <div className='inquiry-card'>
-        <h2>{displayDate ? `${displayDate}:` : ''} {inquiry.name}</h2>
+        <h2>{displayDate ? `${displayDate}:` : ''} {item.name}</h2>
     </div>
   )
 }

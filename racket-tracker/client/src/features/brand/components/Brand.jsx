@@ -1,10 +1,10 @@
 import '../Brand.css';
 
-export function Brand({brand}) {
+export function Brand({ item }) {
   
   return (
       <div className='brand-card'>
-        <h2>{brand.name}</h2>
+        <h2>{item.name}</h2>
       </div>
   )
 }

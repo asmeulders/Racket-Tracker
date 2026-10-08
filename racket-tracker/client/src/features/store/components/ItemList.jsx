@@ -72,32 +72,32 @@ export const ItemList = () => {
     
     const itemConfig = {
         orders: {
-            renderItem: (item) => <Order order={item} />,
+            renderItem: (item) => <Order item={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
             renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={modalData?.rackets} strings={modalData?.strings} users={modalData?.users} />
         },
         rackets: {
-            renderItem: (item) => <Racket racket={item} />,
+            renderItem: (item) => <Racket item={item} />,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
             renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         strings: {
-            renderItem: (item) => <String string={item} />,
+            renderItem: (item) => <String item={item} />,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
             renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         users: {
-            renderItem: (item) => <User user={item} />,
+            renderItem: (item) => <User item={item} />,
             renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
             renderModal: () => <UserForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         brands: {
-            renderItem: (item) => <Brand brand={item} />,
+            renderItem: (item) => <Brand item={item} />,
             renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
             renderModal: () => <BrandForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         inquiries: {
-            renderItem: (item) => <Inquiry inquiry={item} />,
+            renderItem: (item) => <Inquiry item={item} />,
             renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />,
             renderModal: () => <></>
         }
@@ -113,11 +113,15 @@ export const ItemList = () => {
     }
 
     const displayTitle = type.substring(0,1).toUpperCase() + type.substring(1);
+    const displayName = displayTitle.substring(0, displayTitle.length-1)
 
     return (
         <StorePageLayout
             title={displayTitle}
-            actions={type !== "inquries" && <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>}
+            actions={
+                type !== "inquries" && 
+                    <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {displayName}</button>
+            }
             footer={
                 <QueryInfo 
                     page={page}

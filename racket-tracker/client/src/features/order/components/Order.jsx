@@ -6,11 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOrder } from '../useOrder';
 import '../Order.css';
 
-export function Order({order}) {
+export function Order({ item }) {
   const { completeOrder, orderPaid } = useOrder();
 
-  const complete = order?.complete ? order?.complete : null;
-  const dueDate = order?.due ? new Date(order.due) : null;
+  const complete = item?.complete ? item?.complete : null;
+  const dueDate = item?.due ? new Date(item.due) : null;
   const dateStr = dueDate 
     ? dueDate.toLocaleDateString('en-US', {year: 'numeric', month: 'numeric', day: 'numeric'}) 
     : null;
@@ -23,11 +23,11 @@ export function Order({order}) {
   // Depending on screen width could show more info
   return (
     <div className='order-card'>
-      <h2 className='order-name'>{order?.user?.firstName} {order?.user?.lastName}</h2>
+      <h2 className='order-name'>{item?.user?.firstName} {item?.user?.lastName}</h2>
 
-      <span className='order-racket'>{order.racketBrand} {order.racketName}</span>
+      <span className='order-racket'>{item.racketBrand} {item.racketName}</span>
 
-      <span className='order-price'>${order.totalCost} {order.paid ? 'Paid' : "Unpaid"}</span>
+      <span className='order-price'>${item.totalCost} {item.paid ? 'Paid' : "Unpaid"}</span>
 
       <div className='order-date'>
         <span>{dateStr ? dateStr : 'XX/XX/XXXX'}</span><br />
