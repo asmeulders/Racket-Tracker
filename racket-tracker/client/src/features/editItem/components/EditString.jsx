@@ -16,9 +16,6 @@ export const EditString = ({ onEditItem, item }) => {
 
     //  TODO: Make modals for the other fields in case i want Edit options
     return (
-        <>
-            <h1>Edit String</h1>
-            <StringForm onSubmit={onEditItem} brands={data.brands} />
-        </>
+        <StringForm onSubmit={onEditItem} brands={data.brands} />
     )
 }

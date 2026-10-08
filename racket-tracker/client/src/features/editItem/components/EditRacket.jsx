@@ -16,9 +16,6 @@ export const EditRacket = ({ onEditItem, item }) => {
 
     //  TODO: Make modals for the other fields in case i want Edit options
     return (
-        <>
-            <h1>Edit racket</h1>
-            <RacketForm onSubmit={onEditItem} brands={data.brands} />
-        </>
+        <RacketForm onSubmit={onEditItem} brands={data.brands} />
     )
 }

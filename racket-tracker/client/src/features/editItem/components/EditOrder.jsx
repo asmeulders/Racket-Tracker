@@ -20,7 +20,6 @@ export const EditOrder = ({ onEditItem, item }) => {
     //  TODO: Make modals for the other fields in case i want Edit options
     return (
         <>
-            <h1>Edit order {data.id}</h1>
             <OrderForm onSubmit={onEditItem} order={item} rackets={data.rackets} strings={data.strings} users={data.users} />
             <div>
                 <h3>Original Order</h3>
