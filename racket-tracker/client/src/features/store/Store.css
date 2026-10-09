@@ -23,6 +23,15 @@
     border-bottom: 1px solid darkgrey;
 }
 
+.back-btn {
+    position: absolute;
+    left: 20px;
+}
+
+.store-header h1 {
+    margin-left: 5%;
+}
+
 .store-content {
     flex: 1;
     min-width: 0;
