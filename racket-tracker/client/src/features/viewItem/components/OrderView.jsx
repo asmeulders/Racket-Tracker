@@ -87,19 +87,22 @@ export const OrderView = ({data, setData}) => {
     };
 
     const handleEdit = (field) => {
-        getList(field)
-            .then(data => setEditData(prev => ({ ...prev, [field]: data })))
-            .finally(() => {
-                setShowModal(prev => ({ ...prev, [field]: true })); 
-                setUpdatedOrder({ 
-                    ...order, 
-                    mainsId: order.jobDetails[0].stringId,
-                    mainsTension: order.jobDetails[0].tension,
-                    crossesId: order.jobDetails?.[1]?.stringId,
-                    crossesTension: order.jobDetails?.[1]?.tension
-                });
-                console.log(order);
-            });
+        // go to order form
+
+
+        // getList(field)
+        //     .then(data => setEditData(prev => ({ ...prev, [field]: data })))
+        //     .finally(() => {
+        //         setShowModal(prev => ({ ...prev, [field]: true })); 
+        //         setUpdatedOrder({ 
+        //             ...order, 
+        //             mainsId: order.jobDetails[0].stringId,
+        //             mainsTension: order.jobDetails[0].tension,
+        //             crossesId: order.jobDetails?.[1]?.stringId,
+        //             crossesTension: order.jobDetails?.[1]?.tension
+        //         });
+        //         console.log(order);
+        //     });
     };
 
     const handleSave = (field) => {
@@ -121,6 +124,7 @@ export const OrderView = ({data, setData}) => {
 
     return(
         <StorePageLayout 
+            back={true}
             title={
                 <>
                     Order #{order.id} |{" "}
@@ -129,7 +133,7 @@ export const OrderView = ({data, setData}) => {
             }
             actions={
                 <>
-                    <button type="button" className="nav-btn">Edit Order</button>
+                    <button type="button" className="nav-btn" onClick={() => navigate(`/store/edit-item/orders/${order.id}`)}>Edit Order</button>
                     <button type="button" className="nav-btn" onClick={handleComplete}>{isComplete ? "Mark Incomplete" : "Mark Complete"} </button>
                 </>
             }

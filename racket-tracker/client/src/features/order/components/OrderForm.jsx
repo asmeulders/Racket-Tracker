@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -12,18 +12,34 @@ export const OrderForm = ({ onSubmit, order, rackets, strings, users }) => {
     const { createOrder, updateOrder } = useOrder();
 
     const [fields, setFields] = useState({
-        orderId: order ? order.id : null,
-        racketId: order ? order.racketId : '',
-        userId: order ? order.userId : '',
-        mainsId: order ? order.jobDetails[0].stringId : '',
-        mainsTension: order ? order.jobDetails[0].tension : '',
-        crossesId: order ? order?.jobDetails?.[1].stringId : '',
-        crossesTension: order ? order?.jobDetails?.[1].tension : '',
-        sameForCrosses: order ? order.sameForCrosses : true,
-        paid: order ? order.paid : false,
-        due: order ? order.due : null,
-        laborCost: order ? order.laborCost : null
+        // orderId: order && order.id,
+        // racketId: order && order.racketId,
+        // userId: order && order.userId,
+        // mainsId: order && order.jobDetails[0].stringId,
+        // mainsTension: order && order.jobDetails[0].tension,
+        // crossesId: order && order.jobDetails[1].length > 1 && order.jobDetails[1].stringId,
+        // crossesTension: order && order.jobDetails[1].length > 1 && order.jobDetails[1].tension,
+        // sameForCrosses: order && order.sameForCrosses,
+        // paid: order && order.paid,
+        // due: order && order.due,
+        // laborCost: order & order.laborCost
     });
+
+    useEffect(() => {
+        setFields({
+            orderId: order.id,
+            racketId: order.racketId,
+            userId: order.userId,
+            mainsId:  order.jobDetails[0].stringId,
+            mainsTension:  order.jobDetails[0].tension,
+            crossesId:  order.jobDetails.length > 1 && order.jobDetails[1].stringId,
+            crossesTension:  order.jobDetails.length > 1 && order.jobDetails[1].tension,
+            sameForCrosses:  order.sameForCrosses,
+            paid:  order.paid,
+            due:  order.due,
+            laborCost: order & order.laborCost
+        })
+    }, [order]);
 
     const [show, setShow] = useState(false);
     const [validated, setValidated] = useState(false);

@@ -21,8 +21,6 @@ export const NewItem = () => {
     const Component = page[type] ?? <p>Unknown type</p>;
 
     return (
-        <div className='new-item-page'>
-            <Component onNewItem={handleNewItem}/>
-        </div>
+        <Component onNewItem={handleNewItem}/>
     );
 }

@@ -1,10 +1,10 @@
 import "../String.css"
 
-export function String({string}) {
+export function String({ item }) {
   return (
     <div className='string-card'>
-      <h2>{string.brandName} {string.name}</h2>
-      <span>${string.pricePerRacket}</span>
+      <h2>{item.brandName} {item.name}</h2>
+      <span>${item.pricePerRacket}</span>
     </div>
   )
 }

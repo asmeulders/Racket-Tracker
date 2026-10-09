@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { EditOrder, EditRacket, EditString, EditBrand, EditUser } from './index';
+import { EditOrder, EditRacket, EditString } from './index';
+import { BrandForm } from '../brand';
+import { UserForm } from '../user';
 import { useViewItem } from '../viewItem/useViewItem';
+import { StorePageLayout } from '../store';
 
 
 // TODO: going to get rid of this because i want to use modals instead
 export const EditItem = () => {
     const navigate = useNavigate();
     const { getItem } = useViewItem();
-
     const { type, id } = useParams();
-
     const [ item, setItem ] = useState(null);
 
     const handleEditItem = () => {
@@ -20,8 +21,8 @@ export const EditItem = () => {
 
     const page = {
         orders: EditOrder,
-        brands: EditBrand,
-        users: EditUser,
+        brands: BrandForm,
+        users: UserForm,
         rackets: EditRacket,
         strings: EditString,
     };
@@ -34,9 +35,14 @@ export const EditItem = () => {
 
     if (item === null) return <p>Loading...</p>
 
+    const displayTitle = type.substring(0,1).toUpperCase() + type.substring(1, type.length-1);
+
     return (
-        <div className='Edit-item-page'>
+        <StorePageLayout
+            back={true}
+            title={`Edit ${displayTitle}`}
+        >
             <Component onEditItem={handleEditItem} item={item}/>
-        </div>
+        </StorePageLayout>
     );
 }

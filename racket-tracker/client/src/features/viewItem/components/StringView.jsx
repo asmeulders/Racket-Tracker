@@ -72,8 +72,9 @@ export function StringView({data, setData}) {
 
     return (
         <StorePageLayout
+            back={true}
             title={`${string.brandName} ${string.name}`}
-            // actions={} edit
+            actions={<button type="button" className="nav-btn" onClick={() => navigate(`/store/edit-item/strings/${string.id}`)}>Edit String</button>}
         >
             <div className='view-item-section'>
                 <p>Price per Racket: ${string.pricePerRacket}</p>

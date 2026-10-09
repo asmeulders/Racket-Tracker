@@ -43,42 +43,46 @@ export function StoreDashboard() {
     return (
         <StorePageLayout
             title={"Dashboard"}
+            actions={
+                <>
+                    <button type='button' onClick={() => navigate('/store/new-item/orders')}>New Order</button>
+                    <button type='button' onClick={() => navigate('/store/new-item/users')}>New Customer</button>
+                </>
+            }
         >
-            <div className='dashboard-content'>
-                <div className='active-orders'>
-                    {data?.orders.length === 0 ? (
-                        <p>No active orders.</p>
-                    ) : (
-                        <ul className="item-list">
-                            {data?.orders.map((item) => (
-                                <li key={item.id} className="item-container" onClick={() => handleView('orders', item)}>
-                                    <Order order={item}/>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+            <DashboardSection
+                title={"Upcoming Orders"}
+                items={data?.orders}
+                Card={Order}
+                onClick={(item) => handleView('orders', item)}
+                fallback={"No outstanding orders"}
+            />
 
-                <div className='recent-inquiries'>
-                    {data?.inquiries.length === 0 ? (
-                        <p>No recent inquiries.</p>
-                    ) : (
-                        <ul className="item-list">
-                            {data?.inquiries.map((item) => (
-                                <li key={item.id} className="item-container" onClick={() => handleView('inquiries', item)}>
-                                    <Inquiry inquiry={item}/>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-
-            </div>
-
-            <div className='dashboard-quick-links'>
-                <button type='button' onClick={() => navigate('/store/new-item/orders')}>New Order</button>
-                <button type='button' onClick={() => navigate('/store/new-item/users')}>New Customer</button>
-            </div>
+            <DashboardSection
+                title={"Recent Inquiries"}
+                items={data?.inquiries}
+                Card={Inquiry}
+                onClick={() => handleView('inquiries', item)}
+                fallback={"No recent inquiries"}
+            />
         </StorePageLayout>
+    )
+}
+
+const DashboardSection = ({title, items, Card, onClick, fallback}) => {
+    return (
+        <div className='dashboard-section'>
+            {items?.length === 0 ? (
+                <p>{fallback}</p>
+            ) : (
+                <ul className="item-list">
+                    {items?.map((item) => (
+                        <li key={item.id} className="item-container" onClick={() => onClick(item)}> 
+                            <Card item={item}/>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     )
 }

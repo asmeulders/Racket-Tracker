@@ -2,10 +2,10 @@ import { format } from 'date-fns';
 
 import '../User.css';
 
-export function User({user}) {
+export function User({ item }) {
   return (
     <div className='user-card'>
-      <h2>{user.firstName} {user.lastName} | {user.username}</h2>
+      <h2>{item.firstName} {item.lastName} | {item.username}</h2>
       {/* this stuff should go to the user page */}
       {/* <div className='item-info'>
         Owns:

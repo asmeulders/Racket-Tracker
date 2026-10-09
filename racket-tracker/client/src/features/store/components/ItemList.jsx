@@ -69,39 +69,35 @@ export const ItemList = () => {
         const url = `/store/view-item/${type}/${item.id}`;
         await navigate(url);
     };
-
-    const handleSelect = (event) => {
-        setSearchParams({ page, limit: Number(event.target.value) });
-    };    
     
     const itemConfig = {
         orders: {
-            renderItem: (item) => <Order order={item} />,
+            renderItem: (item) => <Order item={item} />,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
             renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={modalData?.rackets} strings={modalData?.strings} users={modalData?.users} />
         },
         rackets: {
-            renderItem: (item) => <Racket racket={item} />,
+            renderItem: (item) => <Racket item={item} />,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
             renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         strings: {
-            renderItem: (item) => <String string={item} />,
+            renderItem: (item) => <String item={item} />,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
             renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         users: {
-            renderItem: (item) => <User user={item} />,
+            renderItem: (item) => <User item={item} />,
             renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
             renderModal: () => <UserForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         brands: {
-            renderItem: (item) => <Brand brand={item} />,
+            renderItem: (item) => <Brand item={item} />,
             renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
             renderModal: () => <BrandForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         inquiries: {
-            renderItem: (item) => <Inquiry inquiry={item} />,
+            renderItem: (item) => <Inquiry item={item} />,
             renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />,
             renderModal: () => <></>
         }
@@ -116,10 +112,24 @@ export const ItemList = () => {
         inquiries: []
     }
 
+    const displayTitle = type.substring(0,1).toUpperCase() + type.substring(1);
+    const displayName = displayTitle.substring(0, displayTitle.length-1)
+
     return (
         <StorePageLayout
-            title={type}
-            actions={type !== "inquries" && <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {type}</button>}
+            title={displayTitle}
+            actions={
+                type !== "inquiries" && 
+                    <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {displayName}</button>
+            }
+            footer={
+                <QueryInfo 
+                    page={page}
+                    data={data}
+                    limit={limit}
+                    setSearchParams={setSearchParams}
+                />
+            }
         >
             <div className="filter-container">
                 <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
@@ -137,27 +147,43 @@ export const ItemList = () => {
                     </ul>
                 )}
             </div>
-            <div className='query-info-container'>
-                <p className='query-info'>
-                    Queried {type} - showing
-                    <select name="numResults" id="num-results" value={limit} onChange={handleSelect}>
-                        {/* <option value="1">1</option> */}
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select> 
-                    per page.
-                    <button className='arrow-btn' disabled={!data.hasPrev} onClick={() => setSearchParams({ page: page - 1, limit })}>&laquo;</button>
-                    {page}
-                    <button className='arrow-btn' disabled={!data.hasNext} onClick={() => setSearchParams({ page: page + 1, limit })}>&raquo;</button>
-                    of {data.totalPages !== 0 ? data.totalPages : 1}.
-                </p>
-            </div>
+            
             <Modal show={show} onHide={handleClose}>
                 {itemConfig[type].renderModal()}
             </Modal>
         </StorePageLayout>
+    )
+}
+
+const QueryInfo = ({page, data, limit, setSearchParams}) => {
+
+    const handleSelect = (event) => {
+        setSearchParams({ page, limit: Number(event.target.value) });
+    };    
+
+    return (
+        <div className='query-info-container'>
+            <div className="query-info-text">
+                <span>Show</span>
+                <select name="numResults" id="num-results" value={limit} onChange={handleSelect}>
+                    {/* <option value="1">1</option> */}
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 
+                <span>per page.</span>
+
+                <button disabled={!data.hasPrev} onClick={() => setSearchParams({ page: page - 1, limit })}>
+                    <i class="fa-solid fa-arrow-left-long"></i>
+                </button>
+                <span>Page {page} of {data.totalPages !== 0 ? data.totalPages : 1}.</span>
+                <button disabled={!data.hasNext} onClick={() => setSearchParams({ page: page + 1, limit })}>
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </button>
+                
+            </div>
+        </div>
     )
 }

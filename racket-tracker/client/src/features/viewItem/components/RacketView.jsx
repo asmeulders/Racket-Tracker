@@ -79,8 +79,9 @@ export function RacketView({data, setData}) {
 
     return (
         <StorePageLayout
+            back={true}
             title={`${racket.brandName} ${racket.name}`}
-            // actions={} edit
+            actions={<button type="button" className="nav-btn" onClick={() => navigate(`/store/edit-item/rackets/${racket.id}`)}>Edit Racket</button>}
         >
             <div className='view-item-section'>
                 Price: ${racket.price}

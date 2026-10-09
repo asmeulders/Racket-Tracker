@@ -26,6 +26,7 @@ export function InquiryView({data, setData}) {
 
     return (
         <StorePageLayout
+            back={true}
             title={`Inquiry #${inquiry.id} - ${inquiry.date}`}
         >
             <div className='view-item-section'>
