@@ -119,7 +119,7 @@ export const ItemList = () => {
         <StorePageLayout
             title={displayTitle}
             actions={
-                type !== "inquries" && 
+                type !== "inquiries" && 
                     <button className="new-item-btn" type="button" onClick={() => navigate(`/store/new-item/${type}`)}>New {displayName}</button>
             }
             footer={

@@ -60,8 +60,9 @@ export function BrandView({data, setData}) {
 
     return (
         <StorePageLayout
+            back={true}
             title={brand.name}
-            // actions - edit
+            actions={<button type="button" className="nav-btn" onClick={() => navigate(`/store/edit-item/brands/${brand.id}`)}>Edit Brand</button>}
             // back ?
         >
             {/* <Modal

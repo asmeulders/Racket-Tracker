@@ -12,9 +12,7 @@ import { StorePageLayout } from '../store';
 export const EditItem = () => {
     const navigate = useNavigate();
     const { getItem } = useViewItem();
-
     const { type, id } = useParams();
-
     const [ item, setItem ] = useState(null);
 
     const handleEditItem = () => {
@@ -37,9 +35,12 @@ export const EditItem = () => {
 
     if (item === null) return <p>Loading...</p>
 
+    const displayTitle = type.substring(0,1).toUpperCase() + type.substring(1, type.length-1);
+
     return (
         <StorePageLayout
-            title={"Edit Item"}
+            back={true}
+            title={`Edit ${displayTitle}`}
         >
             <Component onEditItem={handleEditItem} item={item}/>
         </StorePageLayout>

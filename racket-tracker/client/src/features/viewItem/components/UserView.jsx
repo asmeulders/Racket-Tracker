@@ -71,8 +71,9 @@ export function UserView({data, setData}) {
 
     return (
         <StorePageLayout
+            back={true}
             title={`${user.firstName} ${user.lastName}`}
-            // actions={} edit
+            actions={<button type="button" className="nav-btn" onClick={() => navigate(`/store/edit-item/users/${user.id}`)}>Edit User Info</button>}
         >
             <div className='view-item-section'>
                 <ul>

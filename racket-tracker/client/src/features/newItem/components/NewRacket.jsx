@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { RacketForm } from "../../racket";
 import { useViewItem } from "../../viewItem/useViewItem";
+import { StorePageLayout } from "../../store";
 
 export const NewRacket = ({ onNewItem }) => {
     const { getList } = useViewItem();
@@ -16,9 +17,11 @@ export const NewRacket = ({ onNewItem }) => {
 
     //  TODO: Make modals for the other fields in case i want new options
     return (
-        <>
-            <h1>Create a new racket</h1>
+        <StorePageLayout
+            back={true}
+            title={"Create a new Racket"}
+        >
             <RacketForm onSubmit={onNewItem} brands={data.brands} />
-        </>
+        </StorePageLayout>
     )
 }

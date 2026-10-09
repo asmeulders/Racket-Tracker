@@ -1,9 +1,14 @@
-export const StorePageLayout = ({title, actions, footer, children}) => {
+import { BackButton } from "../../../components/backButton/BackButton"
+
+export const StorePageLayout = ({back, title, actions, footer, children}) => {
 
 
     return (
         <main>
             <header className="store-header">
+                {back &&
+                    <BackButton />
+                }
                 <h1>{title}</h1>
                 {actions && 
                     <div className="page-actions">{actions}</div>

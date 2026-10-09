@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { OrderForm } from "../../order";
 import { useViewItem } from "../../viewItem/useViewItem";
+import { StorePageLayout } from "../../store";
 
 export const NewOrder = ({ onNewItem }) => {
     const { getList } = useViewItem();
@@ -19,9 +20,11 @@ export const NewOrder = ({ onNewItem }) => {
 
     //  TODO: Make modals for the other fields in case i want new options
     return (
-        <>
-            <h1>Create a new order</h1>
+        <StorePageLayout
+            back={true}
+            title={"Create a new Order"}
+        >
             <OrderForm onSubmit={onNewItem} order={null} rackets={data.rackets} strings={data.strings} users={data.users} />
-        </>
+        </StorePageLayout>           
     )
 }

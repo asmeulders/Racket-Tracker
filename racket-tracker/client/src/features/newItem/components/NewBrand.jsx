@@ -1,10 +1,13 @@
 import { BrandForm } from "../../brand";
+import { StorePageLayout } from "../../store";
 
 export const NewBrand = ({ onNewItem }) => {
     return (
-        <>
-            <h1>Create a new Brand</h1>
+        <StorePageLayout
+            back={true}
+            title={"Create a new Brand"}
+        >
             <BrandForm onSubmit={onNewItem} />
-        </>
+        </StorePageLayout>
     )
 }

@@ -124,6 +124,7 @@ export const OrderView = ({data, setData}) => {
 
     return(
         <StorePageLayout 
+            back={true}
             title={
                 <>
                     Order #{order.id} |{" "}
