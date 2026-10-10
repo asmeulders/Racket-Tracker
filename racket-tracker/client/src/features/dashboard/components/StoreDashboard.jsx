@@ -8,6 +8,7 @@ import { Inquiry } from '../../inquiry';
 import { useStore } from '../../store/useStore';
 import './StoreDashboard.css';
 import { StorePageLayout } from '../../store';
+import { ListItems } from '../../../components/listItems/ListItems';
 
 export function StoreDashboard() {
     const { getPage } = useStore();
@@ -50,7 +51,7 @@ export function StoreDashboard() {
                 </>
             }
         >
-            <DashboardSection
+            <ListItems
                 title={"Upcoming Orders"}
                 items={data?.orders}
                 Card={Order}
@@ -58,7 +59,7 @@ export function StoreDashboard() {
                 fallback={"No outstanding orders"}
             />
 
-            <DashboardSection
+            <ListItems
                 title={"Recent Inquiries"}
                 items={data?.inquiries}
                 Card={Inquiry}
@@ -66,23 +67,5 @@ export function StoreDashboard() {
                 fallback={"No recent inquiries"}
             />
         </StorePageLayout>
-    )
-}
-
-const DashboardSection = ({title, items, Card, onClick, fallback}) => {
-    return (
-        <div className='dashboard-section'>
-            {items?.length === 0 ? (
-                <p>{fallback}</p>
-            ) : (
-                <ul className="item-list">
-                    {items?.map((item) => (
-                        <li key={item.id} className="item-container" onClick={() => onClick(item)}> 
-                            <Card item={item}/>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
     )
 }

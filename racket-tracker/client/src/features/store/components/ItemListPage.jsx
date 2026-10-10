@@ -13,8 +13,9 @@ import { Brand, BrandFilter, BrandForm } from "../../brand";
 import { Inquiry, InquiryFilter } from "../../inquiry";
 import { Collapsible } from "../../../components/collapsible/Collapsible";
 
-import './ItemList.css'
+import './ItemListPage.css'
 import { StorePageLayout } from "./StorePageLayout";
+import { ListItems } from "../../../components/listItems/ListItems";
 
 // TODO: 
 // order date range filter
@@ -72,32 +73,32 @@ export const ItemList = () => {
     
     const itemConfig = {
         orders: {
-            renderItem: (item) => <Order item={item} />,
+            renderItem: Order,
             renderFilter: (onFilterChange) => <OrderFilter onFilterChange={onFilterChange} />,
             renderModal: () => <OrderForm onDataCreated={handleCreateItem} handleClose={handleClose} rackets={modalData?.rackets} strings={modalData?.strings} users={modalData?.users} />
         },
         rackets: {
-            renderItem: (item) => <Racket item={item} />,
+            renderItem: Racket,
             renderFilter: (onFilterChange) => <RacketFilter onFilterChange={onFilterChange} />,
             renderModal: () => <RacketForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         strings: {
-            renderItem: (item) => <String item={item} />,
+            renderItem: String,
             renderFilter: (onFilterChange) => <StringFilter onFilterChange={onFilterChange} />,
             renderModal: () => <StringForm onDataCreated={handleCreateItem} handleClose={handleClose} brands={modalData?.brands} />
         },
         users: {
-            renderItem: (item) => <User item={item} />,
+            renderItem: User,
             renderFilter: (onFilterChange) => <UserFilter onFilterChange={onFilterChange} />,
             renderModal: () => <UserForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         brands: {
-            renderItem: (item) => <Brand item={item} />,
+            renderItem: Brand,
             renderFilter: (onFilterChange) => <BrandFilter onFilterChange={onFilterChange} />,
             renderModal: () => <BrandForm onDataCreated={handleCreateItem} handleClose={handleClose} />
         },
         inquiries: {
-            renderItem: (item) => <Inquiry item={item} />,
+            renderItem: Inquiry,
             renderFilter: (onFilterChange) => <InquiryFilter onFilterChange={onFilterChange} />,
             renderModal: () => <></>
         }
@@ -134,19 +135,12 @@ export const ItemList = () => {
             <div className="filter-container">
                 <Collapsible renderContent={() => itemConfig[type].renderFilter(setFilters)}/>
             </div>
-            <div className="list-content">
-                {data.items.length === 0 ? (
-                    <p>No data found.</p>
-                ) : (
-                    <ul className="item-list">
-                        {data.items.map((item) => (
-                            <li key={item.id} className="item-container" onClick={() => handleView(item)}>
-                                {itemConfig[type].renderItem(item)}
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+            <ListItems
+                items={data.items}
+                Card={itemConfig[type].renderItem}
+                onClick={(item) => handleView(item)}
+                fallback={"No data found."}
+            />
             
             <Modal show={show} onHide={handleClose}>
                 {itemConfig[type].renderModal()}
